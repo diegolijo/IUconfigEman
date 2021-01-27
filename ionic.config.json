@@ -1,0 +1,7 @@
+{
+  "name": "InterfConfig",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
