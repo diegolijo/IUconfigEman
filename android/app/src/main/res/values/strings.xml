@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">InterfConfig</string>
+    <string name="title_activity_main">InterfConfig</string>
+    <string name="package_name">www.vayapedal.com</string>
+    <string name="custom_url_scheme">www.vayapedal.com</string>
+    <string name="cconfigurando">Configurando...</string>
+</resources>

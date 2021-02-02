@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Plugins } from '@capacitor/core';
+const { NatPlugin } = Plugins;
 
 @Component({
   selector: 'app-tabs',
@@ -7,6 +9,14 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
-  constructor() {}
+
+  constructor() { }
+
+  public async toAndroidService() {
+    const result = await NatPlugin.customCall({ message: 'CUSTOM MESSAGE' });
+    const res = await NatPlugin.customFunction();
+  }
+
 
 }
+
