@@ -1,0 +1,151 @@
+{
+  "SI": "SI",
+  "NO": "NO",
+  "CANCEL": "Cancelar",
+  "ACCEPT": "Aceptar",
+  "CONTINUE": "Continuar",
+  "EXIT": "Salir",
+  "FILTER": "Filtrar",
+  "COMPANIES": "Empresas",
+  "DEVICES": "Dispositivos",
+  "camera": "Camara",
+  "c4050": "C4050",
+  "NQuire300": "NQuire300",
+  "EDA50K": "EDA50K",
+  "LOGIN": {
+    "USERNAME": "Usuario",
+    "PASSWORD": "Contraseña",
+    "ACCESS": "Acceder",
+    "INIT": "Iniciando sesión...",
+    "EMPTY": "Por favor, introduce tu usuario y contraseña",
+    "FAILURE": "El usuario no existe o las credenciales son incorrectas."
+  },
+  "LOGOUT": {
+    "TITLE": "Cerrar sesión",
+    "TEXT": "¿Deseas cerrar sesión? Todos los datos(partes, clientes,...) que no se hayan sincronizado se perderán"
+  },
+  "HOME": {
+    "DETAILS": "Partes",
+    "DETAILS_SUB": "Tus partes del día",
+    "CLIENTS": "Clientes",
+    "CLIENTS_SUB": "Acceso a clientes",
+    "SEARCH": "Busq. Núm. Serie",
+    "LAST_SYNC": "Sincronizado por última vez:",
+    "UPDATE": "Actualizar",
+    "SYNC_TITLE": "Sincronización de datos",
+    "SYNC_TEXT": "No se han encontrado registros asociados a esta empresa. A continuación se sincronizarán los datos necesarios con el servidor",
+    "SYNC_LOAD": "Sincronizando datos",
+    "SYNC_SUCCESS": "Datos sincronizados correctamente",
+    "INIT_LOCATION": "Iniciando servicio de ubicación..."
+  },
+  "CLIENTS": {
+    "TITLE": "Clientes",
+    "SEARCH": "Buscar... 3 o más caracteres"
+  },
+  "CLIENT": {
+    "NAME": "Nombre",
+    "DENO": "Denominación",
+    "CODEX": "Código",
+    "TEL": "Teléfono"
+  },
+  "DETAILS_CATEGORY": {
+    "TITLE": "Partes",
+    "TODAY": "Partes de hoy",
+    "WEEK": "Partes de esta semana",
+    "LAST_WEEK": "Partes de la semana pasada",
+    "ALL": "Todos los partes",
+    "LOADING": "Cargando datos...",
+    "UPDATING_LOCATIONS": "Actualizando ubicaciones..."
+  },
+  "DETAILS": {
+    "F": "Finalizado",
+    "G": "En progreso",
+    "P": "Pendiente",
+    "E": "Enviado",
+    "ALL": "Todos",
+    "TITLE": "Estado"
+  },
+  "CALENDAR_DETAILS": {
+    "TITLE": "Calendario",
+    "SELECT": "Agrupar por:",
+    "ALL": "Todos",
+    "POSITION": "Localidad",
+    "LOCATION_NOT_AVAILABLE": "Las opciones de ubicación no están disponibles"
+  },
+  "LIST_DETAILS": {
+    "TITLE": "Listado",
+    "GROUP": "Agrupar por:",
+    "ORDER": "Ordenar por",
+    "NAME": "Nombre",
+    "DATE_EXPECT": "Fecha prevista",
+    "DIRECTION": "Domicilio",
+    "TEL": "Teléfono",
+    "EMAIL": "Email",
+    "DATE": "Fecha",
+    "POSITION": "Localidad",
+    "DISTANCE": "Distancia",
+    "LOCATION_NOT_AVAILABLE": "Las opciones de ubicación no están disponibles",
+    "ALL": "Todos",
+    "LOCATION": "Ubicación"
+  },
+  "MAP_DETAILS": {
+    "TITLE": "Mapa",
+    "LOCATION_NOT_AVAILABLE": "Ubicación no disponible"
+  },
+  "CALENDAR": {
+    "WEEK_DAYS": [
+      "D",
+      "L",
+      "M",
+      "M",
+      "J",
+      "V",
+      "S"
+    ],
+    "WEEK_START": 1,
+    "MONTHS": [
+      "ENE",
+      "FEB",
+      "MAR",
+      "ABR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AGO",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DIC"
+    ],
+    "TITLE": "Calendario de partes",
+    "NO_EVENTS": "No hay eventos para el día seleccionado"
+  },
+  "DETAIL_ACTIONS": {
+    "TITLE": "Acciones"
+  },
+  "DETAIL_MATERIALS": {
+    "TITLE": "Materiales"
+  },
+  "DETAIL_DIETS": {
+    "TITLE": "Dietas"
+  },
+  "DETAIL_TIMES": {
+    "TITLE": "Tiempos"
+  },
+  "DETAIL_DELIVERY": {
+    "TITLE": "Albarán"
+  },
+  "PARTE_MATERIALES": {
+    "TOTAL": "Total",
+    "UDS": "Uds.",
+    "UDS_ANT": "Uds. Anteriores",
+    "PVP": "Precio"
+  },
+  "ARTICULOS": {
+    "TITLE": "Artículos",
+    "PLACEHOLDER": "Buscar... 3 o más caracteres"
+  },
+  "ARTICULO_DETALLES": {
+    "NO_STOCK": "No quedan unidades suficientes"
+  }
+}

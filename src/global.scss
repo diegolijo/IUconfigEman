@@ -24,3 +24,253 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+
+
+//--------------------------------------------------------
+// pintamos el texto completo de los ion-select
+.selectFull {
+    text-align: right !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+}
+
+.title {
+    font-size: 1.1em !important;
+    text-align: center !important;
+    white-space: pre-line !important;
+    display: block !important;
+    font-weight: bold !important;
+}
+
+.smallLabel {
+    font-size: 0.7em !important;
+    text-align: center !important;
+    white-space: pre-line !important;
+    display: block !important;
+    font-weight: bold !important;
+}
+
+//salto de linea en el texto cuando no cabe en la pantalla
+.textoCompleto {
+    display: block !important;
+    white-space: pre-line !important;
+}
+
+.textRightAlign {
+    text-align: right !important;
+}
+
+.textLeftAlign {
+    text-align: left !important;
+}
+
+.textCenter {
+    text-align: center !important;
+}
+
+.textTop {
+    vertical-align: top;
+}
+
+.textDanger {
+    color: var(--ion-color-danger);
+}
+
+//********************** Fonts ****************************
+
+.smallFont {
+    font-size: 0.7em !important;
+}
+
+.smallFont2 {
+    font-size: 0.75em !important;
+}
+
+.smallFont3 {
+    font-size: 0.8em !important;
+}
+
+.smallFont4 {
+    font-size: 0.85em !important;
+}
+
+.smallFont5 {
+    font-size: 0.9em !important;
+}
+
+.mediumFont {
+    font-size: 0.85em !important;
+}
+
+.bigFont {
+    font-size: 1em !important;
+}
+
+.fontBold {
+    font-weight: bold !important;
+}
+
+.fontLighter {
+    font-weight: lighter !important;
+}
+
+.fontItalic {
+    font-style: italic !important;
+}
+
+//******************* Margin Padding **********************
+.paddingH10 {
+    padding-right: 1em !important;
+    padding-left: 1em !important;
+}
+
+.paddingV10 {
+    padding-bottom: 1em !important;
+    padding-top: 1em !important;
+}
+
+.paddingL10 {
+    padding-left: 1em !important;
+}
+
+.paddingH5 {
+    padding-right: 0.5em !important;
+    padding-left: 0.5em !important;
+}
+
+.paddingV5 {
+    padding-bottom: 0.5em !important;
+    padding-top: 0.5em !important;
+}
+
+.paddingV2 {
+    padding-bottom: 0.2em !important;
+    padding-top: 0.2em !important;
+}
+
+.paddingV1 {
+    padding-bottom: 0.1em !important;
+    padding-top: 0.1em !important;
+}
+
+.paddingH1 {
+    padding-right: 0.1em !important;
+    padding-left: 0.1em !important;
+}
+
+.noPadding {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.marginH10 {
+    margin-right: 1em !important;
+    margin-left: 1em !important;
+}
+
+.marginV10 {
+    margin-bottom: 1em !important;
+    margin-top: 1em !important;
+}
+
+.marginR10 {
+    margin-right: 1em !important;
+}
+
+.marginH5 {
+    margin-right: 0.5em !important;
+    margin-left: 0.5em !important;
+}
+
+.marginV5 {
+    margin-bottom: 0.5em !important;
+    margin-top: 0.5em !important;
+}
+
+.marginV2 {
+    margin-bottom: 0.2em !important;
+    margin-top: 0.2em !important;
+}
+
+.marginH2 {
+    margin-right: 0.5em !important;
+    margin-left: 0.5em !important;
+}
+
+.marginV1 {
+    margin-bottom: 0.1em !important;
+    margin-top: 0.1em !important;
+}
+
+.marginH1 {
+    margin-right: 0.1em !important;
+    margin-left: 0.1em !important;
+}
+
+.noMargin {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.pageBottomMargin {
+    min-height: 70px;
+}
+
+/* **************** contenedores **************** */
+
+.contenedorTertiary {
+    border: 0.15em solid var(--ion-color-tertiary);
+    border-radius: 0.5em 0.5em;
+}
+
+.contenedorPrimary {
+    border: 0.15em solid var(--ion-color-primary);
+    border-radius: 0.5em 0.5em;
+}
+
+.contenedorSecondary {
+    border: 0.15em solid var(--ion-color-secondary);
+    border-radius: 0.5em 0.5em;
+}
+
+.contenedorLight {
+    border: 0.15em solid var(--ion-color-ligth);
+    border-radius: 0.5em 0.5em;
+}
+
+.npgIcons {
+    width: 32px;
+    height: 32px;
+}
+
+.minHeight15 {
+    min-height: 1.5em;
+}
+
+.minHeight25 {
+    min-height: 2.5em;
+}
+
+.minHeight30 {
+    min-height: 3em;
+}
+
+.maxWidthContent {
+    max-width: max-content;
+}
+
+/****************** posicion*************/
+
+.right {
+    float: right !important; 
+}
+
+.left {
+    float: left !important;
+}

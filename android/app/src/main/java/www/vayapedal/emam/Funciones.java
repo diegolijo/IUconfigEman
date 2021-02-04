@@ -42,7 +42,7 @@ public class Funciones {
     }
 
     /**
-     * devuelve un array de string con el valor de la clave("conf" "start" "end" "text" "partial")
+     * devuelve un array de string con el valor de las clave("conf" "start" "end" "text" "partial")
      */
     public String[] decodeJSon(String json, String key) {
         try {
@@ -87,6 +87,7 @@ public class Funciones {
             e.printStackTrace();
         }
         return null;
+
         //hypothesis{
         //  "result" : [{
         //      "conf" : 1.000000,

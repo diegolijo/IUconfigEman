@@ -1,0 +1,220 @@
+{
+  "SI": "SI",
+  "NO": "NO",
+  "CANCEL": "Cancelar",
+  "ACCEPT": "Aceptar",
+  "CONTINUE": "Continuar",
+  "OPEN": "Abrir",
+  "EXIT": "Salir",
+  "FILTER": "Filtrar",
+  "COMPANIES": "Empresas",
+  "DEVICES": "Dispositivos",
+  "camera": "Camara",
+  "c4050": "C4050",
+  "NQuire300": "NQuire300",
+  "EDA50K": "EDA50K",
+  "LOGIN": {
+    "TITLE": "Cocosat",
+    "CARD_TITLE": "Datos del Técnico",
+    "USERNAME": "Usuario",
+    "USERNAME_REQUIRED": "Usuario requerido",
+    "PASSWORD": "Contraseña",
+    "PASSWORD_REQUIRED": "Contraseña requerida",
+    "ACCESS": "Acceder",
+    "INIT": "Iniciando sesión...",
+    "EMPTY": "Por favor, introduce tu usuario y contraseña",
+    "FAILURE": "El usuario no existe o las credenciales son incorrectas."
+  },
+  "LOGOUT": {
+    "TITLE": "Cerrar sesión",
+    "TEXT": "¿Deseas cerrar sesión? Todos los datos(pertes, clientes,...) que no se hayan sincronizado se perderán"
+  },
+  "HOME": {
+    "TITLE": "Home",
+    "DETAILS": "Partes",
+    "DETAILS_SUB": "Tus partes asignados",
+    "DETAIL_CREATE": "Crear Parte",
+    "CLIENTS": "Clientes",
+    "CLIENTS_SUB": "Acceso a clientes",
+    "TIMES_DIETS": "Tiempos Dietas",
+    "DELIVERY_CREATE": "Crear Cliente",
+    "LAST_SYNC": "Sincronizado por última vez:",
+    "UPDATE": "Actualizar",
+    "SYNC_TITLE": "Sincronización de datos",
+    "SYNC_WARNING": "Por favor, sincronice los datos",
+    "SYNC_TEXT": "No se han encontrado registros asociados a esta empresa. A continuación se sincronizarán los datos necesarios con el servidor",
+    "SYNC_UPLOAD": "Enviando datos",
+    "UPLOAD_SUCCESS": "Datos enviados con exito",
+    "DOWNLOAD_SUCCESS": "Datos descargados con exito",
+    "SYNC_DOWNLOAD": "Descargando datos",
+    "SYNC_SUCCESS": "Datos sincronizados correctamente",
+    "INIT_LOCATION": "Iniciando servicio de ubicación..."
+  },
+  "CLIENTS": {
+    "TITLE": "Clientes",
+    "SEARCH": "Buscar... 3 o más caracteres"
+  },
+  "CLIENT": {
+    "NAME": "Nombre",
+    "DENO": "Denominación",
+    "CODEX": "Código",
+    "TEL": "Teléfono"
+  },
+  "PARTS_LIST": {
+    "TITLE": "Partes",
+    "NO_DATA": "Actualmente no existen partes en este estado"
+  },
+  "PART_DETAILS": {
+    "TITLE": "Detalles del parte",
+    "PENDING_ACTIONS": "Pendientes",
+    "MODIFIED_ACTIONS": "En Progreso",
+    "FINSHED_ACTIONS": "Finalizados"
+  },
+  "DETAILS_CATEGORY": {
+    "TITLE": "Partes",
+    "TODAY": "Partes de hoy",
+    "WEEK": "Partes de esta semana",
+    "LAST_WEEK": "Partes de la semana pasada",
+    "ALL": "Todos los partes",
+    "LOADING": "Cargando datos...",
+    "UPDATING_LOCATIONS": "Actualizando ubicaciones..."
+  },
+  "DETAILS": {
+    "F": "Finalizado",
+    "FF": "Finalizados",
+    "G": "En progreso",
+    "P": "Pendiente",
+    "PP": "Pendientes",
+    "E": "Enviado",
+    "EE": "Enviados",
+    "ALL": "Todos",
+    "TITLE": "Estado"
+  },
+  "CALENDAR_DETAILS": {
+    "TITLE": "Calendario",
+    "SELECT": "Agrupar por:",
+    "ALL": "Todos",
+    "POSITION": "Localidad",
+    "LOCATION_NOT_AVAILABLE": "Las opciones de ubicación no están disponibles"
+  },
+  "LIST_DETAILS": {
+    "TITLE": "Listado",
+    "GROUP": "Agrupar por:",
+    "ORDER": "Ordenar por",
+    "NAME": "Nombre",
+    "DATE_EXPECT": "Fecha prevista",
+    "DIRECTION": "Domicilio",
+    "TEL": "Teléfono",
+    "EMAIL": "Email",
+    "DATE": "Fecha",
+    "POSITION": "Localidad",
+    "DISTANCE": "Distancia",
+    "LOCATION_NOT_AVAILABLE": "Las opciones de ubicación no están disponibles",
+    "ALL": "Todos",
+    "LOCATION": "Ubicación"
+  },
+  "ACTIONS_FOOTER": {
+    "PENDING": "Pendientes",
+    "IN_PROGRESS": "En Progreso",
+    "FINISHED": "Finzalizados"
+  },
+  "MATERIALS": {
+    "AR_NAME": "Artículo",
+    "AR_CODEX": "Código",
+    "NUMBER": "Uds",
+    "PRICE": "Precio",
+    "DISCOUNTS": "Dtos",
+    "TOTAL": "Total",
+    "EUROS": "€",
+    "PERCENTAGE": "%"
+  },
+
+  "SCHEDULES_HEADER": {
+    "DATE": "Fecha",
+    "TECHNICIAN": "Técnico",
+    "ACTION": "Acción",
+    "START": "Hora Inicio",
+    "END": "Hora Fin",
+    "DURATION": "Duración"
+  },
+  "SCHEDULES_FOOTER": {
+
+  },
+  "DIETS_HEADER": {
+    "DAY": "Día",
+    "TECHNICIAN": "Técnico",
+    "ACTION": "Acción",
+    "TIME": "Tiempo",
+    "SPENSES": "Dietas",
+    "OTHERS": "Otros Gastos"
+  },
+  "DIETS_FOOTER": {
+
+  },
+  "NO_DATA": {
+    "ACTIONS": "Este parte aún no contiene acciónes en este estado de realización",
+    "MATERIALS": "Este parte aún no contiene materiales",
+    "SCHEDULES": "Este parte aún no contiene tiempos imputados en este apartado",
+    "SPENSES": "Este parte aún no contiene gastos imputados en este apartado"
+  },
+  "MAP_DETAILS": {
+    "TITLE": "Mapa",
+    "LOCATION_NOT_AVAILABLE": "Ubicación no disponible"
+  },
+  "CALENDAR": {
+    "WEEK_DAYS": [
+      "D",
+      "L",
+      "M",
+      "M",
+      "J",
+      "V",
+      "S"
+    ],
+    "WEEK_START": 1,
+    "MONTHS": [
+      "ENE",
+      "FEB",
+      "MAR",
+      "ABR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AGO",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DIC"
+    ],
+    "TITLE": "Calendario de partes",
+    "NO_EVENTS": "No hay eventos para el día seleccionado"
+  },
+  "DETAIL_ACTIONS": {
+    "TITLE": "Acciones"
+  },
+  "DETAIL_MATERIALS": {
+    "TITLE": "Materiales"
+  },
+  "DETAIL_DIETS": {
+    "TITLE": "Dietas"
+  },
+  "DETAIL_TIMES": {
+    "TITLE": "Tiempos"
+  },
+  "DETAIL_DELIVERY": {
+    "TITLE": "Albarán"
+  },
+  "PARTE_MATERIALES": {
+    "TOTAL": "Total",
+    "UDS": "Uds.",
+    "UDS_ANT": "Uds. Anteriores",
+    "PVP": "Precio"
+  },
+  "ARTICULOS": {
+    "TITLE": "Artículos",
+    "PLACEHOLDER": "Buscar... 3 o más caracteres"
+  },
+  "ARTICULO_DETALLES": {
+    "NO_STOCK": "No quedan unidades suficientes"
+  }
+}

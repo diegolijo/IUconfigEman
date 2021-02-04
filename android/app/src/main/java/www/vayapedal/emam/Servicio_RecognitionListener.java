@@ -2,6 +2,7 @@ package www.vayapedal.emam;
 
 import android.Manifest;
 import android.hardware.display.DisplayManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -93,7 +94,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     //banderas
     public boolean sevicioIniciciado = false;
-    public boolean isActividadEnlazada = false;
+    public boolean isActividadEnlazada = true;
 
     /*GPS*/
     private FusedLocationProviderClient fusedLocationClient;
@@ -125,7 +126,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
     /* ENVIARDO PAQUETE Y RESULT_DATA_KEY AL MAIN*/
-/*    private void toReceiver(String p, String key) {
+    private void toReceiver(String p, String key) {
         Bundle bundle = new Bundle();
         bundle.putString(key, p);
         resultReceiver.send(Constantes.SUCCESS_RESULT, bundle);
@@ -133,8 +134,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             Toast toast = Toast.makeText(this, " (speechService) ENVIANDO DATOS [" + p + "]", Toast.LENGTH_SHORT);
             toast.show();
         }
-        Log.i("ToRECEIVER", "toReceiver: (speechService) ENVIANDO DATOS [" + p + "]");
-    }*/
+
+    }
 
 
     /*********************************************notificacion para startForeground**************************************/
@@ -196,10 +197,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                        //              configurarSpeechService();
+                                configurarSpeechService();
                         break;
                     case STATE_ON:
-                        //     pararSpeechService();
+                          pararSpeechService();
                         break;
                     default:
                         break;
@@ -236,7 +237,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                     configurarSpeechService();
                     break;
                 case Constantes.ON_WIDGET:
-
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + s);
@@ -250,14 +250,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     @Override
     public IBinder onBind(Intent intent) {
-    /*    resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
+        resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
         String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
         if (s.equals(Constantes.ON_CONFIG)) {
             toReceiver(Constantes.ON_CONFIG, Constantes.NOTIFICACION_SERVICIO);
         }
         if (s.equals(Constantes.ON_TOGGLE)) {
             toReceiver(Constantes.ON_TOGGLE, Constantes.NOTIFICACION_SERVICIO);
-        }*/
+        }
         return binder;
     }
 
@@ -268,12 +268,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     @Override
     public boolean onUnbind(Intent intent) {
-/*
+
         toReceiver(Constantes.OFF_SERVICIO, Constantes.NOTIFICACION_SERVICIO);
         if (mostrarToastConfig) {
             Toast toast = Toast.makeText(getApplicationContext(), "onUnbind", Toast.LENGTH_LONG);
             toast.show();
-        }*/
+        }
         return super.onUnbind(intent);
     }
 
@@ -481,8 +481,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 toast.show();
             }
             // enviamos la palabra al receiver -> recogemos en main
-
-            // toReceiver(s, Constantes.NOTIFICACION_PALABRA);
+        //    toReceiver(s, Constantes.NOTIFICACION_PALABRA);
 
         }
         //   recorremos las palabas BD
@@ -529,7 +528,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         llamadas a this.procesarResultadoSpechToText()
         */
     private void procesarTextTextToSpech(String frase) {
-        //  toReceiver(frase, Constantes.NOTIFICACION_FRASE);
+   //     toReceiver(frase, Constantes.NOTIFICACION_FRASE);
         if (frase.equals(Constantes.FRASE_ALERTA)) {
             Toast toast = Toast.makeText(getApplicationContext(), "Pardillo XD", Toast.LENGTH_SHORT);
             toast.show();
