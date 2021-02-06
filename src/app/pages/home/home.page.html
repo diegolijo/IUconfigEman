@@ -22,7 +22,8 @@
               {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
             </ion-text>
           </ion-label>
-          <ion-input [(ngModel)]="username" name="username" type="text" #usernameText="ngModel" spellcheck="false"
+          <ion-input #iNusername [(ngModel)]="username" name="username" (onBlur)="this.selectOnClick(this.iNusername)" (click)="this.selectOnClick(this.iNusername)"
+            type="text"  #usernameText="ngModel" spellcheck="false"
             autocapitalize="off" required>
           </ion-input>
         </ion-item>
@@ -41,16 +42,17 @@
               {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
             </ion-text>
           </ion-label>
+
           <ion-row>
             <ion-col size="12">
-
-              <ion-input [(ngModel)]="password" name="password" [(type)]="this.visibility" #passwordText="ngModel"
-                required>
+              <ion-input #iNpassword [(ngModel)]="password" name="password" (onBlur)="this.selectOnClick(this.iNpassword)" (click)="this.selectOnClick(this.iNpassword)" 
+              [(type)]="this.visibility" #passwordText="ngModel"    color="dark" required>
               </ion-input>
             </ion-col>
           </ion-row>
+
           <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
-            (click)="this.switchVisibility()" expand="block" type="submit" autocapitalize="on">
+            (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
             <ion-icon [hidden]="(this.visibility === 'password')? true : false " size="large" color="primary"
               name="eye-off-outline">
             </ion-icon>

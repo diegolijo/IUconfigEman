@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChildren } from '@angular/core';
 import { Plugins } from '@capacitor/core';
+import { IonInput } from '@ionic/angular';
 const { NatPlugin } = Plugins;
 
 @Component({
@@ -9,19 +10,31 @@ const { NatPlugin } = Plugins;
 })
 export class HomePage {
 
+  @ViewChildren('iNusername') iNusername;
+  @ViewChildren('iNpassword') iNpassword;
+
+
   public username: string;
   public password: string;
   public submitted: boolean;
   public version: string;
   public visibility = 'password';
+  public inputHtmlNat: any;
 
   constructor() {
-
     this.username = '';
     this.password = '';
     this.submitted = true;
     this.version = '';
   }
+
+  async ionViewDidEnter() {
+    this.inputHtmlNat = this.iNusername.first.el.firstElementChild;
+    // tslint:disable-next-line: no-string-literal
+    //this.inputHtmlNat['setSelect'] = false;
+  }
+
+
 
   public async toAndroidService() {
     //  debugger;
@@ -33,7 +46,10 @@ export class HomePage {
   }
 
 
-  switchVisibility() {
+  switchPassVisibility() {
+
+    this.selectOnClick(this.iNusername);
+
     switch (this.visibility) {
       case 'text':
         this.visibility = 'password';
@@ -51,7 +67,22 @@ export class HomePage {
   }
 
 
+  selectOnClick(parIonInput) {
+    const inputHtmlNat = parIonInput.el.firstElementChild;
+    if (inputHtmlNat.value !== '') {
 
+      if (inputHtmlNat.setSelect !== true) {
+        inputHtmlNat.setRangeText(inputHtmlNat.value, 0, inputHtmlNat.value.length, 'select');
+     //   inputHtmlNat.focus();
+        // tslint:disable-next-line: no-string-literal
+        inputHtmlNat['setSelect'] = true;
+      } else {
+        // TODO al perder el foco  inputHtmlNat.setSelect = false;
+        inputHtmlNat.setRangeText(inputHtmlNat.value, 0, inputHtmlNat.value.length, 'end');
+        inputHtmlNat.setSelect = false;
+      }
+    }
+  }
 
 
 
