@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <form>
+  <form #form>
     <ion-card>
       <ion-card-header>
         <ion-card-title class="ion-text-center">
@@ -22,8 +22,8 @@
               {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
             </ion-text>
           </ion-label>
-          <ion-input #iNusername [(ngModel)]="username" name="username" (onBlur)="this.selectOnClick(this.iNusername)" (click)="this.selectOnClick(this.iNusername)"
-            type="text"  #usernameText="ngModel" spellcheck="false"
+          <ion-input #iNusername [(ngModel)]="username" name="username" (ionBlur)="this.selectOnClick(iNusername)"
+            (click)="this.selectOnClick(this.iNusername )" type="text" #usernameText="ngModel" spellcheck="false"
             autocapitalize="off" required>
           </ion-input>
         </ion-item>
@@ -45,20 +45,19 @@
 
           <ion-row>
             <ion-col size="12">
-              <ion-input #iNpassword [(ngModel)]="password" name="password" (onBlur)="this.selectOnClick(this.iNpassword)" (click)="this.selectOnClick(this.iNpassword)" 
-              [(type)]="this.visibility" #passwordText="ngModel"    color="dark" required>
+              <ion-input #iNpassword [(ngModel)]="password" name="password"
+                (focusout)="this.selectOnClick(this.iNpassword)" (click)="this.selectOnClick(this.iNpassword )"
+                [(type)]="this.visibility" #passwordText="ngModel" color="dark" required>
               </ion-input>
             </ion-col>
           </ion-row>
 
           <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
             (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
-            <ion-icon [hidden]="(this.visibility === 'password')? true : false " size="large" color="primary"
-              name="eye-off-outline">
+            <ion-icon [color]="(this.visibility === 'password')? 'secondary' : 'primary'"
+              [name]="(this.visibility === 'password')? 'eye-outline' : 'eye-off-outline' " size="large">
             </ion-icon>
-            <ion-icon [hidden]="(this.visibility === 'text')? true : false " size="large" color="secondary"
-              name="eye-outline">
-            </ion-icon>
+
           </ion-button>
 
 
@@ -75,9 +74,11 @@
           {{ 'LOGIN.ACCESS' | translate:{value: null} }}
         </ion-button>
 
+        <!--         <ion-textarea #textarea [(ngModel)]="textArea">
 
+        </ion-textarea>
 
-
+ -->
 
       </ion-card-content>
     </ion-card>

@@ -12,6 +12,8 @@ export class HomePage {
 
   @ViewChildren('iNusername') iNusername;
   @ViewChildren('iNpassword') iNpassword;
+  @ViewChildren('form') form;
+  @ViewChildren('textarea') textarea;
 
 
   public username: string;
@@ -19,19 +21,19 @@ export class HomePage {
   public submitted: boolean;
   public version: string;
   public visibility = 'password';
-  public inputHtmlNat: any;
+  //  public inputHtmlNat: any;
+  public textArea: string;
 
   constructor() {
-    this.username = '';
-    this.password = '';
+    this.username = 'xfbxfbx';
+    this.password = 'dfgbdx';
     this.submitted = true;
     this.version = '';
   }
 
   async ionViewDidEnter() {
-    this.inputHtmlNat = this.iNusername.first.el.firstElementChild;
+    //   this.inputHtmlNat = this.iNusername.first.el.firstElementChild;
     // tslint:disable-next-line: no-string-literal
-    //this.inputHtmlNat['setSelect'] = false;
   }
 
 
@@ -47,9 +49,6 @@ export class HomePage {
 
 
   switchPassVisibility() {
-
-    this.selectOnClick(this.iNusername);
-
     switch (this.visibility) {
       case 'text':
         this.visibility = 'password';
@@ -66,18 +65,15 @@ export class HomePage {
 
   }
 
-
+// llamar desde el click y (ionBlur)= o (focusout)=
   selectOnClick(parIonInput) {
     const inputHtmlNat = parIonInput.el.firstElementChild;
     if (inputHtmlNat.value !== '') {
-
       if (inputHtmlNat.setSelect !== true) {
         inputHtmlNat.setRangeText(inputHtmlNat.value, 0, inputHtmlNat.value.length, 'select');
-     //   inputHtmlNat.focus();
         // tslint:disable-next-line: no-string-literal
         inputHtmlNat['setSelect'] = true;
       } else {
-        // TODO al perder el foco  inputHtmlNat.setSelect = false;
         inputHtmlNat.setRangeText(inputHtmlNat.value, 0, inputHtmlNat.value.length, 'end');
         inputHtmlNat.setSelect = false;
       }
