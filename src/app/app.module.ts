@@ -13,23 +13,12 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule } from '@angular/common/http';
+import { Constants } from './services/Constants';
+import { NativePlugin } from './services/NativePlugin';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-
-
-/* export class WebpackTranslateLoader implements TranslateLoader {
-  getTranslation(lang: string): Observable<any> {
-    const observableFromPromise = from(System.import(`../assets/i18n/es.json`));
-    return observableFromPromise;
-    //  return Observable.fromPromise(System.import(`../assets/i18n/${lang}.json`));
-  }
-}
-declare var System: System;
-interface System {
-  import(request: string): Promise<any>;
-} */
 
 
 @NgModule({
@@ -46,19 +35,12 @@ interface System {
         deps: [HttpClient]
       }
     }),
-
-    /*  TranslateModule.forRoot({
-     loader: {
-       provide: TranslateLoader,
-       useClass: WebpackTranslateLoader
-     }
-   }),*/
-
     AppRoutingModule],
   providers: [
     StatusBar,
     SplashScreen,
-
+    NativePlugin,
+    Constants,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -1,0 +1,151 @@
+<ion-header>
+  <ion-toolbar>
+    <div *ngIf="this.pageMode === this.LOGIN" style="color: var(--ion-color-dark)" class="textCenter fontBold">
+      {{ 'LOGIN.TITLE' | translate:{value: null} }}
+    </div>
+    <div *ngIf="this.pageMode === this.REGISTER" style="color: var(--ion-color-dark)" class="textCenter fontBold">
+      {{ 'REGISTER.TITLE' | translate:{value: null} }}
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="this.pageMode === this.LOGIN">
+  <form>
+    <ion-card>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked" color="primary">
+            {{ 'LOGIN.USERNAME' | translate:{value: null} }}
+            <ion-text color="danger">
+              {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
+            </ion-text>
+          </ion-label>
+          <ion-input #iNusername [(ngModel)]="username" name="username" (ionBlur)="this.selectOnClick(iNusername)"
+            (click)="this.selectOnClick(this.iNusername )" type="text" #usernameText="ngModel" spellcheck="false"
+            autocapitalize="off" required color="dark">
+          </ion-input>
+        </ion-item>
+
+        <ion-text color="danger">
+          <p [hidden]="usernameText.valid || submitted == false" class="ion-padding-start">
+            {{ 'LOGIN.USERNAME_REQUIRED' | translate:{value: null} }}
+          </p>
+        </ion-text>
+
+        <ion-item>
+          <ion-label position="stacked" color="primary">
+            {{ 'LOGIN.PASSWORD' | translate:{value: null} }}
+            <ion-text color="danger">
+              {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
+            </ion-text>
+          </ion-label>
+
+          <ion-row>
+            <ion-col size="12">
+              <ion-input #iNpassword [(ngModel)]="password" name="password"
+                (focusout)="this.selectOnClick(this.iNpassword)" (click)="this.selectOnClick(this.iNpassword )"
+                [(type)]="this.PassTypeText" #passwordText="ngModel" color="dark" required>
+              </ion-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
+            (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
+            <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
+              [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline' " size="large">
+            </ion-icon>
+          </ion-button>
+        </ion-item>
+
+        <ion-text color="danger">
+          <p [hidden]="passwordText.valid || submitted == false" class="ion-padding-start">
+            {{ 'LOGIN.PASSWORD_REQUIRED' | translate:{value: null} }}
+          </p>
+        </ion-text>
+
+
+        <ion-button fill="outline" (click)="this.onClickLogin()" expand="block" type="submit" autocapitalize="on">
+          {{ 'LOGIN.ACCESS' | translate:{value: null} }}
+        </ion-button>
+
+        <ion-button fill="outline" (click)="this.onClickRegistro()" expand="block" type="submit" autocapitalize="on">
+          {{ 'LOGIN.REGISTER' | translate:{value: null} }}
+        </ion-button>
+
+      </ion-card-content>
+    </ion-card>
+  </form>
+</ion-content>
+
+
+<ion-content *ngIf="this.pageMode === this.REGISTER">
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.USERNAME' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="username" type="text" color="dark">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.PASSWORD' | translate:{value: null} }}
+    </ion-label>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-input [(ngModel)]="password" [(type)]="this.PassTypeText" color="dark">
+        </ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
+      (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
+      <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
+        [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline' " size="large">
+      </ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.REPEAT_PASSWORD' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="password2" [(type)]="this.PassTypeText" color="dark">
+    </ion-input>
+  </ion-item>
+
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="email" type="email" color="dark">
+    </ion-input>
+  </ion-item>
+
+
+  
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="emailPass"   [(type)]="this.PassTypeText" color="dark">
+    </ion-input>
+  </ion-item>
+
+
+
+
+</ion-content>
+
+<ion-footer class="textCenter">
+  <ion-toolbar *ngIf="this.pageMode === this.REGISTER">
+    <ion-button fill="outline" (click)="this.onClickSaveUser()" expand="block" type="submit" autocapitalize="on">
+      {{ 'LOGIN.REGISTER' | translate:{value: null} }}
+    </ion-button>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-label color="dark">{{ 'VERSION' | translate:{value: null} }} &nbsp; {{this.version}}</ion-label>
+  </ion-toolbar>
+</ion-footer>

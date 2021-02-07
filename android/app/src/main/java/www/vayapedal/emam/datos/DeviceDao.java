@@ -1,4 +1,4 @@
-package  www.vayapedal.emam.datos;
+package www.vayapedal.emam.datos;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -12,7 +12,9 @@ import java.util.List;
 @Dao
 public interface DeviceDao {
 
-/** operacions Palabra */
+    /**
+     * operacions Palabra
+     */
     @Query("SELECT * FROM Palabra ORDER BY rol")
     List<Palabra> selectPalabras();
 
@@ -20,7 +22,7 @@ public interface DeviceDao {
     Palabra selectPalabra(String s);
 
     @Insert
-    (onConflict = OnConflictStrategy.REPLACE)
+            (onConflict = OnConflictStrategy.REPLACE)
     void insertPalabra(Palabra palabra);
 
     @Query("UPDATE Palabra SET fecha=:fecha WHERE clave = :clave")
@@ -30,15 +32,16 @@ public interface DeviceDao {
     void deletePalabras(Palabra palabra);
 
 
-    /** operacions PerfilUsuario */
+    /**
+     * operacions PerfilUsuario
+     */
 
     @Query("SELECT * FROM Usuario")
-    List<Usuario> selectPerfilUsuario();
+    List<Usuario> selectUsuarios();
 
     @Insert
-    //(onConflict = OnConflictStrategy.REPLACE)
-    void insertPerfilUsuario(Usuario user);
-
+            (onConflict = OnConflictStrategy.REPLACE)
+    void insertUsuario(Usuario user);
 
     @Query("SELECT * FROM Usuario WHERE usuario LIKE :usuario  LIMIT 1")
     Usuario selectUsuario(String usuario);
@@ -47,7 +50,13 @@ public interface DeviceDao {
     @Delete
     void delete(Usuario user);
 
+    /**
+     * operacions Alarma
+     */
 
+    @Insert
+            (onConflict = OnConflictStrategy.REPLACE)
+    void insertAlarma(Alarma alarma);
 
 
 }

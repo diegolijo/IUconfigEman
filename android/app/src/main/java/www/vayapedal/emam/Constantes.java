@@ -62,4 +62,33 @@ public class Constantes {
     public static final int FAILURE_RESULT = 1;
 
 
+    /** ************************************ DB ********************************* **/
+    public static final String TABLA = "tabla";
+    /** nombre */
+    public static final String DB_NAME = "DB_EMAM";
+    public static final String  CLAVE = "clave";
+    public static final String REGISTRO = "registro";
+    /** tablas */
+    public static  final String PALABRAS = "PALABRAS";
+    public static  final String USUARIOS = "USUARIOS";
+    public static  final String ALARMAS = "ALARMAS";
+    /** acciones */
+    public static  final String INSERT = "INSERT";
+    public static final  String SELECT = "SELECT";
+    public static  final String UPDATE = "UPDATE";
+    public static final  String DELETE = "DELETE";
+
+    public static final String RESULT = "result";
+
+
+    /** ********************************* SERVIZE ********************************* **/
+    public static final String PLUGIN_EVENT = "PLUGIN_EVENT";
+    public static final String ACCION = "accion";
+
+    public static final  String ON = "ON";
+    public static final  String OFF = "OFF";
+    public static final  String BIND = "BIND";
+    public static  final String UNBIND = "UNBIND";
+
+
 }

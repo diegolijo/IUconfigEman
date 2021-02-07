@@ -1,13 +1,8 @@
 package www.vayapedal.emam;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -15,10 +10,7 @@ import androidx.core.content.ContextCompat;
 
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.Plugin;
-import com.getcapacitor.NativePlugin;
-import com.getcapacitor.PluginCall;
-import com.getcapacitor.PluginMethod;
-
+import com.getcapacitor.PluginHandle;
 
 import java.util.ArrayList;
 
@@ -53,6 +45,11 @@ public class MainActivity extends BridgeActivity {
 
 
         this.checkPermisos();
+
+
+ /*       PluginHandle appHandle = this.bridge.getPlugin("FirebaseDynamicLink");
+        NatPlugin NatPlugin = (NatPlugin) appHandle.getInstance();*/
+
     }
 
     /**

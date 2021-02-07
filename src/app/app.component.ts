@@ -23,11 +23,10 @@ export class AppComponent implements OnInit {
   ) {
     this.initializeApp();
 
-    /*   This line would incorporate the language detection
-        let userLang = navigator.language.split('-')[0];
-        userLang = (userLang === 'en' || userLang === 'es') ? userLang : 'es'; */
-    const defaultLang = 'es';
-    this.translate.use(defaultLang);
+    /*   This line would incorporate the language detection */
+    let userLang = navigator.language.split('-')[0];
+    userLang = (userLang === 'en' || userLang === 'es') ? userLang : 'es';
+    this.translate.use(userLang);
 
   }
 

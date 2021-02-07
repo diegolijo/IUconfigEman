@@ -23,10 +23,19 @@
     "PASSWORD": "Contraseña",
     "PASSWORD_REQUIRED": "Contraseña requerida",
     "ACCESS": "Acceder",
+    "REGISTER":"Crear Usuario",
     "INIT": "Iniciando...",    
     "MANDATORY": "*",
     "EMPTY": "Introduce tu usuario y contraseña",
     "FAILURE": "El usuario no existe o las credenciales son incorrectas."
+  },
+  "REGISTER": {
+    "TITLE": "Registro",
+    "USERNAME": "Usuario",
+    "EMAIL": "e-mail",
+    "PASSWORD": "Contraseña",
+    "REPEAT_PASSWORD": "Repite la Contraseña",
+    "FAILURE": "El usuario ya existe."
   },
   "LOGOUT": {
     "TITLE": "Cerrar sesión",

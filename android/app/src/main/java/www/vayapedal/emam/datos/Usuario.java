@@ -16,21 +16,18 @@ public class Usuario {
     @ColumnInfo(name = "loginPass")
     public String loginPass;
 
-    @ColumnInfo(name = "mailPass")
-    public String mailPass;
-
-    @ColumnInfo(name = "numTlfTo")
-    public int numTlfTo;
-
     @ColumnInfo(name = "mailFrom")
     public String mailFrom;
 
-    public Usuario(@NonNull String usuario, String loginPass, String mailPass, String numTlfTo, String mailFrom) {
+    @ColumnInfo(name = "mailPass")
+    public String mailPass;
+
+
+    public Usuario(@NonNull String usuario, String loginPass, String mailFrom, String mailPass) {
         this.usuario = usuario;
         this.loginPass = loginPass;
-        this.loginPass = mailPass;
-        this.loginPass = numTlfTo;
-        this.loginPass = mailFrom;
+        this.mailFrom = mailFrom;
+        this.mailPass = mailPass;
     }
 
 }
