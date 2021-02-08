@@ -12,9 +12,9 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
+
   darkMode = true;
-
-
+  
   constructor(
     private translate: TranslateService,
     private platform: Platform,

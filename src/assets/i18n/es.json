@@ -37,8 +37,12 @@
     "REPEAT_PASSWORD": "Repite la Contraseña",
     "FAILURE": "El usuario ya existe."
   },
-  "LOGOUT": {
-    "TITLE": "Cerrar sesión",
-    "TEXT": "¿Deseas cerrar sesión?"
+  "HOME": {
+    "TITLE": "EMAM",
+    "ESCUCHAR": "Escuchar"
   }
+
+
+
+
 }

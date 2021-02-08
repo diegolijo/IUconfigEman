@@ -57,57 +57,74 @@ public class NatPlugin extends Plugin {
 
     @PluginMethod()
     public void servizeOperations(PluginCall call) {
-        String accion = call.getString(Constantes.ACCION);
-        this.toggleServicio();
-        JSObject ret = new JSObject();
-        ret.put(Constantes.ACCION, "RESPUESTA");
-        call.resolve(ret);
+        String accion = call.getString(Constantes.ACTION);
+        switch (accion) {
+            case Constantes.BIND:
+
+                bindServicio(Constantes.ON_TOGGLE);
+                break;
+            case Constantes.UNBIND:
+
+                break;
+            case Constantes.ON:
+                this.toggleServicio();
+                JSObject ret = new JSObject();
+                ret.put(Constantes.ACTION, "RESPUESTA");
+                call.resolve(ret);
+                break;
+            case Constantes.OFF:
+
+                break;
+        }
     }
 
     /**
-     * Inserta resgistros en la base de datos pasando por parametro un Json {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}} */
+     * Inserta resgistros en la base de datos pasando por parametro un Json {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}}
+     */
     @PluginMethod()
     public void insertDB(PluginCall call) {
-        JSObject resJson = new JSObject();
+        JSObject resultJson = new JSObject();
         try {
             String tabla = call.getString(Constantes.TABLA);
             JSObject registro = call.getObject(Constantes.REGISTRO);
+            JSObject row = registro.getJSObject("row");
             Context context = getContext();
             DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
             switch (tabla) {
                 case Constantes.USUARIOS:
                     Usuario user = new Usuario(
-                            registro.getString("usuario"),
-                            registro.getString("loginPass"),
-                            registro.getString("mailFrom"),
-                            registro.getString("mailPass"));
+                            row.getString("usuario"),
+                            row.getString("loginPass"),
+                            row.getString("mailFrom"),
+                            row.getString("mailPass"));
                     db.Dao().insertUsuario(user);
-                    resJson.put(Constantes.RESULT, true);
+                    resultJson.put(Constantes.RESULT, true);
                     break;
                 case Constantes.PALABRAS:
                     Palabra palabra = new Palabra(
-                            registro.getString("clave"),
-                            registro.getString("rol"));
+                            row.getString("clave"),
+                            row.getString("rol"));
                     db.Dao().insertPalabra(palabra);
-                    resJson.put(Constantes.RESULT, true);
+                    resultJson.put(Constantes.RESULT, true);
                     break;
                 case Constantes.ALARMAS:
                     Alarma alarma = new Alarma(
-                            registro.getString("usuario"),
-                            registro.getString("clave"),
-                            registro.getString("numTlfTo"),
-                            registro.getString("mailTo"));
+                            row.getString("usuario"),
+                            row.getString("clave"),
+                            row.getString("numTlfTo"),
+                            row.getString("mailTo"),
+                            row.getBoolean("enable", false));
                     db.Dao().insertAlarma(alarma);
-                    resJson.put(Constantes.RESULT, true);
+                    resultJson.put(Constantes.RESULT, true);
                     break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + tabla);
             }
-            call.resolve(resJson);
+            db.close();
+            call.resolve(resultJson);
         } catch (Exception ex) {
             ex.printStackTrace();
-            resJson.put(Constantes.RESULT, false);
-            call.resolve(resJson);
+            resultJson = new JSObject();
+            resultJson.put(Constantes.RESULT, false);
+            call.resolve(resultJson);
         }
 
 
@@ -116,40 +133,50 @@ public class NatPlugin extends Plugin {
 
     @PluginMethod()
     public void selectDB(@NotNull PluginCall call) {
-        String tabla = call.getString(Constantes.TABLA);
-        String clave = call.getString(Constantes.CLAVE);
-        JSObject respuesta = new JSObject();
-        respuesta.put(Constantes.TABLA, tabla);
-        if (!clave.equals("")) {
-            /**consulta a la BD*/
+        JSObject resultJson = new JSObject();
+        try {
+            String tabla = call.getString(Constantes.TABLA);
+            String clave = call.getString(Constantes.CLAVE);
             Context context = getContext();
             DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
-            switch (tabla) {
-                case Constantes.USUARIOS:
-                    Usuario usuario = db.Dao().selectUsuario(clave);
-                    respuesta.put(Constantes.CLAVE, tabla);
-                    break;
-                case Constantes.PALABRAS:
-                    //         listaPalabras = db.Dao().selectPalabras();
+            if (!clave.equals("")) {
+                /**consulta a la BD*/
+                switch (tabla) {
+                    case Constantes.USUARIOS:
+                        Usuario usuario = db.Dao().selectUsuario(clave);
+                        resultJson.put(Constantes.RESULT, true);
+                        JSObject user = new JSObject();
+                        user.put("usuario", usuario.usuario);
+                        user.put("loginPass", usuario.loginPass);
+                        user.put("mailFrom", usuario.mailFrom);
+                        user.put("mailPass", usuario.mailPass);
+                        resultJson.put(Constantes.REGISTRO, user);
+                        break;
+                    case Constantes.PALABRAS:
+                        // listaPalabras = db.Dao().selectPalabras();
 
-                    break;
-                case Constantes.ALARMAS:
-                    //        listaPalabras = db.Dao().selectPalabras();
+                        break;
+                    case Constantes.ALARMAS:
+                        // listaPalabras = db.Dao().selectPalabras();
 
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + tabla);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + tabla);
+                }
             }
-
-
             db.close();
-            call.resolve(respuesta);
+            call.resolve(resultJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultJson = new JSObject();
+            resultJson.put(Constantes.RESULT, false);
+            call.resolve(resultJson);
         }
-        call.resolve(null);
+
+
     }
 
-
-    /********************************************************configuracion**************************************************/
+    /************************************************* SERVIZE **************************************************/
     public void toggleServicio() {
         Context context = getContext();
         try {
@@ -160,12 +187,10 @@ public class NatPlugin extends Plugin {
                 i.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(i);
-                    //    this.bindServicio("");
                 } else {
                     context.startService(i);
                 }
             } else {
-                //unBindServicio();
                 context.stopService(new Intent(context, Servicio_RecognitionListener.class));
                 Toast toast = Toast.makeText(context, "Inentamos detener el servicio", Toast.LENGTH_SHORT);
                 toast.show();
@@ -198,7 +223,7 @@ public class NatPlugin extends Plugin {
 
     public void bindServicio(String mensaje) {
         try {
-            /* ****************************  receiver   SERVICIO   *****************************/
+            /** ********************************** receiver   SERVICIO *************************************/
             Receiver resultReceiver = new Receiver(new Handler());
             Intent i = new Intent(getContext(), Servicio_RecognitionListener.class);
             i.putExtra(Constantes.ORIGEN_INTENT, mensaje);
@@ -208,7 +233,6 @@ public class NatPlugin extends Plugin {
                     mainService.configurarSpeechService();
                 }
                 Log.i("bindeService", "intentamos enlazarnos al servicio/iniciarlo");
-
             }
         } catch (
                 Exception e) {
@@ -217,7 +241,6 @@ public class NatPlugin extends Plugin {
     }
 
     private void unBindServicio() {
-        //desdenlazamos la actividad del servicio
         if (mainService != null) {
             getContext().unbindService(connection);
         }
@@ -283,8 +306,8 @@ public class NatPlugin extends Plugin {
 
     private void sendResult(String receiverPalabra) {
         JSObject ret = new JSObject();
-        ret.put("conectado...", receiverPalabra);//todo preparar la respuesta para el webView
-        notifyListeners(Constantes.PLUGIN_EVENT, ret);
+        ret.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
+        notifyListeners(Constantes.HOME_EVENT, ret);
     }
 
 

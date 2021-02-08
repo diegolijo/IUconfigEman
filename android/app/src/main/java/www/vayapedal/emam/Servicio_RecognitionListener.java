@@ -306,6 +306,28 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
+    private void muestraProviders() {
+        List<String> proveedores = locManager.getAllProviders();
+        for (String proveedor : proveedores) {
+            String[] A = {"n/d", "preciso", "impreciso"};
+            String[] P = {"n/d", "bajo", "medio", "alto"};
+            LocationProvider info = locManager.getProvider(proveedor);
+            Log.i("locManager", "LocationProvider[ " + "getName=" + info.getName()
+                    + ", isProviderEnabled="
+                    + locManager.isProviderEnabled(proveedor) + ", getAccuracy="
+                    + A[Math.max(0, info.getAccuracy())] + ", getPowerRequirement="
+                    + P[Math.max(0, info.getPowerRequirement())]
+                    + ", hasMonetaryCost=" + info.hasMonetaryCost()
+                    + ", requiresCell=" + info.requiresCell()
+                    + ", requiresNetwork=" + info.requiresNetwork()
+                    + ", requiresSatellite=" + info.requiresSatellite()
+                    + ", supportsAltitude=" + info.supportsAltitude()
+                    + ", supportsBearing=" + info.supportsBearing()
+                    + ", supportsSpeed=" + info.supportsSpeed() + " ]\n");
+        }
+    }
+
+
     private static class SetupSpeechTask extends AsyncTask<Void, Void, Exception> {
         WeakReference<Servicio_RecognitionListener> activityReference;
 
@@ -375,27 +397,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    private void muestraProviders() {
-        List<String> proveedores = locManager.getAllProviders();
-        for (String proveedor : proveedores) {
-            String[] A = {"n/d", "preciso", "impreciso"};
-            String[] P = {"n/d", "bajo", "medio", "alto"};
-            LocationProvider info = locManager.getProvider(proveedor);
-            Log.i("locManager", "LocationProvider[ " + "getName=" + info.getName()
-                    + ", isProviderEnabled="
-                    + locManager.isProviderEnabled(proveedor) + ", getAccuracy="
-                    + A[Math.max(0, info.getAccuracy())] + ", getPowerRequirement="
-                    + P[Math.max(0, info.getPowerRequirement())]
-                    + ", hasMonetaryCost=" + info.hasMonetaryCost()
-                    + ", requiresCell=" + info.requiresCell()
-                    + ", requiresNetwork=" + info.requiresNetwork()
-                    + ", requiresSatellite=" + info.requiresSatellite()
-                    + ", supportsAltitude=" + info.supportsAltitude()
-                    + ", supportsBearing=" + info.supportsBearing()
-                    + ", supportsSpeed=" + info.supportsSpeed() + " ]\n");
-        }
-    }
-
 
     /**
      * @param hypothesis json con los resultados
@@ -417,8 +418,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     @Override
     public void onResult(String hypothesis) {
         try {
-            String text = "";
-            text = funciones.getFraseFromJson(hypothesis);
+            String text = funciones.getFraseFromJson(hypothesis);
             if (!text.equals("")) {
                 String[] arWord = funciones.decodeJSon(hypothesis, "words");
                 String[] arConf = funciones.decodeJSon(hypothesis, "conf");
@@ -482,7 +482,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 toast.show();
             }
             // enviamos la palabra al receiver -> recogemos en main
-        //    toReceiver(s, Constantes.NOTIFICACION_PALABRA);
+            toReceiver(s, Constantes.NOTIFICACION_PALABRA);
 
         }
         //   recorremos las palabas BD
@@ -521,12 +521,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    /*  PROCESAR FRASE
-        este metodo
-        se llama
-        despues de
-        todas las
-        llamadas a this.procesarResultadoSpechToText()
+    /**  PROCESAR FRASE
+        este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
         */
     private void procesarTextTextToSpech(String frase) {
    //     toReceiver(frase, Constantes.NOTIFICACION_FRASE);

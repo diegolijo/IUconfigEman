@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
+      {{ 'HOME.TITLE' | translate:{value: null} }}
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+
+
+
+  <ion-textarea [rows]="this.helper.getTextLineBreaks(this.resultText)" [(ngModel)]="this.resultText" color="dark">
+  </ion-textarea>
+
+
+</ion-content>
+
+<ion-footer class="textCenter">
+  <ion-toolbar>
+    <ion-button fill="outline" (click)="this.onClickStartServize()">
+      {{ 'HOME.ESCUCHAR' | translate:{value: null} }}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

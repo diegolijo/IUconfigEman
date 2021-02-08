@@ -17,10 +17,9 @@ public class Constantes {
     public static final int VIBRAR_LARGO = 1000;
 
     /**
-     *   periodo en segundos que triger2 esta escuchando
+     * periodo en segundos que triger2 esta escuchando
      */
     public static final long PERIODO_EN_ALERTA = 30;
-
 
 
     public static final int MENSAJE = 1;
@@ -33,7 +32,7 @@ public class Constantes {
     public static final String PATH = "EMAN";
 
     public static final String FILE_TXT = "palabras.txt";
-    public static final long TIEMPO_GPS = 1000*30;
+    public static final long TIEMPO_GPS = 1000 * 30;
     public static final float DISTANCIA_GPS = 50;
 
     public static final String W_MAPS = "https://www.google.es/maps/search/";
@@ -45,13 +44,13 @@ public class Constantes {
 
     public static final String NOTIFICACION_PARCIAL = "PARCIAL";
     public static final String NOTIFICACION_PALABRA = "PALABRA";
-    public static final String NOTIFICACION_FRASE = "FRASE" ;
+    public static final String NOTIFICACION_FRASE = "FRASE";
     public static final String NOTIFICACION_SERVICIO = "NOTIFICACION_GENERAL";
     public static final String NOTIFICACION_GPS_DISABLE = "GPS";
     public static final String ON_TOGGLE = "ON_TOGGLE";
     public static final String ON_WIDGET = "ON_WIDGET";
     public static final String ON_CONFIG = "ON_CONFIG";
-    public static final String OFF_SERVICIO =  "SERVICIO_FINALIZADO";
+    public static final String OFF_SERVICIO = "SERVICIO_FINALIZADO";
     public static final String ON_BOTONES = "ON_BOTONES";
     public static final int ID_SERVICIO = 10000;
 
@@ -62,33 +61,44 @@ public class Constantes {
     public static final int FAILURE_RESULT = 1;
 
 
-    /** ************************************ DB ********************************* **/
+    /**
+     * *********************************** DB *********************************
+     **/
     public static final String TABLA = "tabla";
-    /** nombre */
+    /**
+     * nombre
+     */
     public static final String DB_NAME = "DB_EMAM";
-    public static final String  CLAVE = "clave";
+    public static final String CLAVE = "clave";
     public static final String REGISTRO = "registro";
-    /** tablas */
-    public static  final String PALABRAS = "PALABRAS";
-    public static  final String USUARIOS = "USUARIOS";
-    public static  final String ALARMAS = "ALARMAS";
-    /** acciones */
-    public static  final String INSERT = "INSERT";
-    public static final  String SELECT = "SELECT";
-    public static  final String UPDATE = "UPDATE";
-    public static final  String DELETE = "DELETE";
+    /**
+     * tablas
+     */
+    public static final String PALABRAS = "PALABRAS";
+    public static final String USUARIOS = "USUARIOS";
+    public static final String ALARMAS = "ALARMAS";
+    /**
+     * acciones
+     */
+    public static final String INSERT = "INSERT";
+    public static final String SELECT = "SELECT";
+    public static final String UPDATE = "UPDATE";
+    public static final String DELETE = "DELETE";
 
     public static final String RESULT = "result";
 
 
-    /** ********************************* SERVIZE ********************************* **/
+    /**
+     * ********************************  NAT PLUGIN SERVIZE *********************************
+     **/
     public static final String PLUGIN_EVENT = "PLUGIN_EVENT";
-    public static final String ACCION = "accion";
+   public static final String HOME_EVENT = "HOME_EVENT";
+    public static final String ACTION = "action";
 
-    public static final  String ON = "ON";
-    public static final  String OFF = "OFF";
-    public static final  String BIND = "BIND";
-    public static  final String UNBIND = "UNBIND";
+    public static final String ON = "ON";
+    public static final String OFF = "OFF";
+    public static final String BIND = "BIND";
+    public static final String UNBIND = "UNBIND";
 
 
 }

@@ -15,6 +15,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule } from '@angular/common/http';
 import { Constants } from './services/Constants';
 import { NativePlugin } from './services/NativePlugin';
+import { Helper } from './services/Helper';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -41,6 +42,7 @@ export function createTranslateLoader(http: HttpClient) {
     SplashScreen,
     NativePlugin,
     Constants,
+    Helper,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

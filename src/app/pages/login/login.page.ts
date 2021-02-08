@@ -2,44 +2,45 @@ import { Constants } from './../../services/Constants';
 import { NativePlugin } from './../../services/NativePlugin';
 import { Component, ViewChildren } from '@angular/core';
 import { Platform } from '@ionic/angular';
+import { Helper } from './../../services/Helper';
+import { NavigationExtras, Router } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-login',
-  templateUrl: 'login.page.html',
-  styleUrls: ['login.page.scss']
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss']
 })
-export class HomePage {
+export class LoginPage {
 
   @ViewChildren('iNusername') iNusername;
   @ViewChildren('iNpassword') iNpassword;
 
-  public LOGIN = Constants.PAGES.LOGIN;
-  public REGISTER = Constants.PAGES.REGISTER;
-  public pageMode = this.LOGIN;
+  // view
+  public version = Constants.APP_VERSION;
+  public PassTypeText = 'password';
+  public submitted = false;
 
   // login
-  public version = Constants.APP_VERSION;
   public username = '';
   public password = '';
-  public password2 = '';
-  public email = '';
-  public submitted = false;
-  public PassTypeText = 'password';
-  emailPass: any;
-  // register
+
 
 
   constructor(
     private nativePlugin: NativePlugin,
     private platform: Platform,
+    public helper: Helper,
+    private router: Router
   ) {
   }
 
   async ionViewDidEnter() {
   }
 
+
+  /************************************************ View ************************************************/
 
   switchPassVisibility() {
     switch (this.PassTypeText) {
@@ -54,51 +55,58 @@ export class HomePage {
     }
   }
 
-
-  // llamar desde el click y (ionBlur)= o (focusout)=
-  public selectOnClick(parIonInput) {
-    const inputHtmlNat = parIonInput.el.firstElementChild;
-    if (inputHtmlNat.value !== '') {
-      if (inputHtmlNat.setSelect !== true) {
-        inputHtmlNat.setRangeText(inputHtmlNat.value, 0, inputHtmlNat.value.length, 'select');
-        const prop = 'setSelect';
-        inputHtmlNat[prop] = true;
-      } else {
-        inputHtmlNat.setRangeText(inputHtmlNat.value, 0, inputHtmlNat.value.length, 'end');
-        inputHtmlNat.setSelect = false;
-      }
-    }
+  public onClickLogin() {
+    this.checkLogin();
   }
 
-  public async onClickLogin() {
+
+  public onClickGoToRegistro() {
+    this.goTo('register');
+  }
+
+
+  /************************************************ Login ************************************************/
+
+
+  /**
+   * compueba select usuario
+   * compara passwords
+   */
+  public async checkLogin() {
     if (this.platform.is('cordova')) {
       const result = await this.nativePlugin.selectDB(Constants.USUARIOS, this.username);
+      if (result.result) {
+        if (result.registro.loginPass === this.password) {
+          // todo alert autenticacion ok
+          this.goTo('home');
+        }
+      } else {
+        // todo alert no se encuentra el usuario
+      }
     } else {
-      this.submitted = true;
+      // codigo plataforma pc
+      this.goTo('home');
     }
   }
 
 
-  public onClickRegistro() {
-    this.pageMode = this.REGISTER;
+  /************************************************ Routing ************************************************/
 
-  }
-
-
-  public async onClickSaveUser() {
-    const user = {
-      usuario: this.username,
-      loginPass: this.password,
-      mailFrom: this.email,
-      mailPass: this.emailPass
-    };
-    const result = await this.nativePlugin.insertDB(Constants.USUARIOS, user);
-    if (result) {
-      this.pageMode = this.LOGIN;
+  goTo(path: any) {
+    let navigationExtras: NavigationExtras;
+    switch (path) {
+      case 'register':
+        this.router.navigate(['register']);
+        break;
+      case 'home':
+        navigationExtras = { state: { user: this.username } };
+        this.router.navigateByUrl('home', navigationExtras);
+        break;
+      default:
+        this.router.navigate(['no-found']);
+        break;
     }
   }
-
-
 
 }
 

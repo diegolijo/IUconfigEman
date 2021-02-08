@@ -1,4 +1,4 @@
-package  www.vayapedal.emam.datos;
+package www.vayapedal.emam.datos;
 
 
 import androidx.annotation.NonNull;
@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Alarma {
 
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     public int id;
 
     @NonNull
@@ -27,11 +27,15 @@ public class Alarma {
     @ColumnInfo(name = "mailFrom")
     public String mailTo;
 
-    public Alarma(@NonNull String usuario, @NonNull String clave, String numTlfTo, String mailTo) {
+    @ColumnInfo(name = "enable")
+    public boolean enable;
+
+    public Alarma(@NonNull String usuario, @NonNull String clave, String numTlfTo, String mailTo, boolean enable) {
         this.usuario = usuario;
         this.clave = clave;
         this.numTlfTo = numTlfTo;
         this.mailTo = mailTo;
+        this.enable = enable;
     }
 
 }

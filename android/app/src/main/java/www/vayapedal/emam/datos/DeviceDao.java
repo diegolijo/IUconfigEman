@@ -35,17 +35,16 @@ public interface DeviceDao {
     /**
      * operacions PerfilUsuario
      */
-
-    @Query("SELECT * FROM Usuario")
-    List<Usuario> selectUsuarios();
-
     @Insert
             (onConflict = OnConflictStrategy.REPLACE)
     void insertUsuario(Usuario user);
 
+    @Query("SELECT * FROM Usuario")
+    List<Usuario> selectUsuarios();
+
+
     @Query("SELECT * FROM Usuario WHERE usuario LIKE :usuario  LIMIT 1")
     Usuario selectUsuario(String usuario);
-
 
     @Delete
     void delete(Usuario user);

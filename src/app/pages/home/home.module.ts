@@ -1,10 +1,10 @@
-import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { HomePageRoutingModule } from './home-routing.module';
+import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { LoginPage } from './login.page';
-import { LoginPageRoutingModule } from './login-routing.module';
 
 @NgModule({
   imports: [
@@ -12,12 +12,8 @@ import { LoginPageRoutingModule } from './login-routing.module';
     FormsModule,
     IonicModule,
     TranslateModule.forChild(),
-    LoginPageRoutingModule
+    HomePageRoutingModule
   ],
-  declarations: [LoginPage]
+  declarations: [HomePage]
 })
-
-
-export class LoginPageModule { }
-
-
+export class HomePageModule { }

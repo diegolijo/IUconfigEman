@@ -6,11 +6,13 @@ export class Constants {
 
 
 
+
     constructor() {
     }
 
     /*********************************************** APP ***********************************************/
     public static APP_VERSION = '2.0.1';
+    static CARACTERES_POR_LINEA = 45;
 
     /********************************************** login **********************************************/
     public static PAGES = {
@@ -28,6 +30,7 @@ export class Constants {
     public static SELECT = 'SELECT';
     public static UPDATE = 'UPDATE';
     public static DELETE = 'DELETE';
+    // clave
 
     /******************************************** servicio *********************************************/
     public static ON = 'ON';
@@ -35,6 +38,6 @@ export class Constants {
     public static BIND = 'BIND';
     public static UNBIND = 'UNBIND';
     static PLUGIN_EVENT = 'PLUGIN_EVENT';
-
+    static HOME_EVENT = 'HOME_EVENT';
 }
 

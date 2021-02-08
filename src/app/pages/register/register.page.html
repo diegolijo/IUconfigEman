@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
+      {{ 'REGISTER.TITLE' | translate:{value: null} }}
+    </div>
+  </ion-toolbar>
+</ion-header>
+<!-- ******************************************* REGISTER ******************************************** -->
+<ion-content >
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.USERNAME' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="username" type="text" color="dark">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.PASSWORD' | translate:{value: null} }}
+    </ion-label>
+
+    <ion-row>
+      <ion-col size="12">
+        <ion-input [(ngModel)]="password" [(type)]="this.PassTypeText" color="dark">
+        </ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
+      (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
+      <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
+        [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline' " size="large">
+      </ion-icon>
+    </ion-button>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.REPEAT_PASSWORD' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="password2" [(type)]="this.PassTypeText" color="dark">
+    </ion-input>
+  </ion-item>
+
+
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="email" type="email" color="dark">
+    </ion-input>
+  </ion-item>
+
+
+  
+  <ion-item>
+    <ion-label position="stacked" color="primary">
+      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
+    </ion-label>
+    <ion-input [(ngModel)]="emailPass"   [(type)]="this.PassTypeText" color="dark">
+    </ion-input>
+  </ion-item>
+
+
+
+
+    <ion-button fill="outline" (click)="this.onClickSaveUser()" expand="block" type="submit" autocapitalize="on">
+      {{ 'LOGIN.REGISTER' | translate:{value: null} }}
+    </ion-button>
+
+
+
+
+</ion-content>

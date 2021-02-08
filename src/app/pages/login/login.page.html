@@ -1,15 +1,12 @@
 <ion-header>
   <ion-toolbar>
-    <div *ngIf="this.pageMode === this.LOGIN" style="color: var(--ion-color-dark)" class="textCenter fontBold">
+    <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
       {{ 'LOGIN.TITLE' | translate:{value: null} }}
-    </div>
-    <div *ngIf="this.pageMode === this.REGISTER" style="color: var(--ion-color-dark)" class="textCenter fontBold">
-      {{ 'REGISTER.TITLE' | translate:{value: null} }}
     </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="this.pageMode === this.LOGIN">
+<ion-content>
   <form>
     <ion-card>
       <ion-card-content>
@@ -20,9 +17,9 @@
               {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
             </ion-text>
           </ion-label>
-          <ion-input #iNusername [(ngModel)]="username" name="username" (ionBlur)="this.selectOnClick(iNusername)"
-            (click)="this.selectOnClick(this.iNusername )" type="text" #usernameText="ngModel" spellcheck="false"
-            autocapitalize="off" required color="dark">
+          <ion-input #iNusername [(ngModel)]="username" name="username"
+            (ionBlur)="this.helper.selectOnClick(iNusername)" (click)="this.helper.selectOnClick(this.iNusername )"
+            type="text" #usernameText="ngModel" spellcheck="false" autocapitalize="off" required color="dark">
           </ion-input>
         </ion-item>
 
@@ -43,16 +40,17 @@
           <ion-row>
             <ion-col size="12">
               <ion-input #iNpassword [(ngModel)]="password" name="password"
-                (focusout)="this.selectOnClick(this.iNpassword)" (click)="this.selectOnClick(this.iNpassword )"
-                [(type)]="this.PassTypeText" #passwordText="ngModel" color="dark" required>
+                (focusout)="this.helper.selectOnClick(this.iNpassword)"
+                (click)="this.helper.selectOnClick(this.iNpassword )" [(type)]="this.PassTypeText"
+                #passwordText="ngModel" color="dark" required>
               </ion-input>
             </ion-col>
           </ion-row>
 
-          <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
-            (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
+          <ion-button fill="clear" class='botonOjo' (click)="this.switchPassVisibility()" expand="block" 
+            autocapitalize="off">
             <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
-              [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline' " size="large">
+              [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline'" >
             </ion-icon>
           </ion-button>
         </ion-item>
@@ -64,11 +62,11 @@
         </ion-text>
 
 
-        <ion-button fill="outline" (click)="this.onClickLogin()" expand="block" type="submit" autocapitalize="on">
+        <ion-button fill="outline" (click)="this.onClickLogin()" expand="block" >
           {{ 'LOGIN.ACCESS' | translate:{value: null} }}
         </ion-button>
 
-        <ion-button fill="outline" (click)="this.onClickRegistro()" expand="block" type="submit" autocapitalize="on">
+        <ion-button fill="outline" (click)="this.onClickGoToRegistro()" expand="block"  >
           {{ 'LOGIN.REGISTER' | translate:{value: null} }}
         </ion-button>
 
@@ -78,73 +76,8 @@
 </ion-content>
 
 
-<ion-content *ngIf="this.pageMode === this.REGISTER">
-
-  <ion-item>
-    <ion-label position="stacked" color="primary">
-      {{ 'REGISTER.USERNAME' | translate:{value: null} }}
-    </ion-label>
-    <ion-input [(ngModel)]="username" type="text" color="dark">
-    </ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="stacked" color="primary">
-      {{ 'REGISTER.PASSWORD' | translate:{value: null} }}
-    </ion-label>
-
-    <ion-row>
-      <ion-col size="12">
-        <ion-input [(ngModel)]="password" [(type)]="this.PassTypeText" color="dark">
-        </ion-input>
-      </ion-col>
-    </ion-row>
-    <ion-button fill="clear" style='position:absolute; right: 1em; bottom: 0.2em; width: 3em; height: 3em;'
-      (click)="this.switchPassVisibility()" expand="block" type="submit" autocapitalize="on">
-      <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
-        [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline' " size="large">
-      </ion-icon>
-    </ion-button>
-  </ion-item>
-
-  <ion-item>
-    <ion-label position="stacked" color="primary">
-      {{ 'REGISTER.REPEAT_PASSWORD' | translate:{value: null} }}
-    </ion-label>
-    <ion-input [(ngModel)]="password2" [(type)]="this.PassTypeText" color="dark">
-    </ion-input>
-  </ion-item>
-
-
-  <ion-item>
-    <ion-label position="stacked" color="primary">
-      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
-    </ion-label>
-    <ion-input [(ngModel)]="email" type="email" color="dark">
-    </ion-input>
-  </ion-item>
-
-
-  
-  <ion-item>
-    <ion-label position="stacked" color="primary">
-      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
-    </ion-label>
-    <ion-input [(ngModel)]="emailPass"   [(type)]="this.PassTypeText" color="dark">
-    </ion-input>
-  </ion-item>
-
-
-
-
-</ion-content>
 
 <ion-footer class="textCenter">
-  <ion-toolbar *ngIf="this.pageMode === this.REGISTER">
-    <ion-button fill="outline" (click)="this.onClickSaveUser()" expand="block" type="submit" autocapitalize="on">
-      {{ 'LOGIN.REGISTER' | translate:{value: null} }}
-    </ion-button>
-  </ion-toolbar>
   <ion-toolbar>
     <ion-label color="dark">{{ 'VERSION' | translate:{value: null} }} &nbsp; {{this.version}}</ion-label>
   </ion-toolbar>

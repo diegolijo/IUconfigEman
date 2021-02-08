@@ -9,7 +9,8 @@ export class NativePlugin {
     public pluginListener: any;
 
 
-    constructor() {
+    constructor(
+    ) {
     }
 
     /******************************************** servicio *********************************************/
@@ -33,6 +34,8 @@ export class NativePlugin {
         return result;
     }
 
+    /********************************************** listener ********************************************/
+
     public async startListener() {
         this.pluginListener = Plugins.NatPlugin.addListener(Constants.PLUGIN_EVENT, (info: any) => {
             this.resultFromNative(info);
@@ -46,6 +49,7 @@ export class NativePlugin {
     // resultados de la capa nativa
     public async resultFromNative(result) {
         result = result;
+       // {action: 'RESPUESTA'};
     }
 
 
