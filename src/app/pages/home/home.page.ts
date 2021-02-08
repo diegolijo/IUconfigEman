@@ -13,7 +13,7 @@ const { NatPlugin } = Plugins;
 })
 export class HomePage implements OnInit, OnDestroy {
 
- // @ViewChildren('textArea') textArea;
+  // @ViewChildren('textArea') textArea;
 
   public resultText = '';
   public pluginListener: any;
@@ -37,6 +37,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
+    this.unBindServize();
     this.removeListener();
   }
 
@@ -57,6 +58,9 @@ export class HomePage implements OnInit, OnDestroy {
     const result = await this.nativePlugin.bindService();
   }
 
+  public async unBindServize() {
+    const result = await this.nativePlugin.unBindServize();
+  }
 
 
   /********************************************** listener ********************************************/

@@ -4,6 +4,7 @@
   "CANCEL": "Cancelar",
   "ACCEPT": "Aceptar",
   "DONE": "Hecho",
+  "CREAR":"Crear",
   "DESCARTAR": "Descartar",
   "CONTINUE": "Continuar",
   "OPEN": "Abrir",
@@ -17,7 +18,7 @@
   "CONFIGURACION": "Configuración",
   "SAMPLE_TEXT": "Texto de prueba",
   "LOGIN": {
-    "TITLE": "EMAM",
+    "TITLE": "Login",
     "USERNAME": "Usuario",
     "USERNAME_REQUIRED": "Usuario requerido",
     "PASSWORD": "Contraseña",
@@ -30,12 +31,13 @@
     "FAILURE": "El usuario no existe o las credenciales son incorrectas."
   },
   "REGISTER": {
-    "TITLE": "Registro",
+    "TITLE": "Nuevo usuario",
     "USERNAME": "Usuario",
     "EMAIL": "e-mail",
     "PASSWORD": "Contraseña",
     "REPEAT_PASSWORD": "Repite la Contraseña",
-    "FAILURE": "El usuario ya existe."
+    "FAILURE": "El usuario ya existe.",
+    "EMAILPASS": "Contraseña e-mail"  
   },
   "HOME": {
     "TITLE": "EMAM",

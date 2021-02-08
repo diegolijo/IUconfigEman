@@ -60,11 +60,10 @@ public class NatPlugin extends Plugin {
         String accion = call.getString(Constantes.ACTION);
         switch (accion) {
             case Constantes.BIND:
-
                 bindServicio(Constantes.ON_TOGGLE);
                 break;
             case Constantes.UNBIND:
-
+                unBindServicio();
                 break;
             case Constantes.ON:
                 this.toggleServicio();
@@ -79,7 +78,7 @@ public class NatPlugin extends Plugin {
     }
 
     /**
-     * Inserta resgistros en la base de datos pasando por parametro un Json {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}}
+     * Inserta resgistros en la base de datos pasando por parametro un Json {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
      */
     @PluginMethod()
     public void insertDB(PluginCall call) {
@@ -260,6 +259,7 @@ public class NatPlugin extends Plugin {
             String receiverPatial = resultData.getString(Constantes.NOTIFICACION_PARCIAL);
             String receiverPalabra = resultData.getString(Constantes.NOTIFICACION_PALABRA);
             String receiverTexto = resultData.getString(Constantes.NOTIFICACION_FRASE);
+
             if (receiverPalabra != null && !receiverPalabra.equals("")) {
                 sendResult(receiverPalabra);
             }
@@ -283,8 +283,8 @@ public class NatPlugin extends Plugin {
                     case Constantes.NOTIFICACION_GPS_DISABLE:
 
                         break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + receiverServicio);
+
+
                 }
             }
 

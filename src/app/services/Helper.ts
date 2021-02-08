@@ -1,7 +1,7 @@
 import { element } from 'protractor';
 import { Constants } from './Constants';
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { LoadingController, Platform, ToastController } from '@ionic/angular';
 
 @Injectable()
 export class Helper {
@@ -11,7 +11,9 @@ export class Helper {
 
 
   constructor(
-    private platform: Platform,) {
+    public loadingCtrl: LoadingController,
+    public toastController: ToastController
+    /*private platform: Platform*/) {
   }
 
 
@@ -44,7 +46,9 @@ export class Helper {
     return matches.length + 1 + this.getLineBreaks(matches);
   }
 
-
+  /* devuelve el numero de saltos de linea necesarios para representar en pantalla un string
+     Constants.CARACTERES_POR_LINEA almacena el numero de caracteres por linea
+   */
   public getLineBreaks(matches) {
     let saltos = 0;
     for (const line of matches) {
@@ -57,13 +61,21 @@ export class Helper {
   }
 
 
-
   public async getRemoteObservable(variable) {
-  
- 
+
+
   }
 
-
+  public async showMessage(mes: any) {
+    const loading = await this.loadingCtrl.create({ message: '' });
+    loading.dismiss();
+    const toast = await this.toastController.create({
+      message: mes,
+      cssClass: 'general-toast-error',
+      duration: 3000
+    });
+    await toast.present();
+  }
 
 
 }

@@ -29,7 +29,7 @@ export class NativePlugin {
         return result;
     }
 
-    public async unbindService() {
+    public async unBindServize() {
         const result = await NatPlugin.servizeOperations({ action: Constants.UNBIND });
         return result;
     }

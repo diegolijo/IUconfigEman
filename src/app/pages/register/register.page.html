@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
+    <div style="color: var(--ion-color-primary)" class="textCenter fontBold">
       {{ 'REGISTER.TITLE' | translate:{value: null} }}
     </div>
   </ion-toolbar>
@@ -56,7 +56,7 @@
   
   <ion-item>
     <ion-label position="stacked" color="primary">
-      {{ 'REGISTER.EMAIL' | translate:{value: null} }}
+      {{ 'REGISTER.EMAILPASS' | translate:{value: null} }}
     </ion-label>
     <ion-input [(ngModel)]="emailPass"   [(type)]="this.PassTypeText" color="dark">
     </ion-input>
@@ -66,7 +66,7 @@
 
 
     <ion-button fill="outline" (click)="this.onClickSaveUser()" expand="block" type="submit" autocapitalize="on">
-      {{ 'LOGIN.REGISTER' | translate:{value: null} }}
+      {{ 'CREAR' | translate:{value: null} }}
     </ion-button>
 
 

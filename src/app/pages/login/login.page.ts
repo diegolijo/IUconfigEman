@@ -4,6 +4,7 @@ import { Component, ViewChildren } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Helper } from './../../services/Helper';
 import { NavigationExtras, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 
 
@@ -29,6 +30,7 @@ export class LoginPage {
 
 
   constructor(
+    private translate: TranslateService,
     private nativePlugin: NativePlugin,
     private platform: Platform,
     public helper: Helper,
@@ -77,15 +79,22 @@ export class LoginPage {
       const result = await this.nativePlugin.selectDB(Constants.USUARIOS, this.username);
       if (result.result) {
         if (result.registro.loginPass === this.password) {
-          // todo alert autenticacion ok
           this.goTo('home');
+        } else {
+          this.submitted = true;
+          const message = await this.translate.get('LOGIN.FAILURE').toPromise();
+          this.helper.showMessage(message);
         }
       } else {
-        // todo alert no se encuentra el usuario
+        this.submitted = true;
+        const message = await this.translate.get('LOGIN.FAILURE').toPromise();
+        this.helper.showMessage(message);
       }
     } else {
       // codigo plataforma pc
-      this.goTo('home');
+      this.submitted = true;
+      const message = await this.translate.get('LOGIN.FAILURE').toPromise();
+      this.helper.showMessage(message);
     }
   }
 

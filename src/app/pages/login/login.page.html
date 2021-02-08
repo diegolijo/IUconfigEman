@@ -13,9 +13,6 @@
         <ion-item>
           <ion-label position="stacked" color="primary">
             {{ 'LOGIN.USERNAME' | translate:{value: null} }}
-            <ion-text color="danger">
-              {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
-            </ion-text>
           </ion-label>
           <ion-input #iNusername [(ngModel)]="username" name="username"
             (ionBlur)="this.helper.selectOnClick(iNusername)" (click)="this.helper.selectOnClick(this.iNusername )"
@@ -23,18 +20,15 @@
           </ion-input>
         </ion-item>
 
-        <ion-text color="danger">
+        <!--   <ion-text color="danger">
           <p [hidden]="usernameText.valid || submitted == false" class="ion-padding-start">
             {{ 'LOGIN.USERNAME_REQUIRED' | translate:{value: null} }}
           </p>
-        </ion-text>
+        </ion-text> -->
 
         <ion-item>
           <ion-label position="stacked" color="primary">
             {{ 'LOGIN.PASSWORD' | translate:{value: null} }}
-            <ion-text color="danger">
-              {{ 'LOGIN.MANDATORY' | translate:{value: null} }}
-            </ion-text>
           </ion-label>
 
           <ion-row>
@@ -47,37 +41,39 @@
             </ion-col>
           </ion-row>
 
-          <ion-button fill="clear" class='botonOjo' (click)="this.switchPassVisibility()" expand="block" 
+          <ion-button fill="clear" class='botonOjo' (click)="this.switchPassVisibility()" expand="block"
             autocapitalize="off">
             <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
-              [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline'" >
+              [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline'">
             </ion-icon>
           </ion-button>
         </ion-item>
 
-        <ion-text color="danger">
-          <p [hidden]="passwordText.valid || submitted == false" class="ion-padding-start">
-            {{ 'LOGIN.PASSWORD_REQUIRED' | translate:{value: null} }}
-          </p>
-        </ion-text>
+        <ion-label color="danger" [hidden]="passwordText.valid || submitted === false" class="ion-padding-start">
+          {{ 'LOGIN.PASSWORD_REQUIRED' | translate:{value: null} }}
+        </ion-label> 
 
 
-        <ion-button fill="outline" (click)="this.onClickLogin()" expand="block" >
+        <ion-button fill="clear" (click)="this.onClickLogin()" expand="block">
           {{ 'LOGIN.ACCESS' | translate:{value: null} }}
         </ion-button>
-
-        <ion-button fill="outline" (click)="this.onClickGoToRegistro()" expand="block"  >
-          {{ 'LOGIN.REGISTER' | translate:{value: null} }}
-        </ion-button>
-
       </ion-card-content>
     </ion-card>
   </form>
+
+
+ 
+
+
+
 </ion-content>
 
 
 
 <ion-footer class="textCenter">
+  <ion-button [hidden]=" submitted === false" fill="clear" (click)="this.onClickGoToRegistro()" expand="block" >
+    {{ 'LOGIN.REGISTER' | translate:{value: null} }}
+  </ion-button>
   <ion-toolbar>
     <ion-label color="dark">{{ 'VERSION' | translate:{value: null} }} &nbsp; {{this.version}}</ion-label>
   </ion-toolbar>

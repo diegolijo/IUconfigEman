@@ -269,7 +269,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     @Override
     public boolean onUnbind(Intent intent) {
-
         toReceiver(Constantes.OFF_SERVICIO, Constantes.NOTIFICACION_SERVICIO);
         if (mostrarToastConfig) {
             Toast toast = Toast.makeText(getApplicationContext(), "onUnbind", Toast.LENGTH_LONG);
@@ -477,11 +476,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
         if (isActividadEnlazada) {
-            if (mostrarToastConfig) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Oida  [" + s + "]", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-            // enviamos la palabra al receiver -> recogemos en main
+
+            /** enviamos la palabra al receiver -> recogemos en Nat Plugin */
             toReceiver(s, Constantes.NOTIFICACION_PALABRA);
 
         }
