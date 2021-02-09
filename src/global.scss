@@ -52,6 +52,21 @@
     font-weight: bold !important;
 }
 
+
+.itemButton {
+    position: absolute !important;
+    right: 0.3em !important;
+    top: 50% !important;
+    margin-top: -1.75em !important;
+    height: 3.5em !important;
+    width: 3.5em !important;
+}
+
+ion-item {
+    --inner-padding-end: 0.5em;
+    --padding-start: 0.5em;
+}
+
 //salto de linea en el texto cuando no cabe en la pantalla
 .textoCompleto {
     display: block !important;

@@ -78,7 +78,8 @@ public class NatPlugin extends Plugin {
     }
 
     /**
-     * Inserta resgistros en la base de datos pasando por parametro un Json {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
+     * Inserta resgistros en la base de datos pasando por parametro un Json
+     * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
      */
     @PluginMethod()
     public void insertDB(PluginCall call) {
@@ -102,7 +103,7 @@ public class NatPlugin extends Plugin {
                 case Constantes.PALABRAS:
                     Palabra palabra = new Palabra(
                             row.getString("clave"),
-                            row.getString("rol"));
+                            row.getString("funcion"));
                     db.Dao().insertPalabra(palabra);
                     resultJson.put(Constantes.RESULT, true);
                     break;
@@ -171,9 +172,44 @@ public class NatPlugin extends Plugin {
             resultJson.put(Constantes.RESULT, false);
             call.resolve(resultJson);
         }
-
-
     }
+
+
+    @PluginMethod()
+    public void selectFuncion(@NotNull PluginCall call) {
+        JSObject resultJson = new JSObject();
+        try {
+            String funcion = call.getString(Constantes.FUNCION);
+            Context context = getContext();
+            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+            if (!funcion.equals("")) {
+                /**consulta a la BD*/
+
+
+                List<Palabra> palabras = db.Dao().selectFuncion(funcion);
+                resultJson.put(Constantes.RESULT, true);
+                JSObject rows = new JSObject();
+                JSObject p = new JSObject();
+                int n = 0;
+                for (Palabra palabra : palabras) {
+                    p.put("clave", palabra.clave);
+                    p.put("funcion", palabra.funcion);
+                    p.put("fecha", palabra.fecha);
+                    rows.put(n+"", p);
+                    n+=1;
+                }
+                resultJson.put(Constantes.ROWS, rows);
+            }
+            db.close();
+            call.resolve(resultJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultJson = new JSObject();
+            resultJson.put(Constantes.RESULT, false);
+            call.resolve(resultJson);
+        }
+    }
+
 
     /************************************************* SERVIZE **************************************************/
     public void toggleServicio() {
@@ -183,6 +219,7 @@ public class NatPlugin extends Plugin {
                 Toast toast = Toast.makeText(context, "Inentamos arrancar el servicio", Toast.LENGTH_SHORT);
                 toast.show();
                 Intent i = new Intent(context, Servicio_RecognitionListener.class);
+                //todo enviar el usuario para
                 i.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(i);
@@ -260,6 +297,10 @@ public class NatPlugin extends Plugin {
             String receiverPalabra = resultData.getString(Constantes.NOTIFICACION_PALABRA);
             String receiverTexto = resultData.getString(Constantes.NOTIFICACION_FRASE);
 
+            if (receiverPatial != null && !receiverPatial.equals("")) {
+                sendPartial(receiverPatial);
+            }
+
             if (receiverPalabra != null && !receiverPalabra.equals("")) {
                 sendResult(receiverPalabra);
             }
@@ -289,11 +330,6 @@ public class NatPlugin extends Plugin {
             }
 
 
-            if (receiverPatial != null) {
-                receiverPatial = funciones.formatoTexto(receiverPatial, Constantes.NOTIFICACION_PARCIAL);
-
-            }
-
 
             if (receiverTexto != null) {
                 receiverTexto = funciones.formatoTexto(receiverTexto, Constantes.NOTIFICACION_FRASE);
@@ -310,5 +346,10 @@ public class NatPlugin extends Plugin {
         notifyListeners(Constantes.HOME_EVENT, ret);
     }
 
+    private void sendPartial(String receiverPatial) {
+        JSObject ret = new JSObject();
+        ret.put(Constantes.RESULT, receiverPatial);//todo preparar la respuesta para el webView
+        notifyListeners(Constantes.PALABRA_EVENT, ret);
+    }
 
 }

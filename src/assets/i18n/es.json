@@ -4,7 +4,7 @@
   "CANCEL": "Cancelar",
   "ACCEPT": "Aceptar",
   "DONE": "Hecho",
-  "CREAR":"Crear",
+  "CREAR": "Crear",
   "DESCARTAR": "Descartar",
   "CONTINUE": "Continuar",
   "OPEN": "Abrir",
@@ -24,8 +24,8 @@
     "PASSWORD": "Contraseña",
     "PASSWORD_REQUIRED": "Contraseña requerida",
     "ACCESS": "Acceder",
-    "REGISTER":"Crear Usuario",
-    "INIT": "Iniciando...",    
+    "REGISTER": "Crear Usuario",
+    "INIT": "Iniciando...",
     "MANDATORY": "*",
     "EMPTY": "Introduce tu usuario y contraseña",
     "FAILURE": "El usuario no existe o las credenciales son incorrectas."
@@ -37,14 +37,17 @@
     "PASSWORD": "Contraseña",
     "REPEAT_PASSWORD": "Repite la Contraseña",
     "FAILURE": "El usuario ya existe.",
-    "EMAILPASS": "Contraseña e-mail"  
+    "EMAILPASS": "Contraseña e-mail"
   },
   "HOME": {
     "TITLE": "EMAM",
     "ESCUCHAR": "Escuchar"
+  },
+  "NEW_PALABRA_MODAL": {
+    "TITLE": "Nueva Palabra",
+    "ESCUCHAR": "Escuchar",
+    "ADD_PALABRA": "Añadir", 
+    "FUNCTION_TYPE": "Función",
+    "PALABRA": "Palabra"
   }
-
-
-
-
 }

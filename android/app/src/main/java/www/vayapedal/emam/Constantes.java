@@ -65,6 +65,7 @@ public class Constantes {
      * *********************************** DB *********************************
      **/
     public static final String TABLA = "tabla";
+    public static final String ROWS = "rows";
     /**
      * nombre
      */
@@ -93,6 +94,7 @@ public class Constantes {
      **/
     public static final String PLUGIN_EVENT = "PLUGIN_EVENT";
    public static final String HOME_EVENT = "HOME_EVENT";
+    public static final  String PALABRA_EVENT = "PALABRA_EVENT";
     public static final String ACTION = "action";
 
     public static final String ON = "ON";
@@ -100,5 +102,7 @@ public class Constantes {
     public static final String BIND = "BIND";
     public static final String UNBIND = "UNBIND";
 
+
+    public static final String FUNCION = "funcion";
 
 }

@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import java.util.Date;
 
 
-@Entity(primaryKeys = {"clave", "rol"})
+@Entity(primaryKeys = {"clave", "funcion"})
 public class Palabra {
 
     @NonNull
@@ -15,14 +15,14 @@ public class Palabra {
     public String clave;
 
     @NonNull
-    @ColumnInfo(name = "rol")
-    public String rol;
+    @ColumnInfo(name = "funcion")
+    public String funcion;
 
     @ColumnInfo(name = "fecha")
     public Date fecha;
 
-    public Palabra(@NonNull String clave, @NonNull String rol) {
+    public Palabra(@NonNull String clave, @NonNull String funcion) {
         this.clave = clave;
-        this.rol = rol;
+        this.funcion = funcion;
     }
 }

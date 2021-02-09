@@ -213,15 +213,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     /**
      * ----------->
-     * creamos listener para el estado de la pantalla bloqueo
+     *********************************** creamos listener para el estado de la pantalla bloqueo *******************************************
      */
     @Override
     public void onCreate() {
         try {
             super.onCreate();
             this.displayListener();
-            this.listaPalabras.add(new Palabra("agua", Constantes.TRIGER1, new Date()));
-            this.listaPalabras.add(new Palabra("fuego", Constantes.TRIGER2, new Date()));
+
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -231,6 +230,9 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
+            // todo recogemos el usuaro y visitamos la BD -> select palabras
+            this.listaPalabras.add(new Palabra("agua", Constantes.TRIGER1, new Date()));
+            this.listaPalabras.add(new Palabra("fuego", Constantes.TRIGER2, new Date()));
             String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
             switch (s) {
                 case Constantes.ON_TOGGLE:
@@ -442,7 +444,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             String[] arPartial = funciones.decodeJSon(hypothesis, "partial");
             for (String s : arPartial) {
                 if (!s.equals("")) {
-                    //       toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+                       toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
                 }
             }
         } catch (Exception e) {

@@ -49,7 +49,7 @@ export class NativePlugin {
     // resultados de la capa nativa
     public async resultFromNative(result) {
         result = result;
-       // {action: 'RESPUESTA'};
+        // {action: 'RESPUESTA'};
     }
 
 
@@ -65,6 +65,12 @@ export class NativePlugin {
         return result;
     }
 
+
+    // palabras
+    public async selectFuncion(func: any) {
+        const result = await NatPlugin.selectFuncion({ funcion: func });
+        return result;
+    }
 
 
 

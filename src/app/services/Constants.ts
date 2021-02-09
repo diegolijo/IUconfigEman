@@ -12,7 +12,7 @@ export class Constants {
 
     /*********************************************** APP ***********************************************/
     public static APP_VERSION = '2.0.1';
-    static CARACTERES_POR_LINEA = 45;
+    public static CARACTERES_POR_LINEA = 45;
 
     /********************************************** login **********************************************/
     public static PAGES = {
@@ -23,8 +23,16 @@ export class Constants {
     /*********************************************** BD ************************************************/
     // tablas
     public static PALABRAS = 'PALABRAS';
+        // palabras[funciones]
+        public static TRIGER1 = 'triger_de_primer_nivel';
+        public static TRIGER2 = 'triger_de_segundo_nivel';
+
     public static USUARIOS = 'USUARIOS';
     public static ALARMAS = 'ALARMAS';
+
+
+
+
     // acciones
     public static INSERT = 'INSERT';
     public static SELECT = 'SELECT';
@@ -37,7 +45,8 @@ export class Constants {
     public static OFF = 'OFF';
     public static BIND = 'BIND';
     public static UNBIND = 'UNBIND';
-    static PLUGIN_EVENT = 'PLUGIN_EVENT';
-    static HOME_EVENT = 'HOME_EVENT';
+    public static PLUGIN_EVENT = 'PLUGIN_EVENT';
+    public static HOME_EVENT = 'HOME_EVENT';
+    public static PALABRA_EVENT = 'PALABRA_EVENT';
 }
 

@@ -15,8 +15,12 @@ public interface DeviceDao {
     /**
      * operacions Palabra
      */
-    @Query("SELECT * FROM Palabra ORDER BY rol")
+    @Query("SELECT * FROM Palabra ORDER BY funcion")
     List<Palabra> selectPalabras();
+
+
+    @Query("SELECT * FROM Palabra WHERE palabra.funcion LIKE :funcion")
+    List<Palabra> selectFuncion(String funcion);
 
     @Query("SELECT * FROM Palabra WHERE palabra.clave LIKE :s  LIMIT 1")
     Palabra selectPalabra(String s);
@@ -56,6 +60,7 @@ public interface DeviceDao {
     @Insert
             (onConflict = OnConflictStrategy.REPLACE)
     void insertAlarma(Alarma alarma);
+
 
 
 }

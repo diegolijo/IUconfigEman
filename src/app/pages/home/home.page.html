@@ -10,6 +10,10 @@
 <ion-content>
 
 
+ 
+
+
+
 
   <ion-textarea [rows]="this.helper.getTextLineBreaks(this.resultText)" [(ngModel)]="this.resultText" color="dark">
   </ion-textarea>
@@ -19,7 +23,7 @@
 
 <ion-footer class="textCenter">
   <ion-toolbar>
-    <ion-button fill="outline" (click)="this.onClickStartServize()">
+    <ion-button fill="outline" (click)="this.onClickNewPalabraModal()">
       {{ 'HOME.ESCUCHAR' | translate:{value: null} }}
     </ion-button>
   </ion-toolbar>

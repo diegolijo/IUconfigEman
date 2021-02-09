@@ -3,7 +3,8 @@ import { Helper } from './../../services/Helper';
 import { NativePlugin } from './../../services/NativePlugin';
 import { Plugins } from '@capacitor/core';
 import { Constants } from 'src/app/services/Constants';
-import { Platform } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
+import { NewPalabraModalPage } from '../modals/new-palabra-modal/new-palabra-modal.page';
 const { NatPlugin } = Plugins;
 
 @Component({
@@ -17,12 +18,14 @@ export class HomePage implements OnInit, OnDestroy {
 
   public resultText = '';
   public pluginListener: any;
+  private user: any;
 
   constructor(
     private platform: Platform,
     private nativePlugin: NativePlugin,
     public helper: Helper,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private modalCtrl: ModalController
 
   ) { }
 
@@ -35,11 +38,35 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-
   ngOnDestroy() {
     this.unBindServize();
     this.removeListener();
   }
+
+
+  public async onClickNewPalabraModal() {
+    try {
+      const newPalabraModal = await this.modalCtrl.create({
+        component: NewPalabraModalPage,
+        componentProps: {
+          user: this.user
+        }
+      });
+      await newPalabraModal.present();
+      newPalabraModal.onDidDismiss().then(res => {
+        if (res.data.result === 'success') {
+
+        } else if (res.data.result === 'cancelled') {
+
+        } else {
+          this.helper.showMessage(res);
+        }
+      });
+    } catch (error) {
+      this.helper.showMessage(error);
+    }
+  }
+
 
   public onClickStartServize() {
     if (this.platform.is('cordova')) {

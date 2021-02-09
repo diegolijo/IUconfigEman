@@ -92,9 +92,7 @@ export class LoginPage {
       }
     } else {
       // codigo plataforma pc
-      this.submitted = true;
-      const message = await this.translate.get('LOGIN.FAILURE').toPromise();
-      this.helper.showMessage(message);
+      this.goTo('home');
     }
   }
 
