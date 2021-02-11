@@ -13,6 +13,8 @@
 </ion-header>
 
 <ion-content>
+
+
   <!--Function type-->
   <ion-item lines="full">
     <ion-label text-wrap>
@@ -24,30 +26,49 @@
     </ion-select>
   </ion-item>
 
-  <!--If the item has serial number control-->
-  <!--Item's serial number-->
-  <ion-item lines="full">
-    <ion-col size="3" class="noPadding">
-      <ion-label> {{'NEW_PALABRA_MODAL.PALABRA'| translate:{value: null} }}</ion-label>
-    </ion-col>
-    <ion-col size="7" class="noPadding">
-      <ion-input type="text" readonly [(ngModel)]="this.newPalabra.clave" class="textRightAlign"></ion-input>
-    </ion-col>
-    <ion-button class="noPadding  itemButton" fill="clear" color="danger" (click)="this.onClickRecButton()">
+
+
+
+
+
+
+  <ion-card class="bocadilloResultado" >
+  <div class="textCenter  fontBold" style="padding-top: 0.5;">
+    {{ 'NEW_PALABRA_MODAL.PALABRA' | translate:{value: null} }}:
+    <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRecButton()">
       <ion-icon size="large" name="chatbubble-ellipses-outline" slot="icon-only"></ion-icon>
     </ion-button>
-  </ion-item>
+  </div>
+  
+    <div style="height: 1em;"></div>
+
+
+    <ion-textarea type="text" readonly [rows]="this.helper.getTextLineBreaks(this.newPalabra.clave)"
+      style="font-size: xx-large; text-align: center !important;" [(ngModel)]="this.newPalabra.clave"
+      class="textRightAlign">
+    </ion-textarea>
+  </ion-card>
 
 </ion-content>
 
 
 
 
+
+
+
+
+
+
+
+
+
 <ion-footer>
-  <ion-toolbar>    
-      <ion-button slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickClose('success')" [disabled]="">
-        <ion-label>{{'NEW_PALABRA_MODAL.ADD_PALABRA'| translate:{value: null} }}</ion-label>
-        <ion-icon name="add"></ion-icon>
-      </ion-button>  
+  <ion-toolbar>
+    <ion-button slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickClose('success')"
+      [disabled]="">
+      <ion-label>{{'NEW_PALABRA_MODAL.ADD_PALABRA'| translate:{value: null} }}</ion-label>
+      <ion-icon name="add"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-footer>

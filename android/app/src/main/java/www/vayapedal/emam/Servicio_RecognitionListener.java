@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 
-import com.getcapacitor.PluginHandle;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -198,10 +197,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                                configurarSpeechService();
+                        configurarSpeechService();
                         break;
                     case STATE_ON:
-                          pararSpeechService();
+                        pararSpeechService();
                         break;
                     default:
                         break;
@@ -213,7 +212,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     /**
      * ----------->
-     *********************************** creamos listener para el estado de la pantalla bloqueo *******************************************
+     * ********************************** creamos listener para el estado de la pantalla bloqueo *******************************************
      */
     @Override
     public void onCreate() {
@@ -398,7 +397,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-
     /**
      * @param hypothesis json con los resultados
      *                   "result" : [{
@@ -444,7 +442,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             String[] arPartial = funciones.decodeJSon(hypothesis, "partial");
             for (String s : arPartial) {
                 if (!s.equals("")) {
-                       toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+                    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
                 }
             }
         } catch (Exception e) {
@@ -476,13 +474,9 @@ public class Servicio_RecognitionListener extends Service implements Recognition
      */
     private void procesarResultSpechToText(Context context, String s, int confianza) {
 
+        /** enviamos la palabra al receiver -> recogemos en Nat Plugin */
+        toReceiver(s, Constantes.NOTIFICACION_PALABRA);
 
-        if (isActividadEnlazada) {
-
-            /** enviamos la palabra al receiver -> recogemos en Nat Plugin */
-            toReceiver(s, Constantes.NOTIFICACION_PALABRA);
-
-        }
         //   recorremos las palabas BD
         for (Palabra palabra : listaPalabras) {
             switch (palabra.rol) {
@@ -507,7 +501,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         long dif = Math.abs(thisTime - save) / 1000;
                         if (dif < Constantes.PERIODO_EN_ALERTA) {
                             funciones.vibrar(context, Constantes.VIBRAR_LARGO);
-                            enviarLocalizacion();
+                            getLocalizacion();
                             funciones.llamar(numLlamada, this);
                         } else {
                             funciones.vibrar(context, Constantes.VIRAR_CORTO);
@@ -519,11 +513,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    /**  PROCESAR FRASE
-        este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
-        */
+    /**
+     * PROCESAR FRASE
+     * este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
+     */
     private void procesarTextTextToSpech(String frase) {
-   //     toReceiver(frase, Constantes.NOTIFICACION_FRASE);
+        //     toReceiver(frase, Constantes.NOTIFICACION_FRASE);
         if (frase.equals(Constantes.FRASE_ALERTA)) {
             Toast toast = Toast.makeText(getApplicationContext(), "Pardillo XD", Toast.LENGTH_SHORT);
             toast.show();
@@ -531,7 +526,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    public void enviarLocalizacion() {
+    public void getLocalizacion() {
         try {
             int permGPS = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
             int permGps = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -558,7 +553,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                     Intent intentGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     intentGps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intentGps);
-
                 }
             }
         } catch (Exception e) {

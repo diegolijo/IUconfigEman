@@ -36,23 +36,24 @@ public class NatPlugin extends Plugin {
 
 
     private final Funciones funciones = new Funciones();
-    // instancia servicio
+
+    /**
+     * instancia servicio
+     */
     private Servicio_RecognitionListener mainService;
+    private ServicioBind_RecognitionListener bindServize;
 
-
-
-/*
-         @PluginMethod()
-        public void customMetod(PluginCall call) {
-        bridge = getBridge();
-        String message = call.getString("message");
-        this.toggleServicio();
-        JSObject ret = new JSObject();
-        ret.put("conectado...", message);
-        //    call.resolve(ret);
-        notifyListeners("myPluginEvent", ret);
-        }
-*/
+    /**
+     * @PluginMethod() public void customMetod(PluginCall call) {
+     * bridge = getBridge();
+     * String message = call.getString("message");
+     * this.toggleServicio();
+     * JSObject ret = new JSObject();
+     * ret.put("conectado...", message);
+     * //    call.resolve(ret);
+     * notifyListeners("myPluginEvent", ret);
+     * }
+     */
 
 
     @PluginMethod()
@@ -77,6 +78,7 @@ public class NatPlugin extends Plugin {
         }
     }
 
+    /** ********************************************** BD *****************************************************/
     /**
      * Inserta resgistros en la base de datos pasando por parametro un Json
      * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
@@ -195,8 +197,8 @@ public class NatPlugin extends Plugin {
                     p.put("clave", palabra.clave);
                     p.put("funcion", palabra.funcion);
                     p.put("fecha", palabra.fecha);
-                    rows.put(n+"", p);
-                    n+=1;
+                    rows.put(n + "", p);
+                    n += 1;
                 }
                 resultJson.put(Constantes.ROWS, rows);
             }
@@ -236,15 +238,14 @@ public class NatPlugin extends Plugin {
         }
     }
 
-
     /**
-     * Interefaz utilizada para enlazarse al servicio iniciado = this.mainService
+     * Interefaz utilizada para enlazarse al servicio iniciado => this.bindServize
      */
     private final ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Servicio_RecognitionListener.LocalBinder binder = (Servicio_RecognitionListener.LocalBinder) service;
-            mainService = binder.getService();
+            ServicioBind_RecognitionListener.LocalBinder binder = (ServicioBind_RecognitionListener.LocalBinder) service;
+            bindServize = binder.getBindService();
             Toast toast = Toast.makeText(getContext(), "onServiceConnected [ " + className + " ]", Toast.LENGTH_LONG);
             toast.show();
         }
@@ -256,19 +257,32 @@ public class NatPlugin extends Plugin {
         }
     };
 
-
     public void bindServicio(String mensaje) {
         try {
-            /** ********************************** receiver   SERVICIO *************************************/
-            Receiver resultReceiver = new Receiver(new Handler());
-            Intent i = new Intent(getContext(), Servicio_RecognitionListener.class);
-            i.putExtra(Constantes.ORIGEN_INTENT, mensaje);
-            i.putExtra(Constantes.RECEIVER, resultReceiver);
-            if (getContext().bindService(i, connection, Context.BIND_AUTO_CREATE)) {  /* main enlazado al servicio servicio */
-                if (mainService != null) {
-                    mainService.configurarSpeechService();
+            Context context = getContext();
+            if (!funciones.isServiceBindRunning(context)) {
+                Intent in = new Intent(context, ServicioBind_RecognitionListener.class);
+                in.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startService(in);
+                } else {
+                    context.startService(in);
                 }
-                Log.i("bindeService", "intentamos enlazarnos al servicio/iniciarlo");
+
+
+                /************************************    receiver   SERVICIO   ************************************/
+                Receiver resultReceiver = new Receiver(new Handler());
+                Intent i = new Intent(getContext(), ServicioBind_RecognitionListener.class);
+                i.putExtra(Constantes.ORIGEN_INTENT, mensaje);
+                i.putExtra(Constantes.RECEIVER, resultReceiver);
+                if (getContext().bindService(i, connection, Context.BIND_AUTO_CREATE)) {  /** main enlazado al servicio servicio */
+                    if (bindServize != null) {
+                        bindServize.configurarSpeechService();
+                    }
+                    Log.i("bindeService", "intentamos enlazarnos al servicio/iniciarlo");
+                }
+            } else {
+                unBindServicio();
             }
         } catch (
                 Exception e) {
@@ -277,8 +291,11 @@ public class NatPlugin extends Plugin {
     }
 
     private void unBindServicio() {
-        if (mainService != null) {
-            getContext().unbindService(connection);
+        if (bindServize != null) {
+            bindServize.pararServicio();
+            Context context = bindServize.getApplicationContext();
+            context.stopService(new Intent(context, ServicioBind_RecognitionListener.class));
+            bindServize = null;
         }
     }
 
@@ -304,42 +321,11 @@ public class NatPlugin extends Plugin {
             if (receiverPalabra != null && !receiverPalabra.equals("")) {
                 sendResult(receiverPalabra);
             }
-            //  MENSAJES DEL COMPORTAMIENTO DEL SERVICIO
-   /*         String receiverServicio = resultData.getString(Constantes.NOTIFICACION_SERVICIO);
-            if (receiverServicio != null) {
-                switch (receiverServicio) {
-                    case Constantes.ON_CONFIG:
 
-                        break;
-                    case Constantes.ON_TOGGLE:
-
-                        break;
-                    case Constantes.ON_BOTONES:
-
-
-                        break;
-                    case Constantes.OFF_SERVICIO:
-
-                        break;
-                    case Constantes.NOTIFICACION_GPS_DISABLE:
-
-                        break;
-
-
-                }
-            }
-
-
-
-            if (receiverTexto != null) {
-                receiverTexto = funciones.formatoTexto(receiverTexto, Constantes.NOTIFICACION_FRASE);
-
-            }
-            */
         }
-
     }
 
+    /**************************************************  ToView ***************************************************/
     private void sendResult(String receiverPalabra) {
         JSObject ret = new JSObject();
         ret.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView

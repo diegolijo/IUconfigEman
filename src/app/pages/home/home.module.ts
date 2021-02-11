@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { NewPalabraModalPage } from '../modals/new-palabra-modal/new-palabra-modal.page';
 import { NewPalabraModalPageModule } from '../modals/new-palabra-modal/new-palabra-modal.module';
 
 @NgModule({
@@ -14,8 +13,8 @@ import { NewPalabraModalPageModule } from '../modals/new-palabra-modal/new-palab
     FormsModule,
     IonicModule,
     TranslateModule.forChild(),
-    NewPalabraModalPageModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    NewPalabraModalPageModule
   ],
   declarations: [HomePage]
 })

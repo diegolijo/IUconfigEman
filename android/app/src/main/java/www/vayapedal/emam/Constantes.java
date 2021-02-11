@@ -53,7 +53,7 @@ public class Constantes {
     public static final String OFF_SERVICIO = "SERVICIO_FINALIZADO";
     public static final String ON_BOTONES = "ON_BOTONES";
     public static final int ID_SERVICIO = 10000;
-
+    public static final int ID_SERVICIO_BIND = 10001;
     public static final String PACKAGE_NAME = "com.vayapedal.EMAN";
     public static final String ORIGEN_INTENT = "ORIGEN";
     public static final String RECEIVER = "RECEIVER";

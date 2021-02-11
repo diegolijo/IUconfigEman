@@ -206,4 +206,22 @@ public class Funciones {
         }
         return isRuning;
     }
+
+    public boolean isServiceBindRunning(Context context) {
+        boolean isRuning = false;
+        try {
+            Class<?> serviceClass = ServicioBind_RecognitionListener.class;
+            ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    isRuning = true;
+                }
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "isServiceRunning: ", ex);
+        }
+        return isRuning;
+    }
+
+
 }

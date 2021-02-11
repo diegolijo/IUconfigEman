@@ -1,3 +1,4 @@
+import { Helper } from './../../../services/Helper';
 import { NativePlugin } from './../../../services/NativePlugin';
 import { Constants } from './../../../services/Constants';
 import { IPalabra } from './../../../interfaces/i-db-models';
@@ -35,7 +36,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
     private platform: Platform,
     private modalCtrl: ModalController,
     private nativePlugin: NativePlugin,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    public helper: Helper
   ) { }
 
   ngOnInit() {
@@ -48,8 +50,13 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.unBindServize();
-    this.removeListener();
+    if (this.platform.is('cordova')) {
+      this.removeListener();
+      this.unBindServize();
+    } else {
+
+    }
+
   }
 
 

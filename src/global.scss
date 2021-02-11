@@ -30,6 +30,8 @@
 
 //--------------------------------------------------------
 // pintamos el texto completo de los ion-select
+
+
 .selectFull {
     text-align: right !important;
     max-width: 100% !important;
@@ -53,13 +55,17 @@
 }
 
 
-.itemButton {
+.itemButtonB {
     position: absolute !important;
-    right: 0.3em !important;
-    top: 50% !important;
-    margin-top: -1.75em !important;
-    height: 3.5em !important;
-    width: 3.5em !important;
+    right: 0em !important;
+    bottom: 0em !important;
+}
+
+.itemButtonT {
+    position: absolute !important;
+    right: 0em !important;
+    top: 0em !important;
+
 }
 
 ion-item {
@@ -283,7 +289,7 @@ ion-item {
 /****************** posicion*************/
 
 .right {
-    float: right !important; 
+    float: right !important;
 }
 
 .left {

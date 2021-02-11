@@ -35,6 +35,10 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name="www.vayapedal.emam.ServicioBind_RecognitionListener"
+            android:enabled="true"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
