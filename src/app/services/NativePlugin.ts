@@ -1,75 +1,115 @@
 import { Injectable } from '@angular/core';
 import { Plugins } from '@capacitor/core';
+import { Platform } from '@ionic/angular';
 import { Constants } from './Constants';
 const { NatPlugin } = Plugins;
 
 @Injectable()
 export class NativePlugin {
 
+
     public pluginListener: any;
 
 
     constructor(
+        private platform: Platform,
     ) {
     }
 
     /******************************************** servicio *********************************************/
     public async startService() {
-        const result = await NatPlugin.servizeOperations({ action: Constants.ON });
-        return result;
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.servizeOperations({ action: Constants.ON });
+            return result;
+        } else { }
+
     }
 
     public async stopService() {
-        const result = await NatPlugin.servizeOperations({ action: Constants.OFF });
-        return result;
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.servizeOperations({ action: Constants.OFF });
+            return result;
+        } else { }
+
     }
 
     public async bindService() {
-        const result = await NatPlugin.servizeOperations({ action: Constants.BIND });
-        return result;
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.servizeOperations({ action: Constants.BIND });
+            return result;
+        } else { }
+
     }
 
     public async unBindServize() {
-        const result = await NatPlugin.servizeOperations({ action: Constants.UNBIND });
-        return result;
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.servizeOperations({ action: Constants.UNBIND });
+            return result;
+        } else { }
+
+
     }
 
     /********************************************** listener ********************************************/
 
     public async startListener() {
-        this.pluginListener = Plugins.NatPlugin.addListener(Constants.PLUGIN_EVENT, (info: any) => {
-            this.resultFromNative(info);
-        });
+        if (this.platform.is('cordova')) {
+            this.pluginListener = Plugins.NatPlugin.addListener(Constants.PLUGIN_EVENT, (info: any) => {
+                this.resultFromNative(info);
+            });
+        } else { }
+
     }
 
     public async removeListener() {
-        this.pluginListener.remove();
+        if (this.platform.is('cordova')) { this.pluginListener.remove(); } else { }
+
     }
 
     // resultados de la capa nativa
     public async resultFromNative(result) {
-        result = result;
-        // {action: 'RESPUESTA'};
+        if (this.platform.is('cordova')) {
+            result = result;
+            // {action: 'RESPUESTA'}; } else {}
+
+        } else { }
+
     }
 
 
     /*********************************************** BD ************************************************/
     public async insertDB(table: string, row: any) {
-        const result = await NatPlugin.insertDB({ tabla: table, registro: { row } });
-        return result;
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.insertDB({ tabla: table, registro: { row } });
+            return result;
+        } else { }
+
     }
 
 
-    public async selectDB(table: string, key: any) {
-        const result = await NatPlugin.selectDB({ tabla: table, clave: key });
-        return result;
+    public async selectDB(table: string, key: any, user: string) {
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.selectDB({ tabla: table, usuario: user, clave: key });
+            return result;
+        } else { }
+
     }
 
+    public async deleteDB(table: string, key: string, user: string) {
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.deleteDB({ tabla: table, usuario: user, clave: key });
+            return result;
+        } else { }
+
+    }
 
     // palabras
     public async selectFuncion(func: any) {
-        const result = await NatPlugin.selectFuncion({ funcion: func });
-        return result;
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.selectFuncion({ funcion: func });
+            return result;
+        } else { }
+
     }
 
 

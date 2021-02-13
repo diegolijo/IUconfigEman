@@ -1,7 +1,6 @@
-import { element } from 'protractor';
-import { Constants } from './Constants';
 import { Injectable } from '@angular/core';
-import { LoadingController, Platform, ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
+import { Constants } from './Constants';
 
 @Injectable()
 export class Helper {
@@ -71,6 +70,7 @@ export class Helper {
     loading.dismiss();
     const toast = await this.toastController.create({
       message: mes,
+      position: 'middle',
       cssClass: 'general-toast-error',
       duration: 3000
     });

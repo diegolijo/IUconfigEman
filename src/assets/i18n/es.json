@@ -7,6 +7,7 @@
   "CREAR": "Crear",
   "DESCARTAR": "Descartar",
   "CONTINUE": "Continuar",
+  "CLOSE": "Cerrar",
   "OPEN": "Abrir",
   "EXIT": "Salir",
   "FILTER": "Filtrar",
@@ -35,19 +36,24 @@
     "USERNAME": "Usuario",
     "EMAIL": "e-mail",
     "PASSWORD": "Contraseña",
+    "DIFERENT_PASSWORDS": "Las contraseñas son diferentes",
     "REPEAT_PASSWORD": "Repite la Contraseña",
     "FAILURE": "El usuario ya existe.",
-    "EMAILPASS": "Contraseña e-mail"
+    "EMAILPASS": "Contraseña e-mail",
+    "DONE": "Nuevo Usuario creado",
+    "FAIL": "Error al crear el usuario"
   },
   "HOME": {
     "TITLE": "EMAM",
-    "ESCUCHAR": "Escuchar"
+    "ESCUCHAR": "Escuchar",
+    "BTN_PALABRAS":"Filtros"
   },
   "NEW_PALABRA_MODAL": {
     "TITLE": "Nueva Palabra",
     "ESCUCHAR": "Escuchar",
-    "ADD_PALABRA": "Añadir", 
+    "ADD_PALABRA": "Añadir",
     "FUNCTION_TYPE": "Función",
-    "PALABRA": "Palabra"
+    "PALABRA": "Palabra",
+    "NO_INSERT": "No se ha guardado el filtro"
   }
 }

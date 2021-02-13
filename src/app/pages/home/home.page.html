@@ -24,7 +24,16 @@
 <ion-footer class="textCenter">
   <ion-toolbar>
     <ion-button fill="outline" (click)="this.onClickNewPalabraModal()">
-      {{ 'HOME.ESCUCHAR' | translate:{value: null} }}
+      {{ 'HOME.BTN_PALABRAS' | translate:{value: null} }}
+    </ion-button>
+
+    <ion-button [hidden]="!this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger"  slot="end" (click)="this.onClickBindServize()">
+      <ion-spinner name="dots"  color="danger"></ion-spinner>
+    </ion-button>
+
+
+    <ion-button  [hidden]="this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger"  slot="end" (click)="this.onClickBindServize()">
+      <ion-icon size="large" name="chatbubble-ellipses-outline" slot="icon-only"></ion-icon>
     </ion-button>
   </ion-toolbar>
 </ion-footer>

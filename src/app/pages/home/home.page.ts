@@ -1,10 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChildren, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Helper } from './../../services/Helper';
-import { NativePlugin } from './../../services/NativePlugin';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
-import { Constants } from 'src/app/services/Constants';
 import { ModalController, Platform } from '@ionic/angular';
 import { NewPalabraModalPage } from '../modals/new-palabra-modal/new-palabra-modal.page';
+import { AppComponent } from './../../app.component';
+import { AppUser } from './../../services/AppUser';
+import { Constants } from './../../services/Constants';
+import { Helper } from './../../services/Helper';
+import { ModelCreator } from './../../services/model_ceator';
+import { NativePlugin } from './../../services/NativePlugin';
 const { NatPlugin } = Plugins;
 
 @Component({
@@ -16,31 +20,51 @@ export class HomePage implements OnInit, OnDestroy {
 
   // @ViewChildren('textArea') textArea;
 
+
+  private appUser: any;
+
+  // servicio
+  public isBindService = false;
   public resultText = '';
   public pluginListener: any;
-  private user: any;
 
   constructor(
     private platform: Platform,
     private nativePlugin: NativePlugin,
     public helper: Helper,
     private changeDetectorRef: ChangeDetectorRef,
+    public appComponent: AppComponent,
+    public modelCreator: ModelCreator,
+    private ProAppUser: AppUser,
+    private router: Router,
     private modalCtrl: ModalController
 
   ) { }
 
   ngOnInit() {
-    if (this.platform.is('cordova')) {
-      this.startListener();
-    } else {
 
+  }
+
+  async ionViewWillEnter() {
+    this.appUser = this.ProAppUser.getAppUser();
+
+    if (this.platform.is('cordova')) {
+      if (this.appUser.usuario === '') {
+        this.router.navigate(['login']);
+      }
+
+    } else {
+      this.resultText += ' ' + this.resultText;
     }
+
+
   }
 
 
-  ngOnDestroy() {
-    this.unBindServize();
-    this.removeListener();
+
+  async ngOnDestroy() {
+    await this.unBindServize();
+    await this.removeListener();
   }
 
 
@@ -49,7 +73,7 @@ export class HomePage implements OnInit, OnDestroy {
       const newPalabraModal = await this.modalCtrl.create({
         component: NewPalabraModalPage,
         componentProps: {
-          user: this.user
+          user: this.appUser
         }
       });
       await newPalabraModal.present();
@@ -70,9 +94,20 @@ export class HomePage implements OnInit, OnDestroy {
 
   public onClickStartServize() {
     if (this.platform.is('cordova')) {
-      this.bindServize();
+      // TODO arranca servicio en primer plano 
     } else {
       this.resultText += ' ' + this.resultText;
+    }
+  }
+
+  public async onClickBindServize() {
+    if (!this.isBindService) {
+      await this.startListener();
+      await this.bindServize();
+    } else {
+      await this.unBindServize();
+      await this.removeListener();
+
     }
   }
 
@@ -82,10 +117,12 @@ export class HomePage implements OnInit, OnDestroy {
 
   /************************************************ servize ************************************************/
   public async bindServize() {
+    this.isBindService = true;
     const result = await this.nativePlugin.bindService();
   }
 
   public async unBindServize() {
+    this.isBindService = false;
     const result = await this.nativePlugin.unBindServize();
   }
 

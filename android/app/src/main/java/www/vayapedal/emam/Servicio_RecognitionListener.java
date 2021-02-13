@@ -419,9 +419,9 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         try {
             String text = funciones.getFraseFromJson(hypothesis);
             if (!text.equals("")) {
-                String[] arWord = funciones.decodeJSon(hypothesis, "words");
-                String[] arConf = funciones.decodeJSon(hypothesis, "conf");
-                String[] arText = funciones.decodeJSon(hypothesis, "text");
+                String[] arWord = funciones.decodeKaldiJSon(hypothesis, "words");
+                String[] arConf = funciones.decodeKaldiJSon(hypothesis, "conf");
+                String[] arText = funciones.decodeKaldiJSon(hypothesis, "text");
                 for (int i = 0; i < arWord.length; i++) {
                     float confianza = Float.parseFloat(arConf[i]) * 100;
                     procesarResultSpechToText(getApplicationContext(), arWord[i], (int) confianza);        //-----> procesar palabra
@@ -439,7 +439,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     @Override
     public void onPartialResult(String hypothesis) {
         try {
-            String[] arPartial = funciones.decodeJSon(hypothesis, "partial");
+            String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
             for (String s : arPartial) {
                 if (!s.equals("")) {
                     toReceiver(s, Constantes.NOTIFICACION_PARCIAL);

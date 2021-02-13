@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AppUser } from './services/AppUser';
+import { ModelCreator } from './services/model_ceator';
+
 
 
 @Component({
@@ -14,16 +16,17 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent implements OnInit {
 
   darkMode = true;
-  
+
+
   constructor(
     private translate: TranslateService,
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private appUser: AppUser
   ) {
     this.initializeApp();
-
-    /*   This line would incorporate the language detection */
+    /* This line would incorporate the language detection */
     let userLang = navigator.language.split('-')[0];
     userLang = (userLang === 'en' || userLang === 'es') ? userLang : 'es';
     this.translate.use(userLang);
@@ -31,11 +34,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.appUser.emptyAppUser();
   }
 
   async initializeApp() {
     try {
-
       const res = await this.platform.ready();
       const prefersDark = window.matchMedia('(prefers-color-scheme: light)');
       this.darkMode = prefersDark.matches;

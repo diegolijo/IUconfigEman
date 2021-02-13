@@ -15,18 +15,19 @@ public interface DeviceDao {
     /**
      * operacions Palabra
      */
-    @Query("SELECT * FROM Palabra ORDER BY funcion")
-    List<Palabra> selectPalabras();
+    @Query("SELECT * FROM Palabra WHERE palabra.usuario LIKE :usuario ORDER BY funcion")
+    List<Palabra> selectPalabras(String usuario);
 
 
     @Query("SELECT * FROM Palabra WHERE palabra.funcion LIKE :funcion")
     List<Palabra> selectFuncion(String funcion);
 
+
     @Query("SELECT * FROM Palabra WHERE palabra.clave LIKE :s  LIMIT 1")
     Palabra selectPalabra(String s);
 
     @Insert
-            (onConflict = OnConflictStrategy.REPLACE)
+            (onConflict = OnConflictStrategy.ABORT)
     void insertPalabra(Palabra palabra);
 
     @Query("UPDATE Palabra SET fecha=:fecha WHERE clave = :clave")
@@ -40,7 +41,7 @@ public interface DeviceDao {
      * operacions PerfilUsuario
      */
     @Insert
-            (onConflict = OnConflictStrategy.REPLACE)
+            (onConflict = OnConflictStrategy.ABORT)
     void insertUsuario(Usuario user);
 
     @Query("SELECT * FROM Usuario")
@@ -58,7 +59,7 @@ public interface DeviceDao {
      */
 
     @Insert
-            (onConflict = OnConflictStrategy.REPLACE)
+            (onConflict = OnConflictStrategy.ABORT)
     void insertAlarma(Alarma alarma);
 
 

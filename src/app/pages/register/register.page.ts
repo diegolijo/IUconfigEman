@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Constants } from './../../services/Constants';
 import { Helper } from './../../services/Helper';
 import { NativePlugin } from './../../services/NativePlugin';
@@ -21,6 +22,7 @@ export class RegisterPage implements OnInit {
   public emailPass = '';
 
   constructor(
+    private translate: TranslateService,
     private nativePlugin: NativePlugin,
     private platform: Platform,
     public helper: Helper,
@@ -58,9 +60,10 @@ export class RegisterPage implements OnInit {
    * inserta el registro en la BD
    */
   public async registerUser() {
-    if (this.password2 === this.password) {
-      if (this.platform.is('cordova')) {
-        const res = await this.nativePlugin.selectDB(Constants.USUARIOS, this.username);
+
+    if (this.platform.is('cordova')) {
+      if (this.password2 === this.password) {
+        const res = await this.nativePlugin.selectDB(Constants.USUARIOS, this.username, null);
         if (!res.result) {
           const user = {
             usuario: this.username,
@@ -70,21 +73,20 @@ export class RegisterPage implements OnInit {
           };
           const result = await this.nativePlugin.insertDB(Constants.USUARIOS, user);
           if (result.result) {
-            // TODO alert creado ok
-
+            this.helper.showMessage(await this.translate.get('REGISTER.DONE').toPromise());
           } else {
-
+            this.helper.showMessage(await this.translate.get('REGISTER.FAIL').toPromise());
           }
         } else {
-          // todo alert user existe
-
+          this.helper.showMessage(await this.translate.get('REGISTER.FAILURE').toPromise());
         }
       } else {
-        // todo codigo plataforma pc
 
+        this.helper.showMessage(await this.translate.get('REGISTER.DIFERENT_PASSWORDS').toPromise());
       }
     } else {
-      // todo alert pass diferentes
+      // todo codigo plataforma pc
+
 
     }
   }

@@ -1,10 +1,11 @@
-import { Constants } from './../../services/Constants';
-import { NativePlugin } from './../../services/NativePlugin';
 import { Component, ViewChildren } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { Helper } from './../../services/Helper';
 import { NavigationExtras, Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AppUser } from './../../services/AppUser';
+import { Constants } from './../../services/Constants';
+import { Helper } from './../../services/Helper';
+import { NativePlugin } from './../../services/NativePlugin';
 
 
 
@@ -34,11 +35,16 @@ export class LoginPage {
     private nativePlugin: NativePlugin,
     private platform: Platform,
     public helper: Helper,
+    public proAppUser: AppUser,
     private router: Router
   ) {
   }
 
   async ionViewDidEnter() {
+    const user = this.proAppUser.getAppUser();
+    if (user.usuario !== '') {
+      this.goTo('home');
+    }
   }
 
 
@@ -69,16 +75,16 @@ export class LoginPage {
 
   /************************************************ Login ************************************************/
 
-
   /**
-   * compueba select usuario
-   * compara passwords
+   * compueba usuario
+   * compara password
    */
   public async checkLogin() {
     if (this.platform.is('cordova')) {
-      const result = await this.nativePlugin.selectDB(Constants.USUARIOS, this.username);
+      const result = await this.nativePlugin.selectDB(Constants.USUARIOS, this.username, null);
       if (result.result) {
         if (result.registro.loginPass === this.password) {
+          this.proAppUser.setAppUser(result.registro);
           this.goTo('home');
         } else {
           this.submitted = true;

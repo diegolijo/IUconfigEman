@@ -30,7 +30,7 @@ public class Alarma {
     @ColumnInfo(name = "enable")
     public boolean enable;
 
-    public Alarma(@NonNull String usuario, @NonNull String clave, String numTlfTo, String mailTo, boolean enable) {
+    public Alarma(@NonNull String clave, @NonNull String usuario,  String numTlfTo, String mailTo, boolean enable) {
         this.usuario = usuario;
         this.clave = clave;
         this.numTlfTo = numTlfTo;

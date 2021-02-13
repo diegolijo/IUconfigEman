@@ -1,10 +1,13 @@
-import { Helper } from './../../../services/Helper';
-import { NativePlugin } from './../../../services/NativePlugin';
-import { Constants } from './../../../services/Constants';
-import { IPalabra } from './../../../interfaces/i-db-models';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { ModalController, Platform } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { IPalabra, IUsuario } from './../../../interfaces/i-db-models';
+import { AppUser } from './../../../services/AppUser';
+import { Constants } from './../../../services/Constants';
+import { Helper } from './../../../services/Helper';
+import { ModelCreator } from './../../../services/model_ceator';
+import { NativePlugin } from './../../../services/NativePlugin';
 const { NatPlugin } = Plugins;
 
 @Component({
@@ -15,43 +18,51 @@ const { NatPlugin } = Plugins;
 export class NewPalabraModalPage implements OnInit, OnDestroy {
 
 
-
-
   public resultText = '';
-  public pluginListener: any;
+  public pluginPartialListener: any;
+  public newPalabra: IPalabra;
+  public appUser: IUsuario;
 
-  public newPalabra: IPalabra =
-    {
-      clave: '',
-      funcion: '',
-      fecha: ''
-    };
+  palabras: IPalabra[] = [];
 
   public funciones = [
     { id: Constants.TRIGER1 },
     { id: Constants.TRIGER2 }
   ];
 
+  public isBindService = false;
+
   constructor(
+    private translate: TranslateService,
     private platform: Platform,
     private modalCtrl: ModalController,
     private nativePlugin: NativePlugin,
     private changeDetectorRef: ChangeDetectorRef,
-    public helper: Helper
-  ) { }
+    public helper: Helper,
+    public proAppUser: AppUser,
+    public modelCreator: ModelCreator
+  ) {
+  }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.platform.is('cordova')) {
-      this.startListener();
+      this.newPalabra = this.modelCreator.emptyIPalabra();
+      this.appUser = this.proAppUser.getAppUser();
+      this.startPartialListener();
+      const result = await this.selectPalabras();
+      for (const palabra of result.rows) {
+        this.palabras.push(this.modelCreator.getIPalabra(palabra));
+      }
+      await this.onClickRefresh();
     } else {
 
     }
   }
 
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
     if (this.platform.is('cordova')) {
-      this.removeListener();
+      await this.removePartialListener();
       this.unBindServize();
     } else {
 
@@ -60,22 +71,65 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   }
 
 
-
-
-  public onClickRecButton() {
+  public async onClickRecButton() {
     if (this.platform.is('cordova')) {
-      this.bindServize();
+
+      if (!this.isBindService) {
+        this.bindServize();
+      } else {
+        this.unBindServize();
+      }
     } else {
       this.resultText += ' ' + this.resultText;
     }
   }
 
 
-  public async onClickClose(msg) {
-    try {
-      if (msg) {
-        await this.close(msg);
+
+  public async onClickRefresh() {
+    if (this.platform.is('cordova')) {
+      this.palabras = [];
+      const result = await this.selectPalabras();
+      for (const palabra of result.rows) {
+        this.palabras.push(this.modelCreator.getIPalabra(palabra));
       }
+    } else {
+      const palabra: IPalabra = { clave: 'caca', funcion: 'triger_de_primer_nivel', fecha: '', descripcion: '', usuario: '' };
+      for (let i = 0; i < 7; i++) {
+        this.palabras.push(this.modelCreator.getIPalabra(palabra));
+      }
+    }
+  }
+
+  public async onClickAddPalabra() {
+    if (this.platform.is('cordova')) {
+      if (this.newPalabra.clave !== '') {
+        this.newPalabra.usuario = this.appUser.usuario;
+        const result = await this.insertPalabra(this.newPalabra);
+        if (result.result) {
+          await this.onClickRefresh();
+        } else {
+          this.helper.showMessage(await this.translate.get('NEW_PALABRA_MODAL.NO_INSERT').toPromise());
+        }
+
+      }
+    } else {
+
+    }
+  }
+
+  public async onClickDeletePalabra(palabra: IPalabra) {
+    if (this.platform.is('cordova')) {
+      const result = await this.deletePalabra(palabra);
+      await this.onClickRefresh();
+    } else {
+
+    }
+  }
+
+  public async onClickClose() {
+    try {
+      await this.close('close');
     } catch (error) {
       await this.close(error.message);
     }
@@ -87,41 +141,35 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
 
   /************************************************* page ************************************************** */
   public async close(msg: any) {
-    if (msg === 'success') {
-      await this.insertPalabra(this.newPalabra);
+    if (msg === 'close') {
+      await this.modalCtrl.dismiss({
+        result: msg
+      });
     }
-    await this.modalCtrl.dismiss({
-      result: msg
-    });
   }
-
-
-
-
-
 
   /************************************************ servize ************************************************/
   public async bindServize() {
+    this.isBindService = true;
     const result = await this.nativePlugin.bindService();
   }
 
   public async unBindServize() {
+    this.isBindService = false;
     const result = await this.nativePlugin.unBindServize();
   }
 
-
-
-
   /********************************************** listener ********************************************/
 
-  public startListener() {
-    this.pluginListener = Plugins.NatPlugin.addListener(Constants.PALABRA_EVENT, (info: any) => {
+  public startPartialListener() {
+    this.pluginPartialListener = Plugins.NatPlugin.addListener(Constants.PARTIAL_EVENT, (info: any) => {
       this.resultFromNative(info);
     });
+
   }
 
-  public removeListener() {
-    this.pluginListener.remove();
+  public removePartialListener() {
+    this.pluginPartialListener.remove();
   }
 
   // resultados de la capa nativa -> result: "agua"
@@ -133,20 +181,18 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   /***********************************************  DB  ****************************************************/
 
   public async insertPalabra(newPalabra: IPalabra) {
-    /*     const palabra = {
-          usuario: this.username,
-          loginPass: this.password,
-          mailFrom: this.email,
-          mailPass: this.emailPass
-        }; */
     const result = await this.nativePlugin.insertDB(Constants.PALABRAS, newPalabra);
-    if (result.result) {
+    return result;
+  }
 
-      const resul = await this.nativePlugin.selectFuncion(Constants.TRIGER1);
-      const resu = await this.nativePlugin.selectFuncion(Constants.TRIGER2);
-      debugger;
-    }
+  public async deletePalabra(palabra: IPalabra) {
+    const result = await this.nativePlugin.deleteDB(Constants.PALABRAS, palabra.clave, this.appUser.usuario);
+    return result;
   }
 
 
+  public async selectPalabras() {
+    const result = await this.nativePlugin.selectDB(Constants.PALABRAS, '', this.appUser.usuario);
+    return result;
+  }
 }

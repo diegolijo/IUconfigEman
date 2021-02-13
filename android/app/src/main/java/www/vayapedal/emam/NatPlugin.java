@@ -21,9 +21,13 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import www.vayapedal.emam.datos.Alarma;
 import www.vayapedal.emam.datos.DB;
@@ -55,6 +59,161 @@ public class NatPlugin extends Plugin {
      * }
      */
 
+    /** ********************************************** BD *****************************************************/
+    /**
+     * Inserta resgistros en la base de datos pasando por parametro un Json
+     * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
+     */
+    @PluginMethod()
+    public void insertDB(PluginCall call) {
+        JSObject resultJson = new JSObject();
+        try {
+            String tabla = call.getString(Constantes.TABLA);
+            JSObject registro = call.getObject(Constantes.REGISTRO);
+            JSObject row = registro.getJSObject("row");
+            Context context = getContext();
+            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+            switch (tabla) {
+                case Constantes.USUARIOS:
+                    Usuario user = new Usuario(
+                            row.getString("usuario"),
+                            row.getString("loginPass"),
+                            row.getString("mailFrom"),
+                            row.getString("mailPass"));
+                    if (!user.usuario.equals("")) {
+                        db.Dao().insertUsuario(user);
+                        resultJson.put(Constantes.RESULT, true);
+                    }
+                    break;
+                case Constantes.PALABRAS:
+                    Palabra palabra = new Palabra(
+                            row.getString("clave"),
+                            row.getString("funcion"),
+                            row.getString("descripcion"),
+                            row.getString("usuario"));
+                    if (!palabra.clave.equals("")) {
+                        db.Dao().insertPalabra(palabra);
+                        resultJson.put(Constantes.RESULT, true);
+                    }
+                    break;
+                case Constantes.ALARMAS:
+                    Alarma alarma = new Alarma(
+                            row.getString("clave"),
+                            row.getString("usuario"),
+                            row.getString("numTlfTo"),
+                            row.getString("mailTo"),
+                            row.getBoolean("enable", false));
+                    if (!alarma.clave.equals("")) {
+                        db.Dao().insertAlarma(alarma);
+                        resultJson.put(Constantes.RESULT, true);
+                    }
+                    break;
+            }
+            db.close();
+            call.resolve(resultJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultJson = new JSObject();
+            resultJson.put(Constantes.RESULT, false);
+            call.resolve(resultJson);
+        }
+    }
+
+
+    @PluginMethod()
+    public void selectDB(@NotNull PluginCall call) {
+        JSObject resultJson = new JSObject();
+        try {
+            String tabla = call.getString(Constantes.TABLA);
+            String clave = call.getString(Constantes.CLAVE);
+            String usu = call.getString(Constantes.USER);
+            Context context = getContext();
+            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+
+                /**consulta a la BD*/
+                switch (tabla) {
+                    case Constantes.USUARIOS:
+                        Usuario usuario = db.Dao().selectUsuario(clave);
+                        resultJson.put(Constantes.RESULT, true);
+                        JSObject user = new JSObject();
+                        user.put("usuario", usuario.usuario);
+                        user.put("loginPass", usuario.loginPass);
+                        user.put("mailFrom", usuario.mailFrom);
+                        user.put("mailPass", usuario.mailPass);
+                        resultJson.put(Constantes.REGISTRO, user);
+                        break;
+                    case Constantes.PALABRAS:
+                        List<Palabra> listaPalabras = db.Dao().selectPalabras(usu);
+                        resultJson.put(Constantes.RESULT, true);
+                        List<JSObject> list = new ArrayList<>();
+                        for (Palabra palabra : listaPalabras) {
+                            JSObject jSpalabra = new JSObject();
+                            jSpalabra.put("clave", palabra.clave);
+                            jSpalabra.put("usuario", palabra.usuario);
+                            jSpalabra.put("funcion", palabra.funcion);
+                            jSpalabra.put("descripcion", palabra.descripcion);
+                            list.add(jSpalabra);
+                        }
+                        JSONArray jsonArray = new JSONArray(list);
+                        resultJson.put(Constantes.ROWS, jsonArray);
+                        break;
+                    case Constantes.ALARMAS:
+                        // listaPalabras = db.Dao().selectPalabras();
+                        break;
+                }
+            db.close();
+            call.resolve(resultJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultJson = new JSObject();
+            resultJson.put(Constantes.RESULT, false);
+            call.resolve(resultJson);
+        }
+    }
+
+
+    @PluginMethod()
+    public void deleteDB(@NotNull PluginCall call) {
+        JSObject resultJson = new JSObject();
+        try {
+            String tabla = call.getString(Constantes.TABLA);
+            String clave = call.getString(Constantes.CLAVE);
+            String usu = call.getString(Constantes.USER);
+            Context context = getContext();
+            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+            if (!clave.equals("")) {
+                switch (tabla) {
+                    case Constantes.USUARIOS:
+                        db.Dao().selectUsuario(clave);
+                        resultJson.put(Constantes.RESULT, true);
+                        break;
+                    case Constantes.PALABRAS:
+                        Palabra palabra = new Palabra(clave, "", "", usu);
+                        db.Dao().deletePalabras(palabra);
+                        resultJson.put(Constantes.RESULT, true);
+                        break;
+                    case Constantes.ALARMAS:
+                        // listaPalabras = db.Dao().selectPalabras();
+
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + tabla);
+                }
+            }
+            db.close();
+            call.resolve(resultJson);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            resultJson = new JSObject();
+            resultJson.put(Constantes.RESULT, false);
+            call.resolve(resultJson);
+        }
+    }
+
+
+
+
+    /************************************************* SERVIZE **************************************************/
 
     @PluginMethod()
     public void servizeOperations(PluginCall call) {
@@ -78,142 +237,6 @@ public class NatPlugin extends Plugin {
         }
     }
 
-    /** ********************************************** BD *****************************************************/
-    /**
-     * Inserta resgistros en la base de datos pasando por parametro un Json
-     * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
-     */
-    @PluginMethod()
-    public void insertDB(PluginCall call) {
-        JSObject resultJson = new JSObject();
-        try {
-            String tabla = call.getString(Constantes.TABLA);
-            JSObject registro = call.getObject(Constantes.REGISTRO);
-            JSObject row = registro.getJSObject("row");
-            Context context = getContext();
-            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
-            switch (tabla) {
-                case Constantes.USUARIOS:
-                    Usuario user = new Usuario(
-                            row.getString("usuario"),
-                            row.getString("loginPass"),
-                            row.getString("mailFrom"),
-                            row.getString("mailPass"));
-                    db.Dao().insertUsuario(user);
-                    resultJson.put(Constantes.RESULT, true);
-                    break;
-                case Constantes.PALABRAS:
-                    Palabra palabra = new Palabra(
-                            row.getString("clave"),
-                            row.getString("funcion"));
-                    db.Dao().insertPalabra(palabra);
-                    resultJson.put(Constantes.RESULT, true);
-                    break;
-                case Constantes.ALARMAS:
-                    Alarma alarma = new Alarma(
-                            row.getString("usuario"),
-                            row.getString("clave"),
-                            row.getString("numTlfTo"),
-                            row.getString("mailTo"),
-                            row.getBoolean("enable", false));
-                    db.Dao().insertAlarma(alarma);
-                    resultJson.put(Constantes.RESULT, true);
-                    break;
-            }
-            db.close();
-            call.resolve(resultJson);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            resultJson = new JSObject();
-            resultJson.put(Constantes.RESULT, false);
-            call.resolve(resultJson);
-        }
-
-
-    }
-
-
-    @PluginMethod()
-    public void selectDB(@NotNull PluginCall call) {
-        JSObject resultJson = new JSObject();
-        try {
-            String tabla = call.getString(Constantes.TABLA);
-            String clave = call.getString(Constantes.CLAVE);
-            Context context = getContext();
-            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
-            if (!clave.equals("")) {
-                /**consulta a la BD*/
-                switch (tabla) {
-                    case Constantes.USUARIOS:
-                        Usuario usuario = db.Dao().selectUsuario(clave);
-                        resultJson.put(Constantes.RESULT, true);
-                        JSObject user = new JSObject();
-                        user.put("usuario", usuario.usuario);
-                        user.put("loginPass", usuario.loginPass);
-                        user.put("mailFrom", usuario.mailFrom);
-                        user.put("mailPass", usuario.mailPass);
-                        resultJson.put(Constantes.REGISTRO, user);
-                        break;
-                    case Constantes.PALABRAS:
-                        // listaPalabras = db.Dao().selectPalabras();
-
-                        break;
-                    case Constantes.ALARMAS:
-                        // listaPalabras = db.Dao().selectPalabras();
-
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + tabla);
-                }
-            }
-            db.close();
-            call.resolve(resultJson);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            resultJson = new JSObject();
-            resultJson.put(Constantes.RESULT, false);
-            call.resolve(resultJson);
-        }
-    }
-
-
-    @PluginMethod()
-    public void selectFuncion(@NotNull PluginCall call) {
-        JSObject resultJson = new JSObject();
-        try {
-            String funcion = call.getString(Constantes.FUNCION);
-            Context context = getContext();
-            DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
-            if (!funcion.equals("")) {
-                /**consulta a la BD*/
-
-
-                List<Palabra> palabras = db.Dao().selectFuncion(funcion);
-                resultJson.put(Constantes.RESULT, true);
-                JSObject rows = new JSObject();
-                JSObject p = new JSObject();
-                int n = 0;
-                for (Palabra palabra : palabras) {
-                    p.put("clave", palabra.clave);
-                    p.put("funcion", palabra.funcion);
-                    p.put("fecha", palabra.fecha);
-                    rows.put(n + "", p);
-                    n += 1;
-                }
-                resultJson.put(Constantes.ROWS, rows);
-            }
-            db.close();
-            call.resolve(resultJson);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            resultJson = new JSObject();
-            resultJson.put(Constantes.RESULT, false);
-            call.resolve(resultJson);
-        }
-    }
-
-
-    /************************************************* SERVIZE **************************************************/
     public void toggleServicio() {
         Context context = getContext();
         try {
@@ -239,6 +262,53 @@ public class NatPlugin extends Plugin {
     }
 
     /**
+     *
+     * @param mensaje
+     */
+    public void bindServicio(String mensaje) {
+        try {
+            Context context = getContext();
+            if (!funciones.isServiceBindRunning(context)) {
+                Intent in = new Intent(context, ServicioBind_RecognitionListener.class);
+                in.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
+         /*       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startService(in);
+                } else {
+                    context.startService(in);
+                    context.bindService(in,connection,Context.BIND_AUTO_CREATE);
+                }*/
+
+
+                /************************************    receiver   SERVICIO   ************************************/
+                Receiver resultReceiver = new Receiver(new Handler());
+                Intent i = new Intent(getContext(), ServicioBind_RecognitionListener.class);
+                i.putExtra(Constantes.ORIGEN_INTENT, mensaje);
+                i.putExtra(Constantes.RECEIVER, resultReceiver);
+                if (getContext().bindService(i, connection, Context.BIND_AUTO_CREATE)) {  /** main enlazado al servicio servicio */
+                    if (bindServize != null) {
+                        bindServize.configurarSpeechService();
+                    }
+                    Log.i("bindeService", "intentamos enlazarnos al servicio/iniciarlo");
+                }
+            }
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void unBindServicio() {
+        if (bindServize != null) {
+          // bindServize.pararServicio();
+          // Context context = bindServize.getApplicationContext();
+          // context.stopService(new Intent(context, ServicioBind_RecognitionListener.class));
+            getContext().unbindService(connection);
+            bindServize = null;
+        }
+    }
+
+
+    /**
      * Interefaz utilizada para enlazarse al servicio iniciado => this.bindServize
      */
     private final ServiceConnection connection = new ServiceConnection() {
@@ -256,48 +326,6 @@ public class NatPlugin extends Plugin {
             toast.show();
         }
     };
-
-    public void bindServicio(String mensaje) {
-        try {
-            Context context = getContext();
-            if (!funciones.isServiceBindRunning(context)) {
-                Intent in = new Intent(context, ServicioBind_RecognitionListener.class);
-                in.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startService(in);
-                } else {
-                    context.startService(in);
-                }
-
-
-                /************************************    receiver   SERVICIO   ************************************/
-                Receiver resultReceiver = new Receiver(new Handler());
-                Intent i = new Intent(getContext(), ServicioBind_RecognitionListener.class);
-                i.putExtra(Constantes.ORIGEN_INTENT, mensaje);
-                i.putExtra(Constantes.RECEIVER, resultReceiver);
-                if (getContext().bindService(i, connection, Context.BIND_AUTO_CREATE)) {  /** main enlazado al servicio servicio */
-                    if (bindServize != null) {
-                        bindServize.configurarSpeechService();
-                    }
-                    Log.i("bindeService", "intentamos enlazarnos al servicio/iniciarlo");
-                }
-            } else {
-                unBindServicio();
-            }
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void unBindServicio() {
-        if (bindServize != null) {
-            bindServize.pararServicio();
-            Context context = bindServize.getApplicationContext();
-            context.stopService(new Intent(context, ServicioBind_RecognitionListener.class));
-            bindServize = null;
-        }
-    }
 
 
     /**
@@ -327,15 +355,21 @@ public class NatPlugin extends Plugin {
 
     /**************************************************  ToView ***************************************************/
     private void sendResult(String receiverPalabra) {
-        JSObject ret = new JSObject();
-        ret.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
-        notifyListeners(Constantes.HOME_EVENT, ret);
+        JSObject result = new JSObject();
+        result.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
+        notifyListeners(Constantes.HOME_EVENT, result);
     }
 
     private void sendPartial(String receiverPatial) {
-        JSObject ret = new JSObject();
-        ret.put(Constantes.RESULT, receiverPatial);//todo preparar la respuesta para el webView
-        notifyListeners(Constantes.PALABRA_EVENT, ret);
+        JSObject result = new JSObject();
+        result.put(Constantes.RESULT, receiverPatial);//todo preparar la respuesta para el webView
+        notifyListeners(Constantes.PARTIAL_EVENT, result);
+    }
+
+    private void sendPalabra(String receiverPalabra) {
+        JSObject result = new JSObject();
+        result.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
+        notifyListeners(Constantes.PALABRA_EVENT, result);
     }
 
 }

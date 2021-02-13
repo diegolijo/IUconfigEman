@@ -22,25 +22,13 @@ public class Constantes {
     public static final long PERIODO_EN_ALERTA = 30;
 
 
-    public static final int MENSAJE = 1;
-
-
-    public static final int PUNSACIONES_EMERGENCIA = 4;
-    public static final String TRIGER1 = "triger_de_primer_nivel";
-    public static final String TRIGER2 = "triger_de_segundo_nivel";
-
     public static final String PATH = "EMAN";
-
-    public static final String FILE_TXT = "palabras.txt";
-    public static final long TIEMPO_GPS = 1000 * 30;
-    public static final float DISTANCIA_GPS = 50;
 
     public static final String W_MAPS = "https://www.google.es/maps/search/";
     public static final String PERMITIR_APPS_POCO_SEGURAS = "https://myaccount.google.com/lesssecureapps";
     public static final String FRASE_ALERTA = "ok google";
 
     public static final String MSG_GPA_DISABLED = "El GPS esta desactivado, Es necesario para el funcionamiento";
-
 
     public static final String NOTIFICACION_PARCIAL = "PARCIAL";
     public static final String NOTIFICACION_PALABRA = "PALABRA";
@@ -72,12 +60,20 @@ public class Constantes {
     public static final String DB_NAME = "DB_EMAM";
     public static final String CLAVE = "clave";
     public static final String REGISTRO = "registro";
+    public static final String USER = "usuario";
     /**
      * tablas
      */
     public static final String PALABRAS = "PALABRAS";
     public static final String USUARIOS = "USUARIOS";
     public static final String ALARMAS = "ALARMAS";
+
+    /**
+     * funciones
+     */
+    public static final String TRIGER1 = "TRIGER1";
+    public static final String TRIGER2 = "TRIGER2";
+
     /**
      * acciones
      */
@@ -88,13 +84,18 @@ public class Constantes {
 
     public static final String RESULT = "result";
 
+    /**
+     * mensajes de error
+     */
+
 
     /**
      * ********************************  NAT PLUGIN SERVIZE *********************************
      **/
     public static final String PLUGIN_EVENT = "PLUGIN_EVENT";
-   public static final String HOME_EVENT = "HOME_EVENT";
-    public static final  String PALABRA_EVENT = "PALABRA_EVENT";
+    public static final String HOME_EVENT = "HOME_EVENT";
+    public static final String PALABRA_EVENT = "PALABRA_EVENT";
+    public static final String PARTIAL_EVENT = "PARTIAL_EVENT";
     public static final String ACTION = "action";
 
     public static final String ON = "ON";
@@ -102,7 +103,5 @@ public class Constantes {
     public static final String BIND = "BIND";
     public static final String UNBIND = "UNBIND";
 
-
-    public static final String FUNCION = "funcion";
 
 }

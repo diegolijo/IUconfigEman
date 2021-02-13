@@ -3,10 +3,6 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Constants {
 
-
-
-
-
     constructor() {
     }
 
@@ -23,15 +19,12 @@ export class Constants {
     /*********************************************** BD ************************************************/
     // tablas
     public static PALABRAS = 'PALABRAS';
-        // palabras[funciones]
-        public static TRIGER1 = 'triger_de_primer_nivel';
-        public static TRIGER2 = 'triger_de_segundo_nivel';
+    // palabras[funciones]
+            public static TRIGER1 = 'TRIGER1';
+            public static TRIGER2 = 'TRIGER2';
 
     public static USUARIOS = 'USUARIOS';
     public static ALARMAS = 'ALARMAS';
-
-
-
 
     // acciones
     public static INSERT = 'INSERT';
@@ -45,8 +38,11 @@ export class Constants {
     public static OFF = 'OFF';
     public static BIND = 'BIND';
     public static UNBIND = 'UNBIND';
+
+    /******************************************** capacitor *********************************************/
     public static PLUGIN_EVENT = 'PLUGIN_EVENT';
     public static HOME_EVENT = 'HOME_EVENT';
     public static PALABRA_EVENT = 'PALABRA_EVENT';
+    public static PARTIAL_EVENT = 'PARTIAL_EVENT';
 }
 
