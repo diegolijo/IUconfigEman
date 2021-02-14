@@ -107,17 +107,20 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-  public async toggleServize() {
+  public async toggleServize(event) {
     if (this.platform.is('cordova')) {
-      const result  = await this.isServiceRuning();
-      if (!result) {
-        await this.startServize();
+      const result = await this.isServiceRuning();
+      if (event.detail.checked) {
+        if (!result) {
+          await this.startServize();
+        }
       } else {
-        await this.stopServize();
+        if (result) {
+          await this.stopServize();
+        }
       }
-
-
     } else {
+      if (event.detail.checked) { }
 
     }
   }

@@ -44,6 +44,9 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   ) {
   }
 
+  // TODO suscribe back buton para cerarar modal o no abrir como modal
+
+
   async ngOnInit() {
     if (this.platform.is('cordova')) {
       this.newPalabra = this.modelCreator.emptyIPalabra();

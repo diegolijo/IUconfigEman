@@ -38,26 +38,22 @@ public class Funciones {
     }
 
 
-
     public void vibrar(Context context, long ms) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             v.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
-//            long[] pattern = {1500, 800, 800, 800};
-//            v.vibrate(VibrationEffect.createWaveform(pattern, 0));
         } else {
             //deprecated in API 26
             v.vibrate(ms);
         }
     }
 
-
+    /** long[] pattern = {1500, 800, 800, 800};*/
+    /** v.vibrate(VibrationEffect.createWaveform(pattern, 0));*/
     public void vibrarEffect(Context context, long ms) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             v.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
-//            long[] pattern = {1500, 800, 800, 800};
-//            v.vibrate(VibrationEffect.createWaveform(pattern, 0));
         } else {
             //deprecated in API 26
             v.vibrate(ms);
@@ -201,7 +197,6 @@ public class Funciones {
         return strArray[0]; //  return   this.decodeKaldiJSon(  json, "text")[0];
 
     }
-
 
 
 }

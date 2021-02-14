@@ -217,6 +217,7 @@ public class NatPlugin extends Plugin {
     @PluginMethod()
     public void servizeOperations(PluginCall call) {
         String accion = call.getString(Constantes.ACTION);
+        String usuario = call.getString(Constantes.USUARIO);
         JSObject resultJson = new JSObject();
         switch (accion) {
             case Constantes.BIND:
@@ -226,7 +227,7 @@ public class NatPlugin extends Plugin {
                 unBindServicio();
                 break;
             case Constantes.ON:
-                this.onServicio();
+                this.onServicio(usuario);
                 break;
             case Constantes.OFF:
                 this.offServicio();
@@ -240,11 +241,12 @@ public class NatPlugin extends Plugin {
         }
     }
 
-    public void onServicio() {
+    public void onServicio(String usuario) {
         Context context = getContext();
         try {
             if (!funciones.isServiceRunning(context)) {
                 Intent i = new Intent(context, Servicio_RecognitionListener.class);
+                i.putExtra(Constantes.USUARIO,usuario);
                 //todo enviar usuario para cargar sus palabras y alarmas en el servicio para
                 i.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

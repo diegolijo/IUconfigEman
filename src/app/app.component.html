@@ -2,7 +2,8 @@
   <ion-split-pane contentId="main-content">
 
     <!--The global side menu-->
-    <ion-menu contentId="main-content" type="overlay" ><!--  (ionWillOpen)="" -->
+    <ion-menu contentId="main-content" type="overlay">
+      <!--  (ionWillOpen)="" -->
       <ion-header>
         <ion-toolbar color="primary">
           <div class="textCenter bigFont fontBold"> {{ 'SIDE_MENU.CONFIGURACION' | translate:{value: null} }}
@@ -16,9 +17,9 @@
           <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
             <ion-label class="mediumFont">{{ 'SIDE_MENU.DARK_MODE' | translate:{value: null} }}
             </ion-label>
-            <ion-toggle slot="end" checked="{{this.darkMode}}" (ionChange)="this.toggleTheme($event)"></ion-toggle>
-            <!-- <ion-label hidden class="ion-padding-start" slot="start">{{ 'SIDE_MENU.LOCATION' | translate:{value: null} }}</ion-label> -->
-            <!-- <ion-toggle hidden disabled="true" slot="end" (ionChange)="setLocationPermission($event)"></ion-toggle> -->
+            <ion-toggle slot="end" checked="{{this.darkMode}}" (ionChange)="this.toggleTheme($event)" color="danger">
+            </ion-toggle>
+
           </ion-item>
         </ion-list>
 
@@ -31,7 +32,7 @@
             <ion-icon style="color: var(--ion-color-dark)" name="log-out"></ion-icon>
             <div style="color: var(--ion-color-dark)">
               {{ 'SIDE_MENU.LOGOUT' | translate:{value: null} }}</div>
-          </ion-button>        
+          </ion-button>
         </ion-toolbar>
       </ion-footer>
     </ion-menu>

@@ -19,7 +19,7 @@
   "CONFIGURACION": "Configuración",
   "SAMPLE_TEXT": "Texto de prueba",
   "LOGIN": {
-    "TITLE": "Login",
+    "TITLE": "Iniciar sesión",
     "USERNAME": "Usuario",
     "USERNAME_REQUIRED": "Usuario requerido",
     "PASSWORD": "Contraseña",
@@ -46,7 +46,8 @@
   "HOME": {
     "TITLE": "EMAM",
     "ESCUCHAR": "Escuchar",
-    "BTN_PALABRAS":"Filtros"
+    "BTN_PALABRAS":"Filtros",
+    "ENABLE_SERVIZE":"Habilitar Servicio"
   },
   "NEW_PALABRA_MODAL": {
     "TITLE": "Nueva Palabra",
@@ -55,5 +56,11 @@
     "FUNCTION_TYPE": "Función",
     "PALABRA": "Palabra",
     "NO_INSERT": "No se ha guardado el filtro"
+  },
+  "SIDE_MENU": {
+    "LOGOUT": "Cerrar Sesión",
+    "CONFIGURACION": "Configuración",
+    "DARK_MODE": "Modo Oscuro"
+
   }
 }

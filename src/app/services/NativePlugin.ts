@@ -1,3 +1,4 @@
+import { AppUser } from './AppUser';
 import { Injectable } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
@@ -13,13 +14,15 @@ export class NativePlugin {
 
     constructor(
         private platform: Platform,
+        private appUser: AppUser
     ) {
     }
 
     /******************************************** servicio *********************************************/
     public async startService() {
         if (this.platform.is('cordova')) {
-            const result = await NatPlugin.servizeOperations({ action: Constants.ON });
+            const user = this.appUser.getAppUser();
+            const result = await NatPlugin.servizeOperations({ action: Constants.ON, usuario: user.usuario });
             return result;
         } else { }
 

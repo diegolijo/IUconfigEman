@@ -2,7 +2,6 @@ package www.vayapedal.emam;
 
 import android.Manifest;
 import android.hardware.display.DisplayManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -16,10 +15,8 @@ import android.os.AsyncTask;
 
 
 import android.app.Service;
-import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.ResultReceiver;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -29,6 +26,7 @@ import androidx.core.app.NotificationCompat;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.room.Room;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -70,6 +68,9 @@ import javax.mail.internet.MimeMessage;
 
 import android.net.Uri;
 
+import www.vayapedal.emam.datos.DB;
+import www.vayapedal.emam.datos.Palabra;
+
 import static android.telephony.AvailableNetworkInfo.PRIORITY_LOW;
 import static android.view.Display.STATE_OFF;
 import static android.view.Display.STATE_ON;
@@ -80,36 +81,34 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     private final Funciones funciones = new Funciones(this);
 
-    /* fuses para los toast*/
+    /**fuses para los toast*/
     private boolean mostrarToastConfig = false;
     private boolean mostrarToastUsuario = true;
 
-    /*Vosk-Kaldi*/
+    /**Vosk-Kaldi*/
     private static Model model;
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
 
-    /*GPS*/
+    /**GPS*/
     private LocationManager locManager;
     private String localizacion;
 
-    /*VARIABLES CONFIGURACION*/
-    /* MAIL*/
+    /**VARIABLES CONFIGURACION*/
+    private String usuario;
+    /**MAIL*/
     private String asuntoMail = "EMAN Alerta";
     private String passMail = "Angustia31";
     private String fromMail = "enviosemam@gmail.com";
     private String cuerpoMail = "Envio alerta! \nposición:";
     private String toMail = "diegolijo@gmail.com";
     private String numLlamada = "662023955";
-
-    /*SMS*/
-    private String cuerpoSms = "Alarma :";
-    private String numSms = "662023955";
-    private ArrayList<Palabra> listaPalabras = new ArrayList<>(); // todo palabras contra las que se compara
-
-
     private String texto = "cuerpo del mail";
 
+    /**SMS*/
+    private String cuerpoSms = "Alarma :";
+    private String numSms = "662023955";
+    private List<Palabra> listaPalabras = new ArrayList<>();
 
 
     /*********************************************notificacion para startForeground**************************************/
@@ -121,7 +120,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             channel = "";
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel)
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark) //todo icono para la notificación
+                .setSmallIcon(R.drawable.icon_custom_large) //todo icono para la notificación
                 .setContentTitle("EMAN");
         Notification notification;
         notification = mBuilder
@@ -171,7 +170,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                        configurarSpeechService();
+                        initSpeechService();
                         break;
                     case STATE_ON:
                         pararSpeechService();
@@ -184,16 +183,18 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    /**
-     * ----------->
-     * ********************************** creamos listener para el estado de la pantalla bloqueo *******************************************
-     */
+    /********************************************************  INIT DB ************************************************************* */
+    private void initDB() {
+        DB db = Room.databaseBuilder(this, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+        listaPalabras = db.Dao().selectPalabras(usuario);
+    }
+
+
     @Override
     public void onCreate() {
         try {
             super.onCreate();
             this.displayListener();
-
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,14 +204,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
-            // todo recogemos el usuaro y visitamos la BD -> select palabras
-            this.listaPalabras.add(new Palabra("agua", Constantes.TRIGER1, new Date()));
-            this.listaPalabras.add(new Palabra("fuego", Constantes.TRIGER2, new Date()));
             String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
+            usuario = intent.getExtras().getString(Constantes.USUARIO);
             switch (s) {
                 case Constantes.ON_TOGGLE:
                     this.startForeground(Constantes.ID_SERVICIO, createNotification());
-                    configurarSpeechService();
+                    initSpeechService();
                     break;
                 case Constantes.ON_WIDGET:
                     break;
@@ -247,16 +246,15 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-
-
-    public void configurarSpeechService() {
+    public void initSpeechService() {
         if (speechService == null) {
-            funciones.vibrar(this, Constantes.VIRAR_CORTO);
             new SetupSpeechTask(this).execute();
             if (mostrarToastConfig) {
                 Toast toast = Toast.makeText(this, R.string.cconfigurando, Toast.LENGTH_LONG);
                 toast.show();
             }
+            this.initDB();
+            funciones.vibrar(this, Constantes.VIRAR_CORTO);
         }
     }
 
@@ -390,14 +388,13 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     }
 
-
     @Override
     public void onPartialResult(String hypothesis) {
         try {
             String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
             for (String s : arPartial) {
                 if (!s.equals("")) {
-                //    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+                    //    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
                 }
             }
         } catch (Exception e) {
@@ -429,15 +426,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
      */
     private void procesarResultSpechToText(Context context, String s, int confianza) {
 
-        /** enviamos la palabra al receiver -> recogemos en Nat Plugin */
-      //  toReceiver(s, Constantes.NOTIFICACION_PALABRA);
-
-        //   recorremos las palabas BD
+        /**recorremos las palabras filtro*/
         for (Palabra palabra : listaPalabras) {
-            switch (palabra.rol) {
+            switch (palabra.funcion) {
                 case Constantes.TRIGER1:
                     if (palabra.clave.equals(s)) {
-                        //actulaizamos la fecha a todas las palabras
+                        /**si hay una coincidencia actulaizamos la fecha a todas las palabras*/
                         for (Palabra p : listaPalabras) {
                             p.fecha = new Date();
                         }
@@ -456,7 +450,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         long dif = Math.abs(thisTime - save) / 1000;
                         if (dif < Constantes.PERIODO_EN_ALERTA) {
                             funciones.vibrar(context, Constantes.VIBRAR_LARGO);
-                            getLocalizacion();
+                            this.getLocalizacion();
                             funciones.llamar(numLlamada, this);
                         } else {
                             funciones.vibrar(context, Constantes.VIRAR_CORTO);
@@ -470,14 +464,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     /**
      * PROCESAR FRASE
-     * este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
+     * este metodo se llama despues de todas las llamadas a this.procesarResultadoSpechToText()
      */
     private void procesarTextTextToSpech(String frase) {
-        //     toReceiver(frase, Constantes.NOTIFICACION_FRASE);
-        if (frase.equals(Constantes.FRASE_ALERTA)) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Pardillo XD", Toast.LENGTH_SHORT);
-            toast.show();
-        }
+
     }
 
 
@@ -494,14 +484,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                     fusedLocationClient.getLastLocation()
                             .addOnSuccessListener(Runnable::run, location -> {
                                 if (location != null) {
-                                    onResulLocation(location);
+                                    this.onResulLocation(location);
                                 }
                             });
 
                     fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)  //getLastLocation()
                             .addOnSuccessListener(Runnable::run, location -> {
                                 if (location != null) {
-                                    onResulLocation(location);
+                                    this.onResulLocation(location);
                                 }
                             });
 
@@ -520,24 +510,16 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         localizacion = lat + "," + lon;
-
         new MailBuilder(this).execute();
-
         try {
             String text = cuerpoSms + " " + Constantes.W_MAPS + localizacion;
-            // funciones.enviarSms(numSms, text);
+            funciones.enviarSms(numSms, text);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-
-    public void enviaMail(String texto) {
-        this.texto = texto;
-        new MailBuilder(this).execute();
-
-    }
 
     private class MailBuilder extends AsyncTask<Void, Void, Void> {
         WeakReference<Servicio_RecognitionListener> activityReference;
@@ -576,8 +558,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
             } catch (MessagingException e) {
-                /* NOS REDIRIGE A LA WEB DE GOOGLE para permitir al acceso de aplicaciones poco seguras */
-                // todo - debe ser el mail@  con el que está logeado el telefono
+                /** NOS REDIRIGE A LA WEB DE GOOGLE para permitir al acceso de aplicaciones poco seguras */
+                // fixme- debe ser el gmail@  con el que está logeado el telefono
                 String url;
                 url = Constantes.PERMITIR_APPS_POCO_SEGURAS;
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

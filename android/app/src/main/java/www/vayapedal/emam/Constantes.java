@@ -52,6 +52,7 @@ public class Constantes {
 
     public static final String RESULT = "result";
     public static final String ACTION = "action";
+    public static final String USUARIO = "usuario";
 
     public static final String HOME_EVENT = "HOME_EVENT";
     public static final String PALABRA_EVENT = "PALABRA_EVENT";
@@ -111,4 +112,5 @@ public class Constantes {
 
 
     public static final String IS_RUNNING = "IS_RUNNING";
+
 }
