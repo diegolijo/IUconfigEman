@@ -24,6 +24,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import androidx.annotation.NonNull;
@@ -88,16 +89,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
 
-    /*comunicacion SERVICIO*/
-    private final IBinder binder = new LocalBinder();
-    private ResultReceiver resultReceiver;
-
-    //banderas
-    public boolean sevicioIniciciado = false;
-    public boolean isActividadEnlazada = true;
-
     /*GPS*/
-    private FusedLocationProviderClient fusedLocationClient;
     private LocationManager locManager;
     private String localizacion;
 
@@ -118,24 +110,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     private String texto = "cuerpo del mail";
 
-    /* clase utilizda para devolver  Binder para acceder a las variables y metodos publicos del servicio*/
-    public class LocalBinder extends Binder {
-        Servicio_RecognitionListener getService() {
-            return Servicio_RecognitionListener.this;
-        }
-    }
-
-    /* ENVIARDO PAQUETE Y RESULT_DATA_KEY AL MAIN*/
-    private void toReceiver(String p, String key) {
-        Bundle bundle = new Bundle();
-        bundle.putString(key, p);
-        resultReceiver.send(Constantes.SUCCESS_RESULT, bundle);
-        if (mostrarToastConfig) {
-            Toast toast = Toast.makeText(this, " (speechService) ENVIANDO DATOS [" + p + "]", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-
-    }
 
 
     /*********************************************notificacion para startForeground**************************************/
@@ -250,33 +224,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         return START_STICKY;
     }
 
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
-        String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-        if (s.equals(Constantes.ON_CONFIG)) {
-            toReceiver(Constantes.ON_CONFIG, Constantes.NOTIFICACION_SERVICIO);
-        }
-        if (s.equals(Constantes.ON_TOGGLE)) {
-            toReceiver(Constantes.ON_TOGGLE, Constantes.NOTIFICACION_SERVICIO);
-        }
-        return binder;
+        return null;
     }
 
-    @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        toReceiver(Constantes.OFF_SERVICIO, Constantes.NOTIFICACION_SERVICIO);
-        if (mostrarToastConfig) {
-            Toast toast = Toast.makeText(getApplicationContext(), "onUnbind", Toast.LENGTH_LONG);
-            toast.show();
-        }
-        return super.onUnbind(intent);
-    }
 
     @Override
     public void onDestroy() {
@@ -292,6 +245,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         funciones.vibrar(this, 2000);
         super.onDestroy();
     }
+
+
 
 
     public void configurarSpeechService() {
@@ -442,7 +397,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
             for (String s : arPartial) {
                 if (!s.equals("")) {
-                    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+                //    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
                 }
             }
         } catch (Exception e) {
@@ -475,7 +430,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private void procesarResultSpechToText(Context context, String s, int confianza) {
 
         /** enviamos la palabra al receiver -> recogemos en Nat Plugin */
-        toReceiver(s, Constantes.NOTIFICACION_PALABRA);
+      //  toReceiver(s, Constantes.NOTIFICACION_PALABRA);
 
         //   recorremos las palabas BD
         for (Palabra palabra : listaPalabras) {
@@ -531,7 +486,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             int permGPS = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
             int permGps = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permGPS == PackageManager.PERMISSION_GRANTED && permGps == PackageManager.PERMISSION_GRANTED) {
-                fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+                /*GPS*/
+                FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 

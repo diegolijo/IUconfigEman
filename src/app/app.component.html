@@ -1,3 +1,45 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane contentId="main-content">
+
+    <!--The global side menu-->
+    <ion-menu contentId="main-content" type="overlay" ><!--  (ionWillOpen)="" -->
+      <ion-header>
+        <ion-toolbar color="primary">
+          <div class="textCenter bigFont fontBold"> {{ 'SIDE_MENU.CONFIGURACION' | translate:{value: null} }}
+          </div>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-list class="paddingV2 paddingH5">
+          <!-- dark mode -->
+          <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
+            <ion-label class="mediumFont">{{ 'SIDE_MENU.DARK_MODE' | translate:{value: null} }}
+            </ion-label>
+            <ion-toggle slot="end" checked="{{this.darkMode}}" (ionChange)="this.toggleTheme($event)"></ion-toggle>
+            <!-- <ion-label hidden class="ion-padding-start" slot="start">{{ 'SIDE_MENU.LOCATION' | translate:{value: null} }}</ion-label> -->
+            <!-- <ion-toggle hidden disabled="true" slot="end" (ionChange)="setLocationPermission($event)"></ion-toggle> -->
+          </ion-item>
+        </ion-list>
+
+      </ion-content>
+
+      <ion-footer>
+        <ion-toolbar class="textCenter">
+          <ion-button class="mediumFont" style=" width: 80%;" fill="outline" size="large" color="medium"
+            (click)="logout()">
+            <ion-icon style="color: var(--ion-color-dark)" name="log-out"></ion-icon>
+            <div style="color: var(--ion-color-dark)">
+              {{ 'SIDE_MENU.LOGOUT' | translate:{value: null} }}</div>
+          </ion-button>        
+        </ion-toolbar>
+      </ion-footer>
+    </ion-menu>
+
+
+
+    <!--All the App content-->
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+
+  </ion-split-pane>
 </ion-app>

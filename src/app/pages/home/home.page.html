@@ -1,5 +1,7 @@
 <ion-header>
   <ion-toolbar>
+
+
     <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
       {{ 'HOME.TITLE' | translate:{value: null} }}
     </div>
@@ -8,31 +10,37 @@
 
 
 <ion-content>
-
-
- 
-
-
-
-
-  <ion-textarea [rows]="this.helper.getTextLineBreaks(this.resultText)" [(ngModel)]="this.resultText" color="dark">
-  </ion-textarea>
+  <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases">
+    {{frase}}
+  </div>
+  <!--  <ion-textarea [rows]="this.helper.getTextLineBreaks(this.resultText)" [(ngModel)]="this.resultText" color="dark">
+  </ion-textarea> -->
 
 
 </ion-content>
 
 <ion-footer class="textCenter">
   <ion-toolbar>
+    <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
+      <ion-label class="mediumFont">{{ 'SIDE_MENU.DARK_MODE' | translate:{value: null} }}
+      </ion-label>
+      <ion-toggle slot="end" [(checked)]="this.guardianServize" (ionChange)="this.toggleServize()"></ion-toggle>
+    </ion-item>
+  </ion-toolbar>
+
+  <ion-toolbar>
     <ion-button fill="outline" (click)="this.onClickNewPalabraModal()">
       {{ 'HOME.BTN_PALABRAS' | translate:{value: null} }}
     </ion-button>
 
-    <ion-button [hidden]="!this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger"  slot="end" (click)="this.onClickBindServize()">
-      <ion-spinner name="dots"  color="danger"></ion-spinner>
+    <ion-button [hidden]="!this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger" slot="end"
+      (click)="this.onClickBindServize()">
+      <ion-spinner name="dots" color="danger"></ion-spinner>
     </ion-button>
 
 
-    <ion-button  [hidden]="this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger"  slot="end" (click)="this.onClickBindServize()">
+    <ion-button [hidden]="this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger" slot="end"
+      (click)="this.onClickBindServize()">
       <ion-icon size="large" name="chatbubble-ellipses-outline" slot="icon-only"></ion-icon>
     </ion-button>
   </ion-toolbar>

@@ -49,12 +49,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     private ResultReceiver resultReceiver;
 
 
-    public void pararServicio(){
-        this.stopSelf();
-    }
-
-
-
     @Override
     public void onCreate() {
         try {
@@ -66,30 +60,10 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
         }
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-      //  this.startForeground(Constantes.ID_SERVICIO_BIND, createNotification());
-            String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-            configurarSpeechService();
-
-        } catch (
-                Exception exception) {
-            exception.printStackTrace();
-        }
-        return START_STICKY;
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
         resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
-        String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-        if (s.equals(Constantes.ON_CONFIG)) {
-            toReceiver(Constantes.ON_CONFIG, Constantes.NOTIFICACION_SERVICIO);
-        }
-        if (s.equals(Constantes.ON_TOGGLE)) {
-            toReceiver(Constantes.ON_TOGGLE, Constantes.NOTIFICACION_SERVICIO);
-        }
         return binder;
     }
 
@@ -100,7 +74,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
 
     @Override
     public boolean onUnbind(Intent intent) {
-        toReceiver(Constantes.OFF_SERVICIO, Constantes.NOTIFICACION_SERVICIO);
         return super.onUnbind(intent);
     }
 
@@ -112,7 +85,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
         funciones.vibrar(this, 2000);
         super.onDestroy();
     }
-
 
 
     /* clase utilizda para devolver  Binder para acceder a las variables y metodos publicos del servicio*/
@@ -131,50 +103,10 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     }
 
 
-
-
-    /*********************************************notificacion para startForeground**************************************/
-    public Notification createNotification() {
-        String channel;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            channel = createChannel();
-        else {
-            channel = "";
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel)
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark) //todo icono para la notificación
-                .setContentTitle("EMAN");
-        Notification notification;
-        notification = mBuilder
-                .setPriority(PRIORITY_LOW)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .build();
-        return notification;
-    }
-
-    @NonNull
-    @TargetApi(26)
-    private synchronized String createChannel() {
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        String name = "Ao coidado de EMAN";
-        int importance = NotificationManager.IMPORTANCE_LOW;
-        NotificationChannel mChannel = new NotificationChannel("EMAN channel", name, importance);
-        mChannel.enableLights(true);
-        mChannel.setLightColor(Color.BLUE);
-        if (mNotificationManager != null) {
-            mNotificationManager.createNotificationChannel(mChannel);
-        } else {
-            stopSelf();
-        }
-        return "EMAN channel";
-    }
-
-
     public void configurarSpeechService() {
         if (speechService == null) {
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
             new SetupSpeechTask(this).execute();
-
         }
     }
 
@@ -210,19 +142,20 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
         }
     }
 
-
+    /**
+     * ********** arranca el reconocedor **********>>
+     */
     private void iniciarSpeechService() {
         try {
-            if (speechService.startListening()) {  /** *********** arranca el reconocedor **********>>*/
-                Toast toast = Toast.makeText(this, "El reconocimiento de voz esta habilitado", Toast.LENGTH_SHORT);
-                toast.show();
-            }
+            speechService.startListening();
         } catch (Exception e) {
-
             e.fillInStackTrace();
         }
     }
 
+    /**
+     * ********** para el reconocedor **********>>
+     */
     public void pararSpeechService() {
         try {
             if (speechService != null) {
@@ -273,6 +206,12 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     }
 
 
+    /**
+     * {
+     * "partial" :"esto amigo"
+     * }
+     */
+
     @Override
     public void onPartialResult(String hypothesis) {
         try {
@@ -310,7 +249,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
      * INVOCADO CADA VEZ QUE TENEMOS UN RESULTADO DEL SPEECH CON INFORMACION
      */
     private void procesarResultSpechToText(Context context, String s, int confianza) {
-        toReceiver(s, Constantes.NOTIFICACION_PALABRA);
+
     }
 
 
@@ -319,8 +258,12 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
      * este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
      */
     private void procesarTextTextToSpech(String frase) {
-
-
+        toReceiver(frase, Constantes.NOTIFICACION_PALABRA);
+        if(frase.equals("ok google")){
+            Toast toast = new Toast(getApplicationContext());
+            toast.setText("PArdillo xDD");
+            toast.show();
+        }
     }
 
 

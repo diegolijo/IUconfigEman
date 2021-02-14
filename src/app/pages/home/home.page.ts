@@ -22,10 +22,11 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   private appUser: any;
+  public guardianServize = false;
 
   // servicio
   public isBindService = false;
-  public resultText = '';
+  public resultText = [];
   public pluginListener: any;
 
   constructor(
@@ -42,22 +43,36 @@ export class HomePage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    if (this.platform.is('cordova')) {
 
+
+
+    } else {  // PC
+
+    }
   }
 
-  async ionViewWillEnter() {
+  async ionViewDidEnter() {
     this.appUser = this.ProAppUser.getAppUser();
-
     if (this.platform.is('cordova')) {
       if (this.appUser.usuario === '') {
         this.router.navigate(['login']);
       }
+      this.guardianServize = await this.isServiceRuning();
 
-    } else {
-      this.resultText += ' ' + this.resultText;
+    } else {  // PC
+
     }
+  }
 
 
+  private async isServiceRuning() {
+    const result = await this.nativePlugin.isServizeRunning();
+    let running = false;
+    if (result.result) {
+      running = true;
+    }
+    return running;
   }
 
 
@@ -92,11 +107,18 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-  public onClickStartServize() {
+  public async toggleServize() {
     if (this.platform.is('cordova')) {
-      // TODO arranca servicio en primer plano 
+      const result  = await this.isServiceRuning();
+      if (!result) {
+        await this.startServize();
+      } else {
+        await this.stopServize();
+      }
+
+
     } else {
-      this.resultText += ' ' + this.resultText;
+
     }
   }
 
@@ -116,6 +138,15 @@ export class HomePage implements OnInit, OnDestroy {
 
 
   /************************************************ servize ************************************************/
+
+  public async startServize() {
+    const result = await this.nativePlugin.startService();
+  }
+
+  public async stopServize() {
+    const result = await this.nativePlugin.stopService();
+  }
+
   public async bindServize() {
     this.isBindService = true;
     const result = await this.nativePlugin.bindService();
@@ -124,6 +155,10 @@ export class HomePage implements OnInit, OnDestroy {
   public async unBindServize() {
     this.isBindService = false;
     const result = await this.nativePlugin.unBindServize();
+  }
+
+  public async isServizeRunning() {
+    const result = await this.nativePlugin.isServizeRunning();
   }
 
 
@@ -141,7 +176,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   // resultados de la capa nativa -> result: "agua"
   public resultFromNative(result) {
-    this.resultText += ' ' + result.result;
+    this.resultText.push(result.result);
+
     this.changeDetectorRef.detectChanges();
   }
 

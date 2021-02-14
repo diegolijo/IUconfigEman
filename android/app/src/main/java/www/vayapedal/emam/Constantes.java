@@ -13,7 +13,6 @@ public class Constantes {
     public static final int PERMISSIONS_REQUEST_SMS = 5;
 
     public static final int VIRAR_CORTO = 100;
-    public static final int VIBRAR_MEDIO = 500;
     public static final int VIBRAR_LARGO = 1000;
 
     /**
@@ -22,7 +21,6 @@ public class Constantes {
     public static final long PERIODO_EN_ALERTA = 30;
 
 
-    public static final String PATH = "EMAN";
 
     public static final String W_MAPS = "https://www.google.es/maps/search/";
     public static final String PERMITIR_APPS_POCO_SEGURAS = "https://myaccount.google.com/lesssecureapps";
@@ -47,6 +45,18 @@ public class Constantes {
     public static final String RECEIVER = "RECEIVER";
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
+
+    /**
+     * ******************************** Native  Plugin ******************************
+     **/
+
+    public static final String RESULT = "result";
+    public static final String ACTION = "action";
+
+    public static final String HOME_EVENT = "HOME_EVENT";
+    public static final String PALABRA_EVENT = "PALABRA_EVENT";
+    public static final String FRASE_EVENT = "FRASE_EVENT";
+    public static final String PARTIAL_EVENT = "PARTIAL_EVENT";
 
 
     /**
@@ -82,7 +92,7 @@ public class Constantes {
     public static final String UPDATE = "UPDATE";
     public static final String DELETE = "DELETE";
 
-    public static final String RESULT = "result";
+
 
     /**
      * mensajes de error
@@ -90,13 +100,9 @@ public class Constantes {
 
 
     /**
-     * ********************************  NAT PLUGIN SERVIZE *********************************
+     * ********************************   SERVIZE *********************************
      **/
-    public static final String PLUGIN_EVENT = "PLUGIN_EVENT";
-    public static final String HOME_EVENT = "HOME_EVENT";
-    public static final String PALABRA_EVENT = "PALABRA_EVENT";
-    public static final String PARTIAL_EVENT = "PARTIAL_EVENT";
-    public static final String ACTION = "action";
+
 
     public static final String ON = "ON";
     public static final String OFF = "OFF";
@@ -104,4 +110,5 @@ public class Constantes {
     public static final String UNBIND = "UNBIND";
 
 
+    public static final String IS_RUNNING = "IS_RUNNING";
 }

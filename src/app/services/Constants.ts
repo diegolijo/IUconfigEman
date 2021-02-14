@@ -7,7 +7,7 @@ export class Constants {
     }
 
     /*********************************************** APP ***********************************************/
-    public static APP_VERSION = '2.0.1';
+    public static APP_VERSION = '2.0.2';
     public static CARACTERES_POR_LINEA = 45;
 
     /********************************************** login **********************************************/
@@ -38,11 +38,13 @@ export class Constants {
     public static OFF = 'OFF';
     public static BIND = 'BIND';
     public static UNBIND = 'UNBIND';
+    public static IS_RUNNING = 'IS_RUNNING';
 
     /******************************************** capacitor *********************************************/
     public static PLUGIN_EVENT = 'PLUGIN_EVENT';
     public static HOME_EVENT = 'HOME_EVENT';
     public static PALABRA_EVENT = 'PALABRA_EVENT';
     public static PARTIAL_EVENT = 'PARTIAL_EVENT';
+
 }
 

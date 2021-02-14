@@ -46,10 +46,14 @@ export class NativePlugin {
             const result = await NatPlugin.servizeOperations({ action: Constants.UNBIND });
             return result;
         } else { }
-
-
     }
 
+    public async isServizeRunning() {
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.servizeOperations({ action: Constants.IS_RUNNING });
+            return result;
+        } else { }
+    }
     /********************************************** listener ********************************************/
 
     public async startListener() {

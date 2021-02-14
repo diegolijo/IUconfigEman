@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Platform } from '@ionic/angular';
+import { AlertController, MenuController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppUser } from './services/AppUser';
-import { ModelCreator } from './services/model_ceator';
+import { Helper } from './services/Helper';
 
 
 
@@ -23,7 +24,11 @@ export class AppComponent implements OnInit {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private appUser: AppUser
+    private appUser: AppUser,
+    private alertCtrl: AlertController,
+    private router: Router,
+    private menuController: MenuController,
+    private helper: Helper
   ) {
     this.initializeApp();
     /* This line would incorporate the language detection */
@@ -51,10 +56,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public toggleTheme(event: any) {
-    this.darkMode = event.detail.checked;
-    this.setAppTheme(this.darkMode);
-  }
 
   public setAppTheme(dark: boolean) {
     if (dark) {
@@ -63,4 +64,49 @@ export class AppComponent implements OnInit {
     }
     document.body.setAttribute('color-theme', 'light');
   }
+
+
+  public toggleTheme(event: any) {
+    this.darkMode = event.detail.checked;
+    this.setAppTheme(this.darkMode);
+  }
+
+
+
+
+
+  async logout() {
+    try {
+      const alert = await this.alertCtrl.create({
+        header: await this.translate.get('LOGOUT.TITLE').toPromise(),
+        subHeader: await this.translate.get('LOGOUT.TEXT').toPromise(),
+        message: '',
+        buttons: [{
+          text: await this.translate.get('NO').toPromise(),
+          role: 'cancel',
+          cssClass: 'btn-cancel'
+        }, {
+          text: await this.translate.get('SI').toPromise(),
+          handler: async () => {
+            try {
+              // await this.authenticationService.logout();
+              this.appUser.emptyAppUser();
+              await this.menuController.close();
+              this.router.navigateByUrl('/login');
+            } catch (error) {
+              throw (error);
+            }
+          },
+          cssClass: 'btn-success'
+        }]
+      });
+      await alert.present();
+      await alert.onDidDismiss();
+    } catch (error) {
+      this.helper.showMessage(error.message);
+    }
+  }
+
+
+
 }

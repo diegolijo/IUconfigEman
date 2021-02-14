@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.room.Room;
 
+import com.getcapacitor.Bridge;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
@@ -130,37 +131,37 @@ public class NatPlugin extends Plugin {
             Context context = getContext();
             DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
 
-                /**consulta a la BD*/
-                switch (tabla) {
-                    case Constantes.USUARIOS:
-                        Usuario usuario = db.Dao().selectUsuario(clave);
-                        resultJson.put(Constantes.RESULT, true);
-                        JSObject user = new JSObject();
-                        user.put("usuario", usuario.usuario);
-                        user.put("loginPass", usuario.loginPass);
-                        user.put("mailFrom", usuario.mailFrom);
-                        user.put("mailPass", usuario.mailPass);
-                        resultJson.put(Constantes.REGISTRO, user);
-                        break;
-                    case Constantes.PALABRAS:
-                        List<Palabra> listaPalabras = db.Dao().selectPalabras(usu);
-                        resultJson.put(Constantes.RESULT, true);
-                        List<JSObject> list = new ArrayList<>();
-                        for (Palabra palabra : listaPalabras) {
-                            JSObject jSpalabra = new JSObject();
-                            jSpalabra.put("clave", palabra.clave);
-                            jSpalabra.put("usuario", palabra.usuario);
-                            jSpalabra.put("funcion", palabra.funcion);
-                            jSpalabra.put("descripcion", palabra.descripcion);
-                            list.add(jSpalabra);
-                        }
-                        JSONArray jsonArray = new JSONArray(list);
-                        resultJson.put(Constantes.ROWS, jsonArray);
-                        break;
-                    case Constantes.ALARMAS:
-                        // listaPalabras = db.Dao().selectPalabras();
-                        break;
-                }
+            /**consulta a la BD*/
+            switch (tabla) {
+                case Constantes.USUARIOS:
+                    Usuario usuario = db.Dao().selectUsuario(clave);
+                    resultJson.put(Constantes.RESULT, true);
+                    JSObject user = new JSObject();
+                    user.put("usuario", usuario.usuario);
+                    user.put("loginPass", usuario.loginPass);
+                    user.put("mailFrom", usuario.mailFrom);
+                    user.put("mailPass", usuario.mailPass);
+                    resultJson.put(Constantes.REGISTRO, user);
+                    break;
+                case Constantes.PALABRAS:
+                    List<Palabra> listaPalabras = db.Dao().selectPalabras(usu);
+                    resultJson.put(Constantes.RESULT, true);
+                    List<JSObject> list = new ArrayList<>();
+                    for (Palabra palabra : listaPalabras) {
+                        JSObject jSpalabra = new JSObject();
+                        jSpalabra.put("clave", palabra.clave);
+                        jSpalabra.put("usuario", palabra.usuario);
+                        jSpalabra.put("funcion", palabra.funcion);
+                        jSpalabra.put("descripcion", palabra.descripcion);
+                        list.add(jSpalabra);
+                    }
+                    JSONArray jsonArray = new JSONArray(list);
+                    resultJson.put(Constantes.ROWS, jsonArray);
+                    break;
+                case Constantes.ALARMAS:
+                    // listaPalabras = db.Dao().selectPalabras();
+                    break;
+            }
             db.close();
             call.resolve(resultJson);
         } catch (Exception ex) {
@@ -211,13 +212,12 @@ public class NatPlugin extends Plugin {
     }
 
 
-
-
     /************************************************* SERVIZE **************************************************/
 
     @PluginMethod()
     public void servizeOperations(PluginCall call) {
         String accion = call.getString(Constantes.ACTION);
+        JSObject resultJson = new JSObject();
         switch (accion) {
             case Constantes.BIND:
                 bindServicio(Constantes.ON_TOGGLE);
@@ -226,69 +226,62 @@ public class NatPlugin extends Plugin {
                 unBindServicio();
                 break;
             case Constantes.ON:
-                this.toggleServicio();
-                JSObject ret = new JSObject();
-                ret.put(Constantes.ACTION, "RESPUESTA");
-                call.resolve(ret);
+                this.onServicio();
                 break;
             case Constantes.OFF:
-
+                this.offServicio();
                 break;
+            case Constantes.IS_RUNNING:
+                boolean b = funciones.isServiceRunning(getContext());
+                resultJson.put(Constantes.RESULT, b);
+                call.resolve(resultJson);
+                break;
+
         }
     }
 
-    public void toggleServicio() {
+    public void onServicio() {
         Context context = getContext();
         try {
             if (!funciones.isServiceRunning(context)) {
-                Toast toast = Toast.makeText(context, "Inentamos arrancar el servicio", Toast.LENGTH_SHORT);
-                toast.show();
                 Intent i = new Intent(context, Servicio_RecognitionListener.class);
-                //todo enviar el usuario para
+                //todo enviar usuario para cargar sus palabras y alarmas en el servicio para
                 i.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(i);
                 } else {
                     context.startService(i);
                 }
-            } else {
-                context.stopService(new Intent(context, Servicio_RecognitionListener.class));
-                Toast toast = Toast.makeText(context, "Inentamos detener el servicio", Toast.LENGTH_SHORT);
-                toast.show();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    /**
-     *
-     * @param mensaje
-     */
+    public void offServicio() {
+        Context context = getContext();
+        try {
+            if (funciones.isServiceRunning(context)) {
+                getContext().stopService(new Intent(context, Servicio_RecognitionListener.class));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
     public void bindServicio(String mensaje) {
         try {
             Context context = getContext();
             if (!funciones.isServiceBindRunning(context)) {
-                Intent in = new Intent(context, ServicioBind_RecognitionListener.class);
-                in.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
-         /*       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startService(in);
-                } else {
-                    context.startService(in);
-                    context.bindService(in,connection,Context.BIND_AUTO_CREATE);
-                }*/
-
-
                 /************************************    receiver   SERVICIO   ************************************/
                 Receiver resultReceiver = new Receiver(new Handler());
                 Intent i = new Intent(getContext(), ServicioBind_RecognitionListener.class);
-                i.putExtra(Constantes.ORIGEN_INTENT, mensaje);
                 i.putExtra(Constantes.RECEIVER, resultReceiver);
                 if (getContext().bindService(i, connection, Context.BIND_AUTO_CREATE)) {  /** main enlazado al servicio servicio */
                     if (bindServize != null) {
                         bindServize.configurarSpeechService();
                     }
-                    Log.i("bindeService", "intentamos enlazarnos al servicio/iniciarlo");
                 }
             }
         } catch (
@@ -299,9 +292,6 @@ public class NatPlugin extends Plugin {
 
     private void unBindServicio() {
         if (bindServize != null) {
-          // bindServize.pararServicio();
-          // Context context = bindServize.getApplicationContext();
-          // context.stopService(new Intent(context, ServicioBind_RecognitionListener.class));
             getContext().unbindService(connection);
             bindServize = null;
         }
@@ -316,14 +306,10 @@ public class NatPlugin extends Plugin {
         public void onServiceConnected(ComponentName className, IBinder service) {
             ServicioBind_RecognitionListener.LocalBinder binder = (ServicioBind_RecognitionListener.LocalBinder) service;
             bindServize = binder.getBindService();
-            Toast toast = Toast.makeText(getContext(), "onServiceConnected [ " + className + " ]", Toast.LENGTH_LONG);
-            toast.show();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Toast toast = Toast.makeText(getContext(), "onServiceDisconnected [" + arg0 + "]", Toast.LENGTH_LONG);
-            toast.show();
         }
     };
 
@@ -341,15 +327,12 @@ public class NatPlugin extends Plugin {
             String receiverPatial = resultData.getString(Constantes.NOTIFICACION_PARCIAL);
             String receiverPalabra = resultData.getString(Constantes.NOTIFICACION_PALABRA);
             String receiverTexto = resultData.getString(Constantes.NOTIFICACION_FRASE);
-
             if (receiverPatial != null && !receiverPatial.equals("")) {
                 sendPartial(receiverPatial);
             }
-
             if (receiverPalabra != null && !receiverPalabra.equals("")) {
                 sendResult(receiverPalabra);
             }
-
         }
     }
 
@@ -361,12 +344,13 @@ public class NatPlugin extends Plugin {
     }
 
     private void sendPartial(String receiverPatial) {
+        Bridge b = getBridge();
         JSObject result = new JSObject();
         result.put(Constantes.RESULT, receiverPatial);//todo preparar la respuesta para el webView
         notifyListeners(Constantes.PARTIAL_EVENT, result);
     }
 
-    private void sendPalabra(String receiverPalabra) {
+    private void sendFrase(String receiverPalabra) {
         JSObject result = new JSObject();
         result.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
         notifyListeners(Constantes.PALABRA_EVENT, result);
