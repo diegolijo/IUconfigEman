@@ -20,7 +20,10 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
   },
-
+  {
+    path: 'new-palabras',
+    loadChildren: () => import('./pages/new-palabra-modal/new-palabra-modal.module').then(m => m.NewPalabraModalPageModule)
+  },
 
 
 ];

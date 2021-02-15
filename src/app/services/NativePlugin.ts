@@ -74,11 +74,9 @@ export class NativePlugin {
     }
 
     // resultados de la capa nativa
-    public async resultFromNative(result) {
+    public resultFromNative(result) {
         if (this.platform.is('cordova')) {
             result = result;
-            // {action: 'RESPUESTA'}; } else {}
-
         } else { }
 
     }

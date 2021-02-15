@@ -78,5 +78,20 @@ export class Helper {
   }
 
 
+
+  public async showException(mes: any) {
+    const loading = await this.loadingCtrl.create({ message: '' });
+    loading.dismiss();
+    const toast = await this.toastController.create({
+      message: mes,
+      position: 'middle',
+      cssClass: 'general-toast-error',
+      color: 'warning',
+      duration: 3000
+    });
+    await toast.present();
+  }
+
+
 }
 

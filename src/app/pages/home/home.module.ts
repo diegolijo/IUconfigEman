@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { NewPalabraModalPageModule } from '../modals/new-palabra-modal/new-palabra-modal.module';
+import { NewPalabraModalPageModule } from '../new-palabra-modal/new-palabra-modal.module';
 
 @NgModule({
   imports: [

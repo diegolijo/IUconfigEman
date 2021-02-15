@@ -81,22 +81,27 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     private final Funciones funciones = new Funciones(this);
 
-    /**fuses para los toast*/
-    private boolean mostrarToastConfig = false;
-    private boolean mostrarToastUsuario = true;
 
-    /**Vosk-Kaldi*/
+    /**
+     * Vosk-Kaldi
+     */
     private static Model model;
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
 
-    /**GPS*/
+    /**
+     * GPS
+     */
     private LocationManager locManager;
     private String localizacion;
 
-    /**VARIABLES CONFIGURACION*/
+    /**
+     * VARIABLES CONFIGURACION
+     */
     private String usuario;
-    /**MAIL*/
+    /**
+     * MAIL
+     */
     private String asuntoMail = "EMAN Alerta";
     private String passMail = "Angustia31";
     private String fromMail = "enviosemam@gmail.com";
@@ -105,10 +110,21 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private String numLlamada = "662023955";
     private String texto = "cuerpo del mail";
 
-    /**SMS*/
+    /**
+     * SMS
+     */
     private String cuerpoSms = "Alarma :";
     private String numSms = "662023955";
     private List<Palabra> listaPalabras = new ArrayList<>();
+
+
+    /**
+     * fuses para los toast
+     */
+    //todo lanzar los toast con una tabla de la BD
+    private boolean initSpeechServiceToast;
+    private boolean mostrarToastConfig = false;
+    private boolean mostrarToastUsuario = true;
 
 
     /*********************************************notificacion para startForeground**************************************/
@@ -195,7 +211,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         try {
             super.onCreate();
             this.displayListener();
-            funciones.vibrar(this, Constantes.VIRAR_CORTO);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -209,12 +224,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             switch (s) {
                 case Constantes.ON_TOGGLE:
                     this.startForeground(Constantes.ID_SERVICIO, createNotification());
-                    initSpeechService();
+                    funciones.vibrar(this, Constantes.VIRAR_CORTO);
                     break;
-                case Constantes.ON_WIDGET:
+                case Constantes.ON_WIDGET: //todo
                     break;
                 default:
-                    throw new IllegalStateException("Unexpected value: " + s);
+                    throw new IllegalStateException("onStartCommand - Valor inesperado: " + s);
             }
         } catch (
                 Exception exception) {
@@ -234,28 +249,25 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     public void onDestroy() {
         //fixme borrar todos los recursos del servicio
         if (speechService != null) {
-            speechService.cancel();
-            speechService = null;
+            this.speechService.cancel();
+            this.speechService = null;
+            this.kaldiRcgnzr = null;
         }
-        if (mostrarToastConfig) {
-            Toast toast = Toast.makeText(getApplicationContext(), "EL SERVICIO ESTA DESCONECTADO", Toast.LENGTH_LONG);
-            toast.show();
-        }
-        funciones.vibrar(this, 2000);
         super.onDestroy();
     }
 
 
     public void initSpeechService() {
-        if (speechService == null) {
+        try {
+            speechService = null;
             new SetupSpeechTask(this).execute();
-            if (mostrarToastConfig) {
-                Toast toast = Toast.makeText(this, R.string.cconfigurando, Toast.LENGTH_LONG);
-                toast.show();
-            }
             this.initDB();
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
+        } catch (Exception ex) {
+            Toast toast = Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
+            toast.show();
         }
+
     }
 
 
@@ -315,37 +327,34 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     private void iniciarSpeechService() {
         try {
-            if (speechService.startListening()) {  /** *********** arranca el reconocedor **********>>
-             */
-                Toast toast = Toast.makeText(this, "El reconocimiento de voz esta habilitado", Toast.LENGTH_SHORT);
-                toast.show();
-
+            if (speechService.startListening()) {  /**----********** arranca el reconocedor *******---->> */
                 //compronabos gps activo
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     muestraProviders();
                 } else {
-                    //  toReceiver(Constantes.NOTIFICACION_GPS_DISABLE, Constantes.NOTIFICACION_SERVICIO);
                     pararSpeechService();
                 }
             } else {
                 pararSpeechService();
             }
-            //  toReceiver(Constantes.ON_BOTONES, Constantes.NOTIFICACION_SERVICIO);
         } catch (Exception e) {
-            e.fillInStackTrace();
+            pararSpeechService();
         }
     }
 
     public void pararSpeechService() {
         try {
             if (speechService != null) {
+                speechService.stop();
                 speechService.cancel();
+                speechService.shutdown();
                 speechService = null;
+                kaldiRcgnzr.delete();
             }
-            //  this.stopSelf();
         } catch (Exception e) {
             e.fillInStackTrace();
+            throw e;
         }
     }
 
@@ -404,20 +413,11 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     @Override
     public void onError(Exception e) {
-        Toast toast = Toast.makeText(getApplicationContext(), "SERVICIO  onError", Toast.LENGTH_LONG);
-        toast.show();
-        speechService.cancel();
-        speechService = null;
-        this.stopSelf();
+               this.pararSpeechService();
     }
 
     @Override
     public void onTimeout() {
-        Toast toast = Toast.makeText(getApplicationContext(), "SERVICIO  onTimeout", Toast.LENGTH_LONG);
-        toast.show();
-        speechService.cancel();
-        speechService = null;
-        this.stopSelf();
     }
 
 

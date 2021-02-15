@@ -1,13 +1,13 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { IPalabra, IUsuario } from './../../../interfaces/i-db-models';
-import { AppUser } from './../../../services/AppUser';
-import { Constants } from './../../../services/Constants';
-import { Helper } from './../../../services/Helper';
-import { ModelCreator } from './../../../services/model_ceator';
-import { NativePlugin } from './../../../services/NativePlugin';
+import { IPalabra, IUsuario } from '../../interfaces/i-db-models';
+import { AppUser } from '../../services/AppUser';
+import { Constants } from '../../services/Constants';
+import { Helper } from '../../services/Helper';
+import { ModelCreator } from '../../services/model_ceator';
+import { NativePlugin } from '../../services/NativePlugin';
 const { NatPlugin } = Plugins;
 
 @Component({
@@ -17,13 +17,15 @@ const { NatPlugin } = Plugins;
 })
 export class NewPalabraModalPage implements OnInit, OnDestroy {
 
+  @Input() user: IUsuario;
 
-  public resultText = '';
+
   public pluginPartialListener: any;
-  public newPalabra: IPalabra;
+
   public appUser: IUsuario;
 
-  palabras: IPalabra[] = [];
+  public palabras: IPalabra[] = [];
+  public newPalabra: IPalabra;
 
   public funciones = [
     { id: Constants.TRIGER1 },
@@ -44,46 +46,46 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   ) {
   }
 
-  // TODO suscribe back buton para cerarar modal o no abrir como modal
-
-
   async ngOnInit() {
-    if (this.platform.is('cordova')) {
-      this.newPalabra = this.modelCreator.emptyIPalabra();
-      this.appUser = this.proAppUser.getAppUser();
-      this.startPartialListener();
-      const result = await this.selectPalabras();
-      for (const palabra of result.rows) {
-        this.palabras.push(this.modelCreator.getIPalabra(palabra));
+    try {
+      if (this.platform.is('cordova')) {
+        this.newPalabra = this.modelCreator.emptyIPalabra();
+        this.appUser = this.proAppUser.getAppUser();
+        this.startPartialListener();
+        const result = await this.selectPalabras();
+        for (const palabra of result.rows) {
+          this.palabras.push(this.modelCreator.getIPalabra(palabra));
+        }
+        await this.onClickRefresh();
+      } else {
+        this.appUser = this.proAppUser.getAppUser();
+        this.newPalabra = this.modelCreator.emptyIPalabra();
       }
-      await this.onClickRefresh();
-    } else {
-
+    } catch (err) {
+      this.helper.showException('ngOnInit :' + err);
     }
   }
 
 
   async ngOnDestroy() {
     if (this.platform.is('cordova')) {
-      await this.removePartialListener();
+      this.removePartialListener();
       this.unBindServize();
     } else {
 
     }
-
   }
 
 
   public async onClickRecButton() {
     if (this.platform.is('cordova')) {
-
       if (!this.isBindService) {
         this.bindServize();
       } else {
         this.unBindServize();
       }
     } else {
-      this.resultText += ' ' + this.resultText;
+
     }
   }
 

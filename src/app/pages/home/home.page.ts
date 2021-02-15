@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
-import { ModalController, Platform } from '@ionic/angular';
-import { NewPalabraModalPage } from '../modals/new-palabra-modal/new-palabra-modal.page';
+import { Platform } from '@ionic/angular';
 import { AppComponent } from './../../app.component';
 import { AppUser } from './../../services/AppUser';
 import { Constants } from './../../services/Constants';
@@ -37,8 +36,7 @@ export class HomePage implements OnInit, OnDestroy {
     public appComponent: AppComponent,
     public modelCreator: ModelCreator,
     private ProAppUser: AppUser,
-    private router: Router,
-    private modalCtrl: ModalController
+    private router: Router
 
   ) { }
 
@@ -66,48 +64,31 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
-  private async isServiceRuning() {
-    const result = await this.nativePlugin.isServizeRunning();
-    let running = false;
-    if (result.result) {
-      running = true;
-    }
-    return running;
-  }
-
-
-
   async ngOnDestroy() {
-    await this.unBindServize();
-    await this.removeListener();
+    this.unBindServize();
+    this.removeListener();
   }
 
 
-  public async onClickNewPalabraModal() {
+  /************************************************ eventos ************************************************/
+
+  public async onClickGoNewPalabra() {
     try {
-      const newPalabraModal = await this.modalCtrl.create({
-        component: NewPalabraModalPage,
-        componentProps: {
-          user: this.appUser
+      if (this.platform.is('cordova')) {
+        if (this.isBindService) {
+          this.unBindServize();
+          this.removeListener();
         }
-      });
-      await newPalabraModal.present();
-      newPalabraModal.onDidDismiss().then(res => {
-        if (res.data.result === 'success') {
+        this.router.navigateByUrl('new-palabras');
+      } else {
 
-        } else if (res.data.result === 'cancelled') {
-
-        } else {
-          this.helper.showMessage(res);
-        }
-      });
+      }
     } catch (error) {
-      this.helper.showMessage(error);
+      this.helper.showException('onClickGoNewPalabra: ' + error);
     }
   }
 
-
-  public async toggleServize(event) {
+  public async onToggleServize(event) {
     if (this.platform.is('cordova')) {
       const result = await this.isServiceRuning();
       if (event.detail.checked) {
@@ -127,17 +108,23 @@ export class HomePage implements OnInit, OnDestroy {
 
   public async onClickBindServize() {
     if (!this.isBindService) {
-      await this.startListener();
-      await this.bindServize();
+      this.startListener();
+      this.bindServize();
     } else {
-      await this.unBindServize();
-      await this.removeListener();
+      this.unBindServize();
+      this.removeListener();
 
     }
   }
 
-
-
+  private async isServiceRuning() {
+    const result = await this.nativePlugin.isServizeRunning();
+    let running = false;
+    if (result.result) {
+      running = true;
+    }
+    return running;
+  }
 
 
   /************************************************ servize ************************************************/
@@ -174,13 +161,18 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   public removeListener() {
-    this.pluginListener.remove();
+    try {
+      if (typeof this.pluginListener !== 'undefined') {
+        this.pluginListener.remove();
+      }
+    } catch (err) {
+      this.helper.showException('removeListener' + err);
+    }
   }
 
   // resultados de la capa nativa -> result: "agua"
   public resultFromNative(result) {
     this.resultText.push(result.result);
-
     this.changeDetectorRef.detectChanges();
   }
 

@@ -3,13 +3,10 @@
 
   <ion-toolbar color="primary" class="textCenter">
     <ion-buttons slot="start">
-      <ion-button fill="clear" (click)="this.onClickClose('cancelled')" class="ion-text-center">
-        <ion-icon slot="icon-only" name="close"></ion-icon>
-      </ion-button>
+      <ion-back-button> </ion-back-button>
     </ion-buttons>
     <div class="textCenter" style="padding-right: 2.8em"> {{ 'NEW_PALABRA_MODAL.TITLE' | translate:{value: null} }}
     </div>
-
     <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRefresh()">
       <ion-icon size="large" name="refresh-circle-outline" slot="icon-only"></ion-icon>
     </ion-button>
@@ -17,9 +14,6 @@
 </ion-header>
 
 <ion-content>
-
-
-
   <div *ngFor="let palabra of palabras;  " class="marginH5 marginV5 noPadding contenedorTertiary">
     <ion-item-sliding>
       <!--Left option-->
@@ -39,55 +33,50 @@
       </ion-item>
     </ion-item-sliding>
   </div>
-
 </ion-content>
 
 
-
-
-
 <ion-footer>
-<ion-toolbar> 
-  <!-- tarjeta resultados speech -->
+  <ion-toolbar>
+    <!-- tarjeta resultados speech -->
     <ion-card class="bocadilloResultado">
-    <div class="textCenter  fontBold" style="padding-top: 0.5;">
-      <ion-spinner name="dots" [hidden]="!this.isBindService"></ion-spinner>
-      <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRecButton()">
-        <ion-icon size="large" name="chatbubble-ellipses-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </div>
-    <div style="height: 1em;"></div>
-    <ion-textarea type="text" readonly [rows]="this.helper.getTextLineBreaks(this.newPalabra.clave)"
-      style="font-size: xx-large; text-align: center !important;" [(ngModel)]="this.newPalabra.clave"
-      class="textRightAlign">
-    </ion-textarea>
-  </ion-card>  
- 
-  <!--Function type-->
-    <ion-card>   
-    <ion-item lines="none">
-      <ion-label text-wrap>
-        {{'NEW_PALABRA_MODAL.FUNCTION_TYPE'| translate:{value: null} }}</ion-label>
-      <ion-select text-wrap class="selectFull" interface="popover" [(ngModel)]="this.newPalabra.funcion">
-        <ion-select-option text-wrap class="selectFull" *ngFor="let funcion of this.funciones;" value={{funcion.id}}>
-          {{funcion.id}}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-card>  
-</ion-toolbar>
+      <div class="textCenter  fontBold" style="padding-top: 0.5;">
+        <ion-spinner name="dots" [hidden]="!this.isBindService"></ion-spinner>
+        <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRecButton()">
+          <ion-icon size="large" name="chatbubble-ellipses-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+      <div style="height: 1em;"></div>
+      <ion-textarea type="text" readonly [rows]="this.helper.getTextLineBreaks(this.newPalabra.clave)"
+        style="font-size: xx-large; text-align: center !important;" [(ngModel)]="this.newPalabra.clave"
+        class="textRightAlign">
+      </ion-textarea>
+    </ion-card>
 
-    <ion-button slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickClose()">
-      <ion-label>{{'CLOSE'| translate:{value: null} }}</ion-label>
-      <ion-icon name="add"></ion-icon>
-    </ion-button>
+    <!--Function type-->
+    <ion-card>
+      <ion-item lines="none">
+        <ion-label text-wrap>
+          {{'NEW_PALABRA_MODAL.FUNCTION_TYPE'| translate:{value: null} }}</ion-label>
+        <ion-select text-wrap class="selectFull" interface="popover" [(ngModel)]="this.newPalabra.funcion">
+          <ion-select-option text-wrap class="selectFull" *ngFor="let funcion of this.funciones;" value={{funcion.id}}>
+            {{funcion.id}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card>
+  </ion-toolbar>
+
+  <ion-button slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickClose()">
+    <ion-label>{{'CLOSE'| translate:{value: null} }}</ion-label>
+    <ion-icon name="add"></ion-icon>
+  </ion-button>
 
   <ion-toolbar>
     <ion-button slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickAddPalabra()">
       <ion-label>{{'NEW_PALABRA_MODAL.ADD_PALABRA'| translate:{value: null} }}</ion-label>
       <ion-icon name="add"></ion-icon>
     </ion-button>
-
   </ion-toolbar>
 
 </ion-footer>

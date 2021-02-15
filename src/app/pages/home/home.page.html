@@ -24,12 +24,12 @@
     <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
       <ion-label class="mediumFont">{{ 'HOME.ENABLE_SERVIZE' | translate:{value: null} }}
       </ion-label>
-      <ion-toggle slot="end" [(checked)]="this.guardianServize" (ionChange)="this.toggleServize($event)" color="danger"></ion-toggle>
+      <ion-toggle slot="end" [(checked)]="this.guardianServize" (ionChange)="this.onToggleServize($event)" color="danger"></ion-toggle>
     </ion-item>
   </ion-toolbar>
 
   <ion-toolbar>
-    <ion-button fill="outline" (click)="this.onClickNewPalabraModal()">
+    <ion-button fill="outline" (click)="this.onClickGoNewPalabra()">
       {{ 'HOME.BTN_PALABRAS' | translate:{value: null} }}
     </ion-button>
 
