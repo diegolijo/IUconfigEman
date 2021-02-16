@@ -85,7 +85,11 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         this.unBindServize();
       }
     } else {
-
+      if (!this.isBindService) {
+        this.isBindService = true;
+      } else {
+        this.isBindService = false;
+      }
     }
   }
 

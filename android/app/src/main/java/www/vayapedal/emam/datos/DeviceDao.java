@@ -62,6 +62,8 @@ public interface DeviceDao {
             (onConflict = OnConflictStrategy.ABORT)
     void insertAlarma(Alarma alarma);
 
+    @Query("SELECT * FROM alarma WHERE alarma.usuario LIKE :usuario ORDER BY clave")
+    List<Alarma> selectAlarmas(String usuario);
 
 
 }

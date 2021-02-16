@@ -27,6 +27,7 @@ public class Alarma {
     @ColumnInfo(name = "mailFrom")
     public String mailTo;
 
+
     @ColumnInfo(name = "enable")
     public boolean enable;
 

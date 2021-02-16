@@ -39,7 +39,7 @@
 <ion-footer>
   <ion-toolbar>
     <!-- tarjeta resultados speech -->
-    <ion-card class="bocadilloResultado">
+    <ion-card style="height: 8em;">
       <div class="textCenter  fontBold" style="padding-top: 0.5;">
         <ion-spinner name="dots" [hidden]="!this.isBindService"></ion-spinner>
         <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRecButton()">
@@ -54,7 +54,7 @@
     </ion-card>
 
     <!--Function type-->
-    <ion-card>
+    <ion-card >
       <ion-item lines="none">
         <ion-label text-wrap>
           {{'NEW_PALABRA_MODAL.FUNCTION_TYPE'| translate:{value: null} }}</ion-label>

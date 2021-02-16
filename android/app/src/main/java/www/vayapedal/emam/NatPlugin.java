@@ -127,39 +127,53 @@ public class NatPlugin extends Plugin {
         try {
             String tabla = call.getString(Constantes.TABLA);
             String clave = call.getString(Constantes.CLAVE);
-            String usu = call.getString(Constantes.USER);
+            String usuario = call.getString(Constantes.USER);
             Context context = getContext();
             DB db = Room.databaseBuilder(context, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
 
             /**consulta a la BD*/
             switch (tabla) {
                 case Constantes.USUARIOS:
-                    Usuario usuario = db.Dao().selectUsuario(clave);
+                    Usuario dbUsuario = db.Dao().selectUsuario(clave);
                     resultJson.put(Constantes.RESULT, true);
                     JSObject user = new JSObject();
-                    user.put("usuario", usuario.usuario);
-                    user.put("loginPass", usuario.loginPass);
-                    user.put("mailFrom", usuario.mailFrom);
-                    user.put("mailPass", usuario.mailPass);
+                    user.put("usuario", dbUsuario.usuario);
+                    user.put("loginPass", dbUsuario.loginPass);
+                    user.put("mailFrom", dbUsuario.mailFrom);
+                    user.put("mailPass", dbUsuario.mailPass);
                     resultJson.put(Constantes.REGISTRO, user);
                     break;
                 case Constantes.PALABRAS:
-                    List<Palabra> listaPalabras = db.Dao().selectPalabras(usu);
+                    List<Palabra> listaPalabras = db.Dao().selectPalabras(usuario);
                     resultJson.put(Constantes.RESULT, true);
-                    List<JSObject> list = new ArrayList<>();
+                    List<JSObject> listPalabras = new ArrayList<>();
                     for (Palabra palabra : listaPalabras) {
                         JSObject jSpalabra = new JSObject();
                         jSpalabra.put("clave", palabra.clave);
                         jSpalabra.put("usuario", palabra.usuario);
                         jSpalabra.put("funcion", palabra.funcion);
                         jSpalabra.put("descripcion", palabra.descripcion);
-                        list.add(jSpalabra);
+                        listPalabras.add(jSpalabra);
                     }
-                    JSONArray jsonArray = new JSONArray(list);
-                    resultJson.put(Constantes.ROWS, jsonArray);
+                    JSONArray jsonArrayPal = new JSONArray(listPalabras);
+                    resultJson.put(Constantes.ROWS, jsonArrayPal);
                     break;
                 case Constantes.ALARMAS:
                     // listaPalabras = db.Dao().selectPalabras();
+                    List<Alarma> listaAlarmas = db.Dao().selectAlarmas(usuario);
+                    resultJson.put(Constantes.RESULT, true);
+                    List<JSObject> listAlarmas = new ArrayList<>();
+                    for (Alarma alarma : listaAlarmas) {
+                        JSObject jSpalabra = new JSObject();
+                        jSpalabra.put("clave", alarma.clave);
+                        jSpalabra.put("usuario", alarma.usuario);
+                        jSpalabra.put("numTlfTo", alarma.numTlfTo);
+                        jSpalabra.put("mailTo", alarma.mailTo);
+                        jSpalabra.put("enable", alarma.enable);
+                        listAlarmas.add(jSpalabra);
+                    }
+                    JSONArray jsonArrayAlm = new JSONArray(listAlarmas);
+                    resultJson.put(Constantes.ROWS, jsonArrayAlm);
                     break;
             }
             db.close();
@@ -246,7 +260,7 @@ public class NatPlugin extends Plugin {
         try {
             if (!funciones.isServiceRunning(context)) {
                 Intent i = new Intent(context, Servicio_RecognitionListener.class);
-                i.putExtra(Constantes.USUARIO,usuario);
+                i.putExtra(Constantes.USUARIO, usuario);
                 //todo enviar usuario para cargar sus palabras y alarmas en el servicio para
                 i.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

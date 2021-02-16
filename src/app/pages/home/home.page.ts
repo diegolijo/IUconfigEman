@@ -81,10 +81,11 @@ export class HomePage implements OnInit, OnDestroy {
         }
         this.router.navigateByUrl('new-palabras');
       } else {
-
+        this.router.navigateByUrl('new-palabras');
       }
     } catch (error) {
       this.helper.showException('onClickGoNewPalabra: ' + error);
+
     }
   }
 

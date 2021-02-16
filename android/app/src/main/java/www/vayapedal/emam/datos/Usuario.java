@@ -13,12 +13,15 @@ public class Usuario {
     @NonNull
     public String usuario;
 
+    @NonNull
     @ColumnInfo(name = "loginPass")
     public String loginPass;
 
+    @NonNull
     @ColumnInfo(name = "mailFrom")
     public String mailFrom;
 
+    @NonNull
     @ColumnInfo(name = "mailPass")
     public String mailPass;
 

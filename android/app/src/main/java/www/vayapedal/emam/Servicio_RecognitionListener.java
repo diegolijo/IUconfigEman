@@ -99,6 +99,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
      * VARIABLES CONFIGURACION
      */
     private String usuario;
+
     /**
      * MAIL
      */
@@ -127,7 +128,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private boolean mostrarToastUsuario = true;
 
 
-    /*********************************************notificacion para startForeground**************************************/
+    /******************************************** notificacion para startForeground ******************************************/
     public Notification createNotification() {
         String channel;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)

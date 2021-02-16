@@ -24,6 +24,10 @@ const routes: Routes = [
     path: 'new-palabras',
     loadChildren: () => import('./pages/new-palabra-modal/new-palabra-modal.module').then(m => m.NewPalabraModalPageModule)
   },
+  {
+    path: 'new-alarma',
+    loadChildren: () => import('./new-alarma/new-alarma.module').then( m => m.NewAlarmaPageModule)
+  },
 
 
 ];
