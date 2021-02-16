@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import { ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,13 +17,9 @@ const { NatPlugin } = Plugins;
 })
 export class NewPalabraModalPage implements OnInit, OnDestroy {
 
-  @Input() user: IUsuario;
-
 
   public pluginPartialListener: any;
-
   public appUser: IUsuario;
-
   public palabras: IPalabra[] = [];
   public newPalabra: IPalabra;
 
@@ -136,26 +132,11 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
     }
   }
 
-  public async onClickClose() {
-    try {
-      await this.close('close');
-    } catch (error) {
-      await this.close(error.message);
-    }
-  }
 
 
 
 
 
-  /************************************************* page ************************************************** */
-  public async close(msg: any) {
-    if (msg === 'close') {
-      await this.modalCtrl.dismiss({
-        result: msg
-      });
-    }
-  }
 
   /************************************************ servize ************************************************/
   public async bindServize() {

@@ -72,19 +72,28 @@ export class HomePage implements OnInit, OnDestroy {
 
   /************************************************ eventos ************************************************/
 
-  public async onClickGoNewPalabra() {
+  public async onClickGoTo(page: string) {
     try {
-      if (this.platform.is('cordova')) {
-        if (this.isBindService) {
-          this.unBindServize();
-          this.removeListener();
-        }
-        this.router.navigateByUrl('new-palabras');
-      } else {
-        this.router.navigateByUrl('new-palabras');
+      switch (page) {
+        case 'new-palabra':
+          if (this.isBindService) {
+            this.unBindServize();
+            this.removeListener();
+          }
+          this.router.navigateByUrl(page);
+          break;
+        case 'new-alarma':
+          if (this.isBindService) {
+            this.unBindServize();
+            this.removeListener();          }
+          this.router.navigateByUrl(page);
+          break;
+
+        default:
+          break;
       }
     } catch (error) {
-      this.helper.showException('onClickGoNewPalabra: ' + error);
+      this.helper.showException('onClickGoTo: ' + error);
 
     }
   }

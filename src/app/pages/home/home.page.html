@@ -29,7 +29,11 @@
   </ion-toolbar>
 
   <ion-toolbar>
-    <ion-button fill="outline" (click)="this.onClickGoNewPalabra()">
+    <ion-button fill="outline" (click)="this.onClickGoTo('new-alarma')">
+      {{ 'HOME.BTN_ALARMAS' | translate:{value: null} }}
+    </ion-button>
+
+    <ion-button fill="outline" (click)="this.onClickGoTo('new-palabra')">
       {{ 'HOME.BTN_PALABRAS' | translate:{value: null} }}
     </ion-button>
 

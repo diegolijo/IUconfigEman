@@ -13,3 +13,10 @@ export interface IUsuario {
     mailPass: string;
 }
 
+export interface IAlarma {
+    usuario: string;
+    clave: string;
+    numTlfTo: string;
+    enable: boolean;
+    mailTo: string;
+}

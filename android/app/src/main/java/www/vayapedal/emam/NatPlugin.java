@@ -208,8 +208,9 @@ public class NatPlugin extends Plugin {
                         resultJson.put(Constantes.RESULT, true);
                         break;
                     case Constantes.ALARMAS:
-                        // listaPalabras = db.Dao().selectPalabras();
-
+                        Alarma alarma = new Alarma(clave, usu, "", "",false);
+                        db.Dao().deleteAlarmas(alarma);
+                        resultJson.put(Constantes.RESULT, true);
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + tabla);

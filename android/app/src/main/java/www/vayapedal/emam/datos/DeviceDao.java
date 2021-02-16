@@ -65,5 +65,6 @@ public interface DeviceDao {
     @Query("SELECT * FROM alarma WHERE alarma.usuario LIKE :usuario ORDER BY clave")
     List<Alarma> selectAlarmas(String usuario);
 
-
+    @Delete
+    void deleteAlarmas(Alarma alarma);
 }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { IPalabra, IUsuario } from '../interfaces/i-db-models';
+import { IAlarma, IPalabra, IUsuario } from '../interfaces/i-db-models';
 
 @Injectable()
 export class ModelCreator {
+
 
     constructor(
     ) { }
@@ -42,7 +43,28 @@ export class ModelCreator {
             usuario: '',
             loginPass: '',
             mailFrom: '',
-            mailPass: '',
+            mailPass: ''
+        };
+    }
+
+    public getIAlarma(alarma: any): IAlarma {
+        return {
+            usuario: alarma.usuario,
+            clave: alarma.clave,
+            numTlfTo: alarma.numTlfTo,
+            mailTo: alarma.mailTo,
+            enable: alarma.enable
+        };
+    }
+
+
+    emptyIAlarma(): IAlarma {
+        return {
+            usuario: '',
+            clave: '',
+            numTlfTo: '',
+            enable: false,
+            mailTo: ''
         };
     }
 
