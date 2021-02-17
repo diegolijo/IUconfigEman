@@ -46,8 +46,9 @@
   "HOME": {
     "TITLE": "EMAM",
     "ESCUCHAR": "Escuchar",
-    "BTN_PALABRAS":"Filtros",
-    "ENABLE_SERVIZE":"Habilitar Servicio"
+    "BTN_PALABRAS": "Filtros",
+    "BTN_ALARMAS": "Contacto",
+    "ENABLE_SERVIZE": "Habilitar Servicio"
   },
   "NEW_PALABRA_MODAL": {
     "TITLE": "Nueva Palabra",
@@ -61,6 +62,11 @@
     "LOGOUT": "Cerrar Sesión",
     "CONFIGURACION": "Configuración",
     "DARK_MODE": "Modo Oscuro"
-
+  },
+  "NEW_ALARMA": {   "TITLE": "Contacto",
+    "FUNCTION_TYPE": "funcion",
+    "ADD_ALARMA": "guardar",
+    "EMAIL_TO": "para",
+    "NUMERO_TELEFONO": "número"
   }
 }
