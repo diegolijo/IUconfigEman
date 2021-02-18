@@ -12,8 +12,8 @@ public class Alarma {
 
     @NonNull
     @PrimaryKey
-    @ColumnInfo(name = "clave")
-    public String clave;
+    @ColumnInfo(name = "funcion")
+    public String funcion;
 
     @NonNull
     @ColumnInfo(name = "usuario")
@@ -30,9 +30,9 @@ public class Alarma {
     @ColumnInfo(name = "enable")
     public boolean enable;
 
-    public Alarma(@NonNull String clave, @NonNull String usuario, String numTlfTo, String mailTo, boolean enable) {
+    public Alarma(@NonNull String funcion, @NonNull String usuario, String numTlfTo, String mailTo, boolean enable) {
         this.usuario = usuario;
-        this.clave = clave;
+        this.funcion = funcion;
         this.numTlfTo = numTlfTo;
         this.mailTo = mailTo;
         this.enable = enable;

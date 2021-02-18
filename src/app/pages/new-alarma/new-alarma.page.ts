@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Contacts, Contact, ContactField, ContactName } from '@ionic-native/contacts/ngx';
 import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AppUser } from 'src/app/services/AppUser';
@@ -6,7 +7,7 @@ import { Constants } from 'src/app/services/Constants';
 import { Helper } from 'src/app/services/Helper';
 import { ModelCreator } from 'src/app/services/model_ceator';
 import { NativePlugin } from 'src/app/services/NativePlugin';
-import { IAlarma, IPalabra, IUsuario } from './../../interfaces/i-db-models';
+import { IAlarma, IUsuario } from './../../interfaces/i-db-models';
 
 @Component({
   selector: 'app-new-alarma',
@@ -14,7 +15,6 @@ import { IAlarma, IPalabra, IUsuario } from './../../interfaces/i-db-models';
   styleUrls: ['./new-alarma.page.scss'],
 })
 export class NewAlarmaPage implements OnInit, OnDestroy {
-
 
   public pluginPartialListener: any;
   public appUser: IUsuario;
@@ -34,10 +34,11 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     private nativePlugin: NativePlugin,
     public helper: Helper,
     public proAppUser: AppUser,
+    private contacts: Contacts,
     public modelCreator: ModelCreator
   ) {
   }
-
+  /************************************************ eventos ************************************************/
   async ngOnInit() {
     try {
       if (this.platform.is('cordova')) {
@@ -58,7 +59,6 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     }
   }
 
-
   async ngOnDestroy() {
     if (this.platform.is('cordova')) {
 
@@ -67,20 +67,17 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     }
   }
 
-
-
-
   public async onClickRefresh() {
     if (this.platform.is('cordova')) {
-      this.alarmas = [];
       const result = await this.selectAlarmas();
+      this.alarmas = [];
       for (const alarma of result.rows) {
         this.alarmas.push(this.modelCreator.getIAlarma(alarma));
       }
     } else {
       const alarma: IAlarma = {
         usuario: 'user',
-        clave: 'clave',
+        funcion: 'clave',
         numTlfTo: '662023955',
         enable: true,
         mailTo: 'deigonalgas@hotmail.com'
@@ -93,7 +90,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
 
   public async onClickAddAlarma() {
     if (this.platform.is('cordova')) {
-      if (this.newAlarma.clave !== '') {
+      if (this.newAlarma.funcion !== '') {
         this.newAlarma.usuario = this.appUser.usuario;
         const result = await this.insertAlarma(this.newAlarma);
         if (result.result) {
@@ -117,27 +114,76 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     }
   }
 
+  public async onClickContactos() {
+    const contacts = await this.getContacts();
+    contacts.forEach(element => {
+      try {
+        console.log(element.displayName + ': ' + element.phoneNumbers[0].value);
+      } catch (err) {
+        try {
+          console.log(element.displayName + ' -');
+        } catch (err) {
+          console.log('*****************************');
+        }
+      }
+      const res = element.displayName;
+    });
+    const resp = contacts[0].phoneNumbers[0].value;
+    console.log(resp);
+  }
+
+  /*********************************************** contactos ***************************************************/
+
+  /*   Contact object
+  rawId: "712"
+  _objectInstance: Contact
+  addresses: null
+  birthday: null
+  categories: null
+  displayName: "susu"
+  emails: null
+  id: "699"
+  ims: null
+  name:
+  formatted: "susu "
+  givenName: "susu"
+  __proto__: Object
+  nickname: null
+  note: null
+  organizations: null
+  phoneNumbers: Array(1)
+  0: {id: "3615", pref: false, value: "‪+34 662 01 66 60‬", type: "mobile"}
+  length: 1
+  __proto__: Array(0)
+  photos: null
+  rawId: null
+  urls: null */
+
+
+  private getContacts() {
+    return new Promise<any>((resolve, reject) => {
+      const cont = this.contacts.find(['phoneNumbers']);
+      resolve(cont);
+    });
+  }
 
   /************************************************ servize ************************************************/
   /*   public async bindServize() {
       this.isBindService = true;
       const result = await this.nativePlugin.bindService();
     }
-  
     public async unBindServize() {
       this.isBindService = false;
       const result = await this.nativePlugin.unBindServize();
     } */
 
   /********************************************** listener ********************************************/
-  /* 
+  /*
     public startPartialListener() {
       this.pluginPartialListener = Plugins.NatPlugin.addListener(Constants.PARTIAL_EVENT, (info: any) => {
         this.resultFromNative(info);
       });
-  
     }
-  
     public removePartialListener() {
       this.pluginPartialListener.remove();
     }
@@ -156,7 +202,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   }
 
   public async deleteAlarma(alarma: IAlarma) {
-    const result = await this.nativePlugin.deleteDB(Constants.ALARMAS, alarma.clave, this.appUser.usuario);
+    const result = await this.nativePlugin.deleteDB(Constants.ALARMAS, alarma.funcion, this.appUser.usuario);
     return result;
   }
 

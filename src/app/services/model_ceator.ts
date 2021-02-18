@@ -50,7 +50,7 @@ export class ModelCreator {
     public getIAlarma(alarma: any): IAlarma {
         return {
             usuario: alarma.usuario,
-            clave: alarma.clave,
+            funcion: alarma.funcion,
             numTlfTo: alarma.numTlfTo,
             mailTo: alarma.mailTo,
             enable: alarma.enable
@@ -61,7 +61,7 @@ export class ModelCreator {
     emptyIAlarma(): IAlarma {
         return {
             usuario: '',
-            clave: '',
+            funcion: '',
             numTlfTo: '',
             enable: false,
             mailTo: ''

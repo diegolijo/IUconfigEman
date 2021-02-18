@@ -15,7 +15,7 @@ export interface IUsuario {
 
 export interface IAlarma {
     usuario: string;
-    clave: string;
+    funcion: string;
     numTlfTo: string;
     enable: boolean;
     mailTo: string;

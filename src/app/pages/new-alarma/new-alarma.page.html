@@ -18,7 +18,7 @@
    <ion-item lines="none">
     <ion-label text-wrap>
       {{'NEW_ALARMA.FUNCTION_TYPE'| translate:{value: null} }}</ion-label>
-    <ion-select text-wrap class="selectFull" interface="popover" [(ngModel)]="this.newAlarma.clave">
+    <ion-select text-wrap class="selectFull" interface="popover" [(ngModel)]="this.newAlarma.funcion">
       <ion-select-option text-wrap class="selectFull" *ngFor="let funcion of this.funciones;" value={{funcion.id}}>
         {{funcion.id}}
       </ion-select-option>
@@ -40,9 +40,12 @@
     <ion-label position="stacked" color="primary">
       {{ 'NEW_ALARMA.NUMERO_TELEFONO' | translate:{value: null} }}
     </ion-label>
-    <ion-input [(ngModel)]="this.newAlarma.numTlfTo" type="number" color="dark">
-    </ion-input>
-  </ion-item>
+     <ion-input [(ngModel)]="this.newAlarma.numTlfTo" type="number" color="dark">
+    </ion-input> 
+ <!--    <ion-button slot="end" fill="outline" class="itemButtonB" (click)="onClickContactos() ">     
+      <ion-icon name="add"></ion-icon>
+    </ion-button> -->
+    </ion-item>
 
 
 

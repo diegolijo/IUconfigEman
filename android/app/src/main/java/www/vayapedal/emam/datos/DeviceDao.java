@@ -23,9 +23,6 @@ public interface DeviceDao {
     List<Palabra> selectFuncion(String funcion);
 
 
-    @Query("SELECT * FROM Palabra WHERE palabra.clave LIKE :s  LIMIT 1")
-    Palabra selectPalabra(String s);
-
     @Insert
             (onConflict = OnConflictStrategy.ABORT)
     void insertPalabra(Palabra palabra);
@@ -62,9 +59,15 @@ public interface DeviceDao {
             (onConflict = OnConflictStrategy.ABORT)
     void insertAlarma(Alarma alarma);
 
-    @Query("SELECT * FROM alarma WHERE alarma.usuario LIKE :usuario ORDER BY clave")
+    @Query("SELECT * FROM alarma WHERE alarma.usuario LIKE :usuario ORDER BY funcion")
     List<Alarma> selectAlarmas(String usuario);
+
+
+    @Query("SELECT * FROM alarma WHERE usuario LIKE :usuario AND funcion LIKE :funcion LIMIT 1")
+    Alarma selectAlarmasFun(String usuario, String funcion);
+
 
     @Delete
     void deleteAlarmas(Alarma alarma);
+
 }

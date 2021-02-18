@@ -26,12 +26,9 @@ const routes: Routes = [
   },
   {
     path: 'new-alarma',
-    loadChildren: () => import('./pages/new-alarma/new-alarma.module').then( m => m.NewAlarmaPageModule)
+    loadChildren: () => import('./pages/new-alarma/new-alarma.module').then(m => m.NewAlarmaPageModule)
   },
-  {
-    path: 'new-alarma',
-    loadChildren: () => import('./new-alarma/new-alarma.module').then( m => m.NewAlarmaPageModule)
-  },
+
 
 
 ];

@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.room.Room;
 
@@ -23,12 +21,9 @@ import com.getcapacitor.PluginMethod;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import www.vayapedal.emam.datos.Alarma;
 import www.vayapedal.emam.datos.DB;
@@ -99,12 +94,12 @@ public class NatPlugin extends Plugin {
                     break;
                 case Constantes.ALARMAS:
                     Alarma alarma = new Alarma(
-                            row.getString("clave"),
+                            row.getString("funcion"),
                             row.getString("usuario"),
                             row.getString("numTlfTo"),
                             row.getString("mailTo"),
                             row.getBoolean("enable", false));
-                    if (!alarma.clave.equals("")) {
+                    if (!alarma.funcion.equals("")) {
                         db.Dao().insertAlarma(alarma);
                         resultJson.put(Constantes.RESULT, true);
                     }
@@ -161,16 +156,21 @@ public class NatPlugin extends Plugin {
                 case Constantes.ALARMAS:
                     // listaPalabras = db.Dao().selectPalabras();
                     List<Alarma> listaAlarmas = db.Dao().selectAlarmas(usuario);
+                    if (!clave.equals("")) {
+                        Alarma alarma = db.Dao().selectAlarmasFun(usuario, clave);
+                        listaAlarmas.clear();
+                        listaAlarmas.set(0,alarma);
+                    }
                     resultJson.put(Constantes.RESULT, true);
                     List<JSObject> listAlarmas = new ArrayList<>();
                     for (Alarma alarma : listaAlarmas) {
-                        JSObject jSpalabra = new JSObject();
-                        jSpalabra.put("clave", alarma.clave);
-                        jSpalabra.put("usuario", alarma.usuario);
-                        jSpalabra.put("numTlfTo", alarma.numTlfTo);
-                        jSpalabra.put("mailTo", alarma.mailTo);
-                        jSpalabra.put("enable", alarma.enable);
-                        listAlarmas.add(jSpalabra);
+                        JSObject jSAlarma = new JSObject();
+                        jSAlarma.put("funcion", alarma.funcion);
+                        jSAlarma.put("usuario", alarma.usuario);
+                        jSAlarma.put("numTlfTo", alarma.numTlfTo);
+                        jSAlarma.put("mailTo", alarma.mailTo);
+                        jSAlarma.put("enable", alarma.enable);
+                        listAlarmas.add(jSAlarma);
                     }
                     JSONArray jsonArrayAlm = new JSONArray(listAlarmas);
                     resultJson.put(Constantes.ROWS, jsonArrayAlm);
@@ -208,7 +208,7 @@ public class NatPlugin extends Plugin {
                         resultJson.put(Constantes.RESULT, true);
                         break;
                     case Constantes.ALARMAS:
-                        Alarma alarma = new Alarma(clave, usu, "", "",false);
+                        Alarma alarma = new Alarma(clave, usu, "", "", false);
                         db.Dao().deleteAlarmas(alarma);
                         resultJson.put(Constantes.RESULT, true);
                         break;

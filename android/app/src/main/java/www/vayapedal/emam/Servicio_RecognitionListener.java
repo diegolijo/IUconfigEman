@@ -68,8 +68,10 @@ import javax.mail.internet.MimeMessage;
 
 import android.net.Uri;
 
+import www.vayapedal.emam.datos.Alarma;
 import www.vayapedal.emam.datos.DB;
 import www.vayapedal.emam.datos.Palabra;
+import www.vayapedal.emam.datos.Usuario;
 
 import static android.telephony.AvailableNetworkInfo.PRIORITY_LOW;
 import static android.view.Display.STATE_OFF;
@@ -98,26 +100,31 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     /**
      * VARIABLES CONFIGURACION
      */
-    private String usuario;
+    private String usuarioKey;
+    private Usuario usuario;
 
     /**
      * MAIL
      */
-    private String asuntoMail = "EMAN Alerta";
+
+
     private String passMail = "Angustia31";
-    private String fromMail = "enviosemam@gmail.com";
+    private String mailFrom = "enviosemam@gmail.com";
+    private String numTlfTo;
+    private String mailTo;
+
     private String cuerpoMail = "Envio alerta! \nposición:";
-    private String toMail = "diegolijo@gmail.com";
-    private String numLlamada = "662023955";
+    private String asuntoMail = "EMAN Alerta";
     private String texto = "cuerpo del mail";
+
 
     /**
      * SMS
      */
     private String cuerpoSms = "Alarma :";
-    private String numSms = "662023955";
-    private List<Palabra> listaPalabras = new ArrayList<>();
 
+    private List<Palabra> listaPalabras = new ArrayList<>();
+    private List<Alarma> triger2 = new ArrayList<>();
 
     /**
      * fuses para los toast
@@ -170,6 +177,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         DisplayManager displayManager =
                 (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
         displayManager.registerDisplayListener(new DisplayManager.DisplayListener() {
+            private boolean first = true;
+
             @Override
             public void onDisplayAdded(int displayId) {
                 Log.i("onDisplayAdded", "displayId: " + displayId);
@@ -187,10 +196,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                        initSpeechService();
+                        if (first) {
+                            initSpeechService();
+                            first = false;
+                        }
                         break;
                     case STATE_ON:
                         pararSpeechService();
+                        first = true;
                         break;
                     default:
                         break;
@@ -201,9 +214,20 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
     /********************************************************  INIT DB ************************************************************* */
+
+    private void initUser(String usuario) {
+        DB db = Room.databaseBuilder(this, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+        this.usuario = db.Dao().selectUsuario(usuario);
+    }
+
     private void initDB() {
         DB db = Room.databaseBuilder(this, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
-        listaPalabras = db.Dao().selectPalabras(usuario);
+        listaPalabras = db.Dao().selectPalabras(usuario.usuario);
+        Alarma alarma = db.Dao().selectAlarmasFun(usuario.usuario, Constantes.TRIGER2);
+        passMail = usuario.mailPass;
+        numTlfTo = alarma.numTlfTo;
+        mailFrom = usuario.mailFrom;
+        mailTo = alarma.mailTo;
     }
 
 
@@ -221,7 +245,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-            usuario = intent.getExtras().getString(Constantes.USUARIO);
+            usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
+            initUser(usuarioKey);
             switch (s) {
                 case Constantes.ON_TOGGLE:
                     this.startForeground(Constantes.ID_SERVICIO, createNotification());
@@ -238,6 +263,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         }
         return START_STICKY;
     }
+
 
     @Nullable
     @Override
@@ -414,7 +440,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     @Override
     public void onError(Exception e) {
-               this.pararSpeechService();
+        this.pararSpeechService();
     }
 
     @Override
@@ -452,7 +478,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         if (dif < Constantes.PERIODO_EN_ALERTA) {
                             funciones.vibrar(context, Constantes.VIBRAR_LARGO);
                             this.getLocalizacion();
-                            funciones.llamar(numLlamada, this);
+                            funciones.llamar(numTlfTo, this);
                         } else {
                             funciones.vibrar(context, Constantes.VIRAR_CORTO);
                         }
@@ -482,12 +508,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
-                    fusedLocationClient.getLastLocation()
+             /*       fusedLocationClient.getLastLocation()
                             .addOnSuccessListener(Runnable::run, location -> {
                                 if (location != null) {
                                     this.onResulLocation(location);
                                 }
-                            });
+                            });*/
 
                     fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)  //getLastLocation()
                             .addOnSuccessListener(Runnable::run, location -> {
@@ -514,7 +540,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         new MailBuilder(this).execute();
         try {
             String text = cuerpoSms + " " + Constantes.W_MAPS + localizacion;
-            funciones.enviarSms(numSms, text);
+            funciones.enviarSms(numTlfTo, text);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -541,14 +567,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 Session session = Session.getInstance(propiedades, new javax.mail.Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(activityReference.get().fromMail,
+                        return new PasswordAuthentication(activityReference.get().mailFrom,
                                 activityReference.get().passMail);
                     }
                 });
                 Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(activityReference.get().fromMail));
+                message.setFrom(new InternetAddress(activityReference.get().mailFrom));
                 message.setRecipients(Message.RecipientType.TO,
-                        InternetAddress.parse(activityReference.get().toMail));
+                        InternetAddress.parse(activityReference.get().mailTo));
                 message.setSubject(activityReference.get().asuntoMail);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy 'T'HH:mm:ss'Z'", new Locale("ES"));
                 Date date = new Date();
