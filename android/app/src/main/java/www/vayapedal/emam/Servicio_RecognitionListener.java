@@ -84,10 +84,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private final Funciones funciones = new Funciones(this);
 
 
-    /**
-     * Vosk-Kaldi
-     */
-    private static Model model;
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
 
@@ -97,22 +93,13 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private LocationManager locManager;
     private String localizacion;
 
-    /**
-     * VARIABLES CONFIGURACION
-     */
-    private String usuarioKey;
-    private Usuario usuario;
 
     /**
      * MAIL
      */
-
-
     private String passMail = "Angustia31";
     private String mailFrom = "enviosemam@gmail.com";
-    private String numTlfTo;
     private String mailTo;
-
     private String cuerpoMail = "Envio alerta! \nposición:";
     private String asuntoMail = "EMAN Alerta";
     private String texto = "cuerpo del mail";
@@ -121,10 +108,15 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     /**
      * SMS
      */
+    private String numTlfTo;
     private String cuerpoSms = "Alarma :";
 
+    /**
+     *
+     */
+    private Usuario usuario;
     private List<Palabra> listaPalabras = new ArrayList<>();
-    private List<Alarma> triger2 = new ArrayList<>();
+
 
     /**
      * fuses para los toast
@@ -230,6 +222,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         mailTo = alarma.mailTo;
     }
 
+    /****************************************************** ciclo vida servize ***********************************************************/
 
     @Override
     public void onCreate() {
@@ -245,12 +238,17 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-            usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
+            /**
+             * VARIABLES CONFIGURACION
+             */
+            String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
             initUser(usuarioKey);
+            initDB();
             switch (s) {
                 case Constantes.ON_TOGGLE:
                     this.startForeground(Constantes.ID_SERVICIO, createNotification());
                     funciones.vibrar(this, Constantes.VIRAR_CORTO);
+                    //todo lanzar el gpas y proporcionar cordenadas, si no esta activo lanza al intent
                     break;
                 case Constantes.ON_WIDGET: //todo
                     break;
@@ -288,7 +286,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         try {
             speechService = null;
             new SetupSpeechTask(this).execute();
-            this.initDB();
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
         } catch (Exception ex) {
             Toast toast = Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
@@ -298,27 +295,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    private void muestraProviders() {
-        List<String> proveedores = locManager.getAllProviders();
-        for (String proveedor : proveedores) {
-            String[] A = {"n/d", "preciso", "impreciso"};
-            String[] P = {"n/d", "bajo", "medio", "alto"};
-            LocationProvider info = locManager.getProvider(proveedor);
-            Log.i("locManager", "LocationProvider[ " + "getName=" + info.getName()
-                    + ", isProviderEnabled="
-                    + locManager.isProviderEnabled(proveedor) + ", getAccuracy="
-                    + A[Math.max(0, info.getAccuracy())] + ", getPowerRequirement="
-                    + P[Math.max(0, info.getPowerRequirement())]
-                    + ", hasMonetaryCost=" + info.hasMonetaryCost()
-                    + ", requiresCell=" + info.requiresCell()
-                    + ", requiresNetwork=" + info.requiresNetwork()
-                    + ", requiresSatellite=" + info.requiresSatellite()
-                    + ", supportsAltitude=" + info.supportsAltitude()
-                    + ", supportsBearing=" + info.supportsBearing()
-                    + ", supportsSpeed=" + info.supportsSpeed() + " ]\n");
-        }
-    }
-
+    /*********************************************** KALDI ************************************************************/
 
     private static class SetupSpeechTask extends AsyncTask<Void, Void, Exception> {
         WeakReference<Servicio_RecognitionListener> activityReference;
@@ -333,7 +310,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 Assets assets = new Assets(activityReference.get());
                 File assetDir = assets.syncAssets();
                 Vosk.SetLogLevel(0);
-                model = new Model(assetDir.toString() + "/model-android");
+                /**
+                 * Vosk-Kaldi
+                 */
+                Model model = new Model(assetDir.toString() + "/model-android");
                 activityReference.get().kaldiRcgnzr = new KaldiRecognizer(model, 16000.0f); // rec = new KaldiRecognizer(model, 16000.0f, grammar);
                 activityReference.get().speechService = new SpeechService(activityReference.get().kaldiRcgnzr, 16000.0f);
                 activityReference.get().speechService.addListener(activityReference.get());
@@ -350,7 +330,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             activityReference.get().iniciarSpeechService();
         }
     }
-
 
     private void iniciarSpeechService() {
         try {
@@ -387,25 +366,26 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
     /**
-     * @param hypothesis json con los resultados
-     *                   "result" : [{
-     *                   "conf" : 1.000000,
-     *                   "end" : 1.170000,
-     *                   "start" : 0.780000,
-     *                   "word" : "hola"
-     *                   }, {
-     *                   "conf" : 0.568311,
-     *                   "end" : 1.590000,
-     *                   "start" : 1.230000,
-     *                   "word" : "si"
-     *                   }],
-     *                   "text" : "hola si"
-     *                   }
+     * ------- eventos kaldi ----------------
      */
-
     @Override
     public void onResult(String hypothesis) {
-        try {
+        /**
+         * @param hypothesis json con los resultados
+         *                   "result" : [{
+         *                   "conf" : 1.000000,
+         *                   "end" : 1.170000,
+         *                   "start" : 0.780000,
+         *                   "word" : "hola"
+         *                   }, {
+         *                   "conf" : 0.568311,
+         *                   "end" : 1.590000,
+         *                   "start" : 1.230000,
+         *                   "word" : "si"
+         *                   }],
+         *                   "text" : "hola si"
+         *                   }
+         */try {
             String text = funciones.getFraseFromJson(hypothesis);
             if (!text.equals("")) {
                 String[] arWord = funciones.decodeKaldiJSon(hypothesis, "words");
@@ -497,6 +477,28 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     }
 
+    /************************************************ GPS  ***********************************************/
+
+    private void muestraProviders() {
+        List<String> proveedores = locManager.getAllProviders();
+        for (String proveedor : proveedores) {
+            String[] A = {"n/d", "preciso", "impreciso"};
+            String[] P = {"n/d", "bajo", "medio", "alto"};
+            LocationProvider info = locManager.getProvider(proveedor);
+            Log.i("locManager", "LocationProvider[ " + "getName=" + info.getName()
+                    + ", isProviderEnabled="
+                    + locManager.isProviderEnabled(proveedor) + ", getAccuracy="
+                    + A[Math.max(0, info.getAccuracy())] + ", getPowerRequirement="
+                    + P[Math.max(0, info.getPowerRequirement())]
+                    + ", hasMonetaryCost=" + info.hasMonetaryCost()
+                    + ", requiresCell=" + info.requiresCell()
+                    + ", requiresNetwork=" + info.requiresNetwork()
+                    + ", requiresSatellite=" + info.requiresSatellite()
+                    + ", supportsAltitude=" + info.supportsAltitude()
+                    + ", supportsBearing=" + info.supportsBearing()
+                    + ", supportsSpeed=" + info.supportsSpeed() + " ]\n");
+        }
+    }
 
     public void getLocalizacion() {
         try {
@@ -521,11 +523,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                                     this.onResulLocation(location);
                                 }
                             });
-
                 } else {
-                    Intent intentGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    intentGps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intentGps);
+                    startActivityTurnOnGps();
                 }
             }
         } catch (Exception e) {
@@ -547,7 +546,13 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     }
 
+    private void startActivityTurnOnGps() {
+        Intent intentGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        intentGps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intentGps);
+    }
 
+    /************************************************* MAIL *********************************************/
     private class MailBuilder extends AsyncTask<Void, Void, Void> {
         WeakReference<Servicio_RecognitionListener> activityReference;
 

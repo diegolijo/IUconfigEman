@@ -8,6 +8,9 @@ import { Helper } from 'src/app/services/Helper';
 import { ModelCreator } from 'src/app/services/model_ceator';
 import { NativePlugin } from 'src/app/services/NativePlugin';
 import { IAlarma, IUsuario } from './../../interfaces/i-db-models';
+import { Plugins, KeyboardInfo } from '@capacitor/core';
+const { Keyboard } = Plugins;
+
 
 @Component({
   selector: 'app-new-alarma',
@@ -42,22 +45,28 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   async ngOnInit() {
     try {
       if (this.platform.is('cordova')) {
+
         this.newAlarma = this.modelCreator.emptyIAlarma();
         this.appUser = this.proAppUser.getAppUser();
-
         const result = await this.selectAlarmas();
         for (const alarma of result.rows) {
           this.alarmas.push(this.modelCreator.getIAlarma(alarma));
         }
-        await this.onClickRefresh();
+        await this.refreshViewFromDb();
       } else {
         this.appUser = this.proAppUser.getAppUser();
         this.newAlarma = this.modelCreator.emptyIAlarma();
       }
+
     } catch (err) {
       this.helper.showException('ngOnInit :' + err);
     }
   }
+
+
+
+
+
 
   async ngOnDestroy() {
     if (this.platform.is('cordova')) {
@@ -68,6 +77,10 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   }
 
   public async onClickRefresh() {
+    await this.refreshViewFromDb();
+  }
+
+  private async refreshViewFromDb() {
     if (this.platform.is('cordova')) {
       const result = await this.selectAlarmas();
       this.alarmas = [];

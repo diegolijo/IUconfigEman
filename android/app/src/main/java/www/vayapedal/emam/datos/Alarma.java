@@ -6,12 +6,12 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity
+
+@Entity(primaryKeys = {"funcion", "usuario" })
 public class Alarma {
 
 
     @NonNull
-    @PrimaryKey
     @ColumnInfo(name = "funcion")
     public String funcion;
 

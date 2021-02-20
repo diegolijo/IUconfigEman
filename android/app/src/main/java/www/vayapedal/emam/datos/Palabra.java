@@ -3,11 +3,12 @@ package www.vayapedal.emam.datos;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
 
-@Entity(primaryKeys = {"clave"})
+@Entity(primaryKeys = {"clave", "usuario" })
 public class Palabra {
 
     @NonNull

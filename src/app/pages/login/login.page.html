@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header appHideOnKeyboardShow >
+  <ion-toolbar  >
     <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
       {{ 'LOGIN.TITLE' | translate:{value: null} }}
     </div>
@@ -14,9 +14,8 @@
           <ion-label position="stacked" color="primary">
             {{ 'LOGIN.USERNAME' | translate:{value: null} }}
           </ion-label>
-          <ion-input #iNusername [(ngModel)]="username" name="username"
-            (ionBlur)="this.helper.selectOnClick(iNusername)" (click)="this.helper.selectOnClick(this.iNusername )"
-            type="text" #usernameText="ngModel" spellcheck="false" autocapitalize="off" required color="dark">
+          <ion-input  appClassKey="cssDirective" [(ngModel)]="username" name="username" type="text" #usernameText="ngModel"
+            spellcheck="false" autocapitalize="off" required color="dark">
           </ion-input>
         </ion-item>
 
@@ -33,9 +32,7 @@
 
           <ion-row>
             <ion-col size="12">
-              <ion-input #iNpassword [(ngModel)]="password" name="password"
-                (focusout)="this.helper.selectOnClick(this.iNpassword)"
-                (click)="this.helper.selectOnClick(this.iNpassword )" [(type)]="this.PassTypeText"
+              <ion-input  appClassKey="cssDirective"  [(ngModel)]="password" name="password" [(type)]="this.PassTypeText"
                 #passwordText="ngModel" color="dark" required>
               </ion-input>
             </ion-col>
@@ -51,7 +48,7 @@
 
         <ion-label color="danger" [hidden]="passwordText.valid || submitted === false" class="ion-padding-start">
           {{ 'LOGIN.PASSWORD_REQUIRED' | translate:{value: null} }}
-        </ion-label> 
+        </ion-label>
 
 
         <ion-button fill="clear" (click)="this.onClickLogin()" expand="block">
@@ -62,7 +59,7 @@
   </form>
 
 
- 
+
 
 
 
@@ -70,8 +67,8 @@
 
 
 
-<ion-footer class="textCenter">
-  <ion-button [hidden]=" submitted === false" fill="clear" (click)="this.onClickGoToRegistro()" expand="block" >
+<ion-footer appHideOnKeyboardShow class="textCenter">
+  <ion-button [hidden]=" submitted === false" fill="clear" (click)="this.onClickGoToRegistro()" expand="block">
     {{ 'LOGIN.REGISTER' | translate:{value: null} }}
   </ion-button>
   <ion-toolbar>

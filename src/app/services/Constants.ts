@@ -3,9 +3,12 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Constants {
 
+
     constructor() {
     }
 
+
+    static LONG_PRESS_THRESHOLD = 500;
     /*********************************************** APP ***********************************************/
     public static APP_VERSION = '2.0.2';
     public static CARACTERES_POR_LINEA = 45;
@@ -20,8 +23,8 @@ export class Constants {
     // tablas
     public static PALABRAS = 'PALABRAS';
     // palabras[funciones]
-            public static TRIGER1 = 'TRIGER1';
-            public static TRIGER2 = 'TRIGER2';
+    public static TRIGER1 = 'TRIGER1';
+    public static TRIGER2 = 'TRIGER2';
 
     public static USUARIOS = 'USUARIOS';
     public static ALARMAS = 'ALARMAS';
