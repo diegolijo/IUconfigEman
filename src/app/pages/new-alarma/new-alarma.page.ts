@@ -65,9 +65,6 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
 
 
 
-
-
-
   async ngOnDestroy() {
     if (this.platform.is('cordova')) {
 

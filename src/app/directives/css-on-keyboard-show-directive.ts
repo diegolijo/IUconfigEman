@@ -10,9 +10,7 @@ const { Keyboard } = Plugins;
 export class CssOnKeyboardShowDirective implements AfterViewInit, OnDestroy {
     @Input('appClassKey') cssClass: any;
 
-
     public el = this.elementRef.nativeElement;
-
     public isClicled = false;
 
     constructor(
@@ -26,19 +24,12 @@ export class CssOnKeyboardShowDirective implements AfterViewInit, OnDestroy {
     }
 
     initListener() {
-
-
-
-
         Keyboard.addListener('keyboardWillShow', (info: KeyboardInfo) => {
             this.el.classList.add(this.cssClass);
         });
-
         Keyboard.addListener('keyboardWillHide', () => {
             this.el.classList.remove(this.cssClass);
         });
-
-
         /*function myFunction() {
                           var element, name, arr;
                           element = document.getElementById("myDIV");
@@ -69,10 +60,6 @@ export class CssOnKeyboardShowDirective implements AfterViewInit, OnDestroy {
         });
         gesture.enable(true);
     }
-
-
-
-
 
 
     ngOnDestroy(): void {

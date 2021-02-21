@@ -32,7 +32,7 @@ public class Palabra {
     @ColumnInfo(name = "fecha")
     public Date fecha;
 
-    public Palabra(@NonNull String clave, @NonNull String funcion, String descripcion, String usuario) {
+    public Palabra(@NonNull String clave, @NonNull String funcion,@NonNull String descripcion,@NonNull String usuario) {
         this.clave = clave;
         this.funcion = funcion;
         this.descripcion = descripcion;

@@ -26,7 +26,7 @@ public class Usuario {
     public String mailPass;
 
 
-    public Usuario(@NonNull String usuario, String loginPass, String mailFrom, String mailPass) {
+    public Usuario(@NonNull String usuario,@NonNull String loginPass,@NonNull String mailFrom,@NonNull String mailPass) {
         this.usuario = usuario;
         this.loginPass = loginPass;
         this.mailFrom = mailFrom;

@@ -159,7 +159,7 @@ public class NatPlugin extends Plugin {
                     if (!clave.equals("")) {
                         Alarma alarma = db.Dao().selectAlarmasFun(usuario, clave);
                         listaAlarmas.clear();
-                        listaAlarmas.set(0,alarma);
+                        listaAlarmas.set(0, alarma);
                     }
                     resultJson.put(Constantes.RESULT, true);
                     List<JSObject> listAlarmas = new ArrayList<>();
@@ -236,7 +236,7 @@ public class NatPlugin extends Plugin {
         JSObject resultJson = new JSObject();
         switch (accion) {
             case Constantes.BIND:
-                bindServicio(Constantes.ON_TOGGLE);
+                bindServicio(usuario);
                 break;
             case Constantes.UNBIND:
                 unBindServicio();
@@ -287,7 +287,7 @@ public class NatPlugin extends Plugin {
     }
 
 
-    public void bindServicio(String mensaje) {
+    public void bindServicio(String usuario) {
         try {
             Context context = getContext();
             if (!funciones.isServiceBindRunning(context)) {
@@ -295,6 +295,7 @@ public class NatPlugin extends Plugin {
                 Receiver resultReceiver = new Receiver(new Handler());
                 Intent i = new Intent(getContext(), ServicioBind_RecognitionListener.class);
                 i.putExtra(Constantes.RECEIVER, resultReceiver);
+                i.putExtra(Constantes.USUARIO, usuario);
                 if (getContext().bindService(i, connection, Context.BIND_AUTO_CREATE)) {  /** main enlazado al servicio servicio */
                     if (bindServize != null) {
                         bindServize.configurarSpeechService();

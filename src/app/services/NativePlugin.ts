@@ -38,7 +38,8 @@ export class NativePlugin {
 
     public async bindService() {
         if (this.platform.is('cordova')) {
-            const result = await NatPlugin.servizeOperations({ action: Constants.BIND });
+            const user = this.appUser.getAppUser();
+            const result = await NatPlugin.servizeOperations({ action: Constants.BIND, usuario: user.usuario  });
             return result;
         } else { }
 

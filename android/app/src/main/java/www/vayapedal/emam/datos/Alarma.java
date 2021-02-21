@@ -23,6 +23,7 @@ public class Alarma {
     @ColumnInfo(name = "numTlfTo")
     public String numTlfTo;
 
+
     @ColumnInfo(name = "mailFrom")
     public String mailTo;
 
@@ -30,7 +31,7 @@ public class Alarma {
     @ColumnInfo(name = "enable")
     public boolean enable;
 
-    public Alarma(@NonNull String funcion, @NonNull String usuario, String numTlfTo, String mailTo, boolean enable) {
+    public Alarma(@NonNull String funcion, @NonNull String usuario, String numTlfTo,  String mailTo, boolean enable) {
         this.usuario = usuario;
         this.funcion = funcion;
         this.numTlfTo = numTlfTo;

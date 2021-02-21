@@ -1,24 +1,18 @@
 package www.vayapedal.emam;
 
-import android.annotation.TargetApi;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.os.AsyncTask;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.ResultReceiver;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 
 import org.kaldi.Assets;
 import org.kaldi.KaldiRecognizer;
@@ -30,30 +24,38 @@ import org.kaldi.Vosk;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-
-import static android.telephony.AvailableNetworkInfo.PRIORITY_LOW;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Set;
 
 
 public class ServicioBind_RecognitionListener extends Service implements RecognitionListener {
 
 
+    private static final String TAG = "TTS";
     private final Funciones funciones = new Funciones(this);
 
 
-    /*Vosk-Kaldi*/
+    /******** Vosk-Kaldi **********/
     private static Model model;
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
-    /*comunicacion SERVICIO*/
+    /*************** tts ************/
+    private TextToSpeech ttsEngine;
+    private boolean ttsReady;
+    /**** comunicacion SERVICIO ****/
     private final IBinder binder = new LocalBinder();
     private ResultReceiver resultReceiver;
+    private String lastPartial;
 
 
     @Override
     public void onCreate() {
         try {
+
             super.onCreate();
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
+            initTTS();
             configurarSpeechService();
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,6 +65,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
 
     @Override
     public IBinder onBind(Intent intent) {
+        String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
         resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
         return binder;
     }
@@ -81,7 +84,8 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     public void onDestroy() {
         //fixme borrar todos los recursos del servicio
         pararSpeechService();
-
+        ttsEngine.stop();
+        ttsEngine = null;
         funciones.vibrar(this, 2000);
         super.onDestroy();
     }
@@ -168,25 +172,24 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     }
 
 
-    /**
-     * @param hypothesis json con los resultados
-     *                   "result" : [{
-     *                   "conf" : 1.000000,
-     *                   "end" : 1.170000,
-     *                   "start" : 0.780000,
-     *                   "word" : "hola"
-     *                   }, {
-     *                   "conf" : 0.568311,
-     *                   "end" : 1.590000,
-     *                   "start" : 1.230000,
-     *                   "word" : "si"
-     *                   }],
-     *                   "text" : "hola si"
-     *                   }
-     */
-
     @Override
     public void onResult(String hypothesis) {
+        /**
+         * @param hypothesis json con los resultados
+         *                   "result" : [{
+         *                   "conf" : 1.000000,
+         *                   "end" : 1.170000,
+         *                   "start" : 0.780000,
+         *                   "word" : "hola"
+         *                   }, {
+         *                   "conf" : 0.568311,
+         *                   "end" : 1.590000,
+         *                   "start" : 1.230000,
+         *                   "word" : "si"
+         *                   }],
+         *                   "text" : "hola si"
+         *                   }
+         */
         try {
             String text = funciones.getFraseFromJson(hypothesis);
             if (!text.equals("")) {
@@ -216,9 +219,10 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     public void onPartialResult(String hypothesis) {
         try {
             String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
+
             for (String s : arPartial) {
                 if (!s.equals("")) {
-                    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+                    procesarPartialSpechToText(getApplicationContext(), s);
                 }
             }
         } catch (Exception e) {
@@ -244,12 +248,18 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
         this.stopSelf();
     }
 
+    /**
+     * INVOCADO CADA VEZ QUE TENEMOS UN RESULTADO DEL SPEECH CON INFORMACION
+     */
+    private void procesarPartialSpechToText(Context context, String s) {
+        toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+    }
 
     /**
      * INVOCADO CADA VEZ QUE TENEMOS UN RESULTADO DEL SPEECH CON INFORMACION
      */
     private void procesarResultSpechToText(Context context, String s, int confianza) {
-
+        toReceiver(s, Constantes.NOTIFICACION_PALABRA);
     }
 
 
@@ -258,12 +268,35 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
      * este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
      */
     private void procesarTextTextToSpech(String frase) {
-        toReceiver(frase, Constantes.NOTIFICACION_PALABRA);
-        if(frase.equals("ok google")){
+        toReceiver(frase, Constantes.NOTIFICACION_FRASE);
+        if (frase.equals("ok google")) {
             Toast toast = new Toast(getApplicationContext());
             toast.setText("PArdillo xDD");
             toast.show();
         }
+    }
+
+    /********************************************   TTS   *********************************************/
+    private void initTTS() {
+        ttsEngine = new TextToSpeech(this, initStatus -> {
+            if (initStatus == TextToSpeech.SUCCESS) {
+                final Locale spanish = new Locale("es", "ES");
+                final Locale france = Locale.FRANCE;
+                ttsEngine.setLanguage(spanish);
+                ttsReady = true;
+            } else {
+                Log.d(TAG, "Can't initialize TextToSpeech");
+            }
+        });
+    }
+
+
+
+    public void speak(String text, boolean remplaza, float vol) {
+        // todo
+        Bundle bundle = new Bundle();
+        bundle.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, vol);
+        ttsEngine.speak(text, (remplaza) ? TextToSpeech.QUEUE_FLUSH : TextToSpeech.QUEUE_ADD, bundle, "capacitoraccessibility" + System.currentTimeMillis());
     }
 
 
