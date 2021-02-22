@@ -35,9 +35,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     private static final String TAG = "TTS";
     private final Funciones funciones = new Funciones(this);
 
-
     /******** Vosk-Kaldi **********/
-    private static Model model;
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
     /*************** tts ************/
@@ -46,16 +44,13 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     /**** comunicacion SERVICIO ****/
     private final IBinder binder = new LocalBinder();
     private ResultReceiver resultReceiver;
-    private String lastPartial;
 
 
     @Override
     public void onCreate() {
         try {
-
             super.onCreate();
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
-            initTTS();
             configurarSpeechService();
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,21 +79,23 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     public void onDestroy() {
         //fixme borrar todos los recursos del servicio
         pararSpeechService();
-        ttsEngine.stop();
-        ttsEngine = null;
         funciones.vibrar(this, 2000);
         super.onDestroy();
     }
 
 
-    /* clase utilizda para devolver  Binder para acceder a las variables y metodos publicos del servicio*/
+    /**
+     * clase utilizda para devolver  Binder para acceder a las variables y metodos publicos del servicio
+     */
     public class LocalBinder extends Binder {
         ServicioBind_RecognitionListener getBindService() {
             return ServicioBind_RecognitionListener.this;
         }
     }
 
-    /* ENVIARDO PAQUETE Y RESULT_DATA_KEY AL MAIN*/
+    /**
+     * ENVIARDO PAQUETE Y RESULT_DATA_KEY AL MAIN
+     */
     private void toReceiver(String p, String key) {
         Bundle bundle = new Bundle();
         bundle.putString(key, p);
@@ -128,8 +125,8 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
                 Assets assets = new Assets(activityReference.get());
                 File assetDir = assets.syncAssets();
                 Vosk.SetLogLevel(0);
-                model = new Model(assetDir.toString() + "/model-android");
-                activityReference.get().kaldiRcgnzr = new KaldiRecognizer(model, 16000.0f); // rec = new KaldiRecognizer(model, 16000.0f, grammar);
+                Model model = new Model(assetDir.toString() + "/model-android");
+                activityReference.get().kaldiRcgnzr = new KaldiRecognizer(model, 16000.0f);
                 activityReference.get().speechService = new SpeechService(activityReference.get().kaldiRcgnzr, 16000.0f);
                 activityReference.get().speechService.addListener(activityReference.get());
                 Log.d("Vosk", "Sync files in the folder " + assetDir.toString());
@@ -249,7 +246,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     }
 
     /**
-     * INVOCADO CADA VEZ QUE TENEMOS UN RESULTADO DEL SPEECH CON INFORMACION
+     * INVOCADO CADA VEZ QUE TENEMOS UN RESULTADO PARCIAL DEL SPEECH CON INFORMACION
      */
     private void procesarPartialSpechToText(Context context, String s) {
         toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
@@ -265,7 +262,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
 
     /**
      * PROCESAR FRASE
-     * este metodo se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
+     * se llama despues de todas las  llamadas a this.procesarResultadoSpechToText()
      */
     private void procesarTextTextToSpech(String frase) {
         toReceiver(frase, Constantes.NOTIFICACION_FRASE);
@@ -289,8 +286,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
             }
         });
     }
-
-
 
     public void speak(String text, boolean remplaza, float vol) {
         // todo

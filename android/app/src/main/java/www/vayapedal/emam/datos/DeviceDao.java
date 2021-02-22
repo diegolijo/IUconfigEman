@@ -19,8 +19,8 @@ public interface DeviceDao {
     List<Palabra> selectPalabras(String usuario);
 
 
-    @Query("SELECT * FROM Palabra WHERE palabra.funcion LIKE :funcion")
-    List<Palabra> selectFuncion(String funcion);
+    @Query("SELECT * FROM Palabra WHERE palabra.funcion LIKE :funcion AND palabra.usuario LIKE :usuario ORDER BY funcion")
+    List<Palabra> selectPalabrasFuncion(String usuario, String funcion);
 
 
     @Insert

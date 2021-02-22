@@ -140,6 +140,9 @@ public class NatPlugin extends Plugin {
                     break;
                 case Constantes.PALABRAS:
                     List<Palabra> listaPalabras = db.Dao().selectPalabras(usuario);
+                    if(!clave.equals("")){
+                        listaPalabras = db.Dao().selectPalabrasFuncion(usuario,clave);
+                    }
                     resultJson.put(Constantes.RESULT, true);
                     List<JSObject> listPalabras = new ArrayList<>();
                     for (Palabra palabra : listaPalabras) {

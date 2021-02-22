@@ -24,10 +24,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   public alarmas: IAlarma[] = [];
   public newAlarma: IAlarma;
 
-  public funciones = [
-    { id: Constants.TRIGER1 },
-    { id: Constants.TRIGER2 }
-  ];
+
 
   public isBindService = false;
 
@@ -41,12 +38,13 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     public modelCreator: ModelCreator
   ) {
   }
+
   /************************************************ eventos ************************************************/
   async ngOnInit() {
     try {
       if (this.platform.is('cordova')) {
-
         this.newAlarma = this.modelCreator.emptyIAlarma();
+        this.newAlarma.funcion = Constants.TRIGER2;
         this.appUser = this.proAppUser.getAppUser();
         const result = await this.selectAlarmas();
         for (const alarma of result.rows) {
@@ -62,8 +60,6 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
       this.helper.showException('ngOnInit :' + err);
     }
   }
-
-
 
   async ngOnDestroy() {
     if (this.platform.is('cordova')) {
@@ -90,7 +86,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
         funcion: 'clave',
         numTlfTo: '662023955',
         enable: true,
-        mailTo: 'deigonalgas@hotmail.com'
+        mailTo: 'diegonalgas@hotmail.com'
       };
       for (let i = 0; i < 7; i++) {
         this.alarmas.push(this.modelCreator.getIAlarma(alarma));

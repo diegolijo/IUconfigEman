@@ -23,6 +23,7 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   public palabras: IPalabra[] = [];
   public newPalabra: IPalabra;
 
+
   public funciones = [
     { id: Constants.TRIGER1 },
     { id: Constants.TRIGER2 }
@@ -48,10 +49,10 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         this.newPalabra = this.modelCreator.emptyIPalabra();
         this.appUser = this.proAppUser.getAppUser();
         this.startPartialListener();
-        const result = await this.selectPalabras();
-        for (const palabra of result.rows) {
-          this.palabras.push(this.modelCreator.getIPalabra(palabra));
-        }
+        /*   const result = await this.selectPalabras();
+          for (const palabra of result.rows) {
+            this.palabras.push(this.modelCreator.getIPalabra(palabra));
+          } */
         await this.onClickRefresh();
       } else {
         this.appUser = this.proAppUser.getAppUser();
@@ -93,13 +94,13 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
 
   public async onClickRefresh() {
     if (this.platform.is('cordova')) {
+      const result = await this.selectPalabrasFuncion(this.newPalabra.funcion);
       this.palabras = [];
-      const result = await this.selectPalabras();
       for (const palabra of result.rows) {
         this.palabras.push(this.modelCreator.getIPalabra(palabra));
       }
     } else {
-      const palabra: IPalabra = { clave: 'caca', funcion: 'triger_de_primer_nivel', fecha: '', descripcion: '', usuario: '' };
+      const palabra: IPalabra = { clave: 'caca', funcion: Constants.TRIGER1, fecha: '', descripcion: '', usuario: '' };
       for (let i = 0; i < 7; i++) {
         this.palabras.push(this.modelCreator.getIPalabra(palabra));
       }
@@ -185,4 +186,11 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
     const result = await this.nativePlugin.selectDB(Constants.PALABRAS, '', this.appUser.usuario);
     return result;
   }
+
+  public async selectPalabrasFuncion(funcion) {
+    const result = await this.nativePlugin.selectDB(Constants.PALABRAS, funcion, this.appUser.usuario);
+    return result;
+  }
+
+
 }

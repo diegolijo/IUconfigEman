@@ -205,11 +205,16 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    /********************************************************  INIT DB ************************************************************* */
+    /*************************************************************  INIT DB *************************************************************/
 
     private void initUser(String usuario) {
-        DB db = Room.databaseBuilder(this, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
-        this.usuario = db.Dao().selectUsuario(usuario);
+        try {
+            DB db = Room.databaseBuilder(this, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
+            this.usuario = db.Dao().selectUsuario(usuario);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private void initDB() {
@@ -217,12 +222,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         listaPalabras = db.Dao().selectPalabras(usuario.usuario);
         Alarma alarma = db.Dao().selectAlarmasFun(usuario.usuario, Constantes.TRIGER2);
         passMail = usuario.mailPass;
-        numTlfTo = alarma.numTlfTo;
         mailFrom = usuario.mailFrom;
+        numTlfTo = alarma.numTlfTo;
         mailTo = alarma.mailTo;
     }
 
-    /****************************************************** ciclo vida servize ***********************************************************/
+    /******************************************************* ciclo vida servize **********************************************************/
 
     @Override
     public void onCreate() {
@@ -255,8 +260,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 default:
                     throw new IllegalStateException("onStartCommand - Valor inesperado: " + s);
             }
-        } catch (
-                Exception exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
         return START_STICKY;
@@ -334,7 +338,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private void iniciarSpeechService() {
         try {
             if (speechService.startListening()) {  /**----********** arranca el reconocedor *******---->> */
-                //compronabos gps activo
+                /**compronabos gps activo*/
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     muestraProviders();
@@ -393,7 +397,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 String[] arText = funciones.decodeKaldiJSon(hypothesis, "text");
                 for (int i = 0; i < arWord.length; i++) {
                     float confianza = Float.parseFloat(arConf[i]) * 100;
-                    procesarResultSpechToText(getApplicationContext(), arWord[i], (int) confianza);        //-----> procesar palabra
+                    procesarResultSpechToText(getApplicationContext(), arWord[i], (int) confianza);//-----> procesar palabra
                     Log.i("Vosk", "palabra oida -> " + arWord[i]);
                 }
                 procesarTextTextToSpech(arText[0]);
@@ -410,7 +414,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
             for (String s : arPartial) {
                 if (!s.equals("")) {
-                    //    toReceiver(s, Constantes.NOTIFICACION_PARCIAL);
+
                 }
             }
         } catch (Exception e) {

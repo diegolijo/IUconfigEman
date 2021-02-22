@@ -31,6 +31,11 @@
     "EMPTY": "Introduce tu usuario y contraseña",
     "FAILURE": "El usuario no existe o las credenciales son incorrectas."
   },
+  "LOGOUT": {
+    "TITLE": "¿Cerrar sesión?",
+    "TEXT":""
+
+  },
   "REGISTER": {
     "TITLE": "Nuevo usuario",
     "USERNAME": "Usuario",
@@ -46,24 +51,29 @@
   "HOME": {
     "TITLE": "EMAM",
     "ESCUCHAR": "Escuchar",
-    "BTN_PALABRAS": "Filtros",
-    "BTN_ALARMAS": "Contacto",
-    "ENABLE_SERVIZE": "Habilitar Servicio"
+    "BTN_PALABRAS": "Configurar Filtros",
+    "BTN_ALARMAS": "Datos del Contacto",
+    "ENABLE_SERVIZE": "Habilitar el Servicio"
   },
   "NEW_PALABRA_MODAL": {
-    "TITLE": "Nueva Palabra",
+    "TITLE": "Configurar Filtros",
     "ESCUCHAR": "Escuchar",
     "ADD_PALABRA": "Añadir",
-    "FUNCTION_TYPE": "Función",
+    "FUNCTION_TYPE": "Filtros",
     "PALABRA": "Palabra",
-    "NO_INSERT": "No se ha guardado el filtro"
+    "NO_INSERT": "No se ha guardado el filtro",
+    "TRIGER1": "Aplicación en alerta",
+    "TRIGER2": "Aviso de ubicación",
+    "TRIGER1_DESCRIPCION": "",
+    "TRIGER2_DESCRIPCION": ""
   },
   "SIDE_MENU": {
     "LOGOUT": "Cerrar Sesión",
     "CONFIGURACION": "Configuración",
     "DARK_MODE": "Modo Oscuro"
   },
-  "NEW_ALARMA": {   "TITLE": "Contacto",
+  "NEW_ALARMA": {
+    "TITLE": "Contacto",
     "FUNCTION_TYPE": "funcion",
     "ADD_ALARMA": "guardar",
     "EMAIL_TO": "para",

@@ -1,6 +1,6 @@
 <ion-header appHideOnKeyboardShow >
   <ion-toolbar  >
-    <div style="color: var(--ion-color-dark)" class="textCenter fontBold">
+    <div  style="color: var(--ion-color-primary)" class="textCenter fontBold">
       {{ 'LOGIN.TITLE' | translate:{value: null} }}
     </div>
   </ion-toolbar>
@@ -18,12 +18,7 @@
             spellcheck="false" autocapitalize="off" required color="dark">
           </ion-input>
         </ion-item>
-
-        <!--   <ion-text color="danger">
-          <p [hidden]="usernameText.valid || submitted == false" class="ion-padding-start">
-            {{ 'LOGIN.USERNAME_REQUIRED' | translate:{value: null} }}
-          </p>
-        </ion-text> -->
+    
 
         <ion-item>
           <ion-label position="stacked" color="primary">
@@ -40,7 +35,7 @@
 
           <ion-button fill="clear" class='botonOjo' (click)="this.switchPassVisibility()" expand="block"
             autocapitalize="off">
-            <ion-icon [color]="(this.PassTypeText === 'password')? 'secondary' : 'primary'"
+            <ion-icon [color]="(this.PassTypeText === 'password')? 'primary' : 'secondary'"
               [name]="(this.PassTypeText === 'password')? 'eye-outline' : 'eye-off-outline'">
             </ion-icon>
           </ion-button>
@@ -57,12 +52,6 @@
       </ion-card-content>
     </ion-card>
   </form>
-
-
-
-
-
-
 </ion-content>
 
 
@@ -72,6 +61,6 @@
     {{ 'LOGIN.REGISTER' | translate:{value: null} }}
   </ion-button>
   <ion-toolbar>
-    <ion-label color="dark">{{ 'VERSION' | translate:{value: null} }} &nbsp; {{this.version}}</ion-label>
+    <ion-label color="primary">{{ 'VERSION' | translate:{value: null} }} &nbsp; {{this.version}}</ion-label>
   </ion-toolbar>
 </ion-footer>
