@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 import java.util.Date;
 
 
-@Entity(primaryKeys = {"clave", "usuario" })
+@Entity(primaryKeys = {"clave", "usuario"})
 public class Palabra {
 
     @NonNull
@@ -25,14 +25,13 @@ public class Palabra {
     public String usuario;
 
 
-    @NonNull
     @ColumnInfo(name = "descripcion")
     public String descripcion;
 
     @ColumnInfo(name = "fecha")
     public Date fecha;
 
-    public Palabra(@NonNull String clave, @NonNull String funcion,@NonNull String descripcion,@NonNull String usuario) {
+    public Palabra(@NonNull String clave, @NonNull String funcion, @NonNull String usuario, String descripcion) {
         this.clave = clave;
         this.funcion = funcion;
         this.descripcion = descripcion;

@@ -58,7 +58,7 @@ public class NatPlugin extends Plugin {
     /** ********************************************** BD *****************************************************/
     /**
      * Inserta resgistros en la base de datos pasando por parametro un Json
-     * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"","mailFrom":""}...}
+     * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"12345678","mailFrom":"diegolijo@gmail.com"}...}
      */
     @PluginMethod()
     public void insertDB(PluginCall call) {
@@ -85,8 +85,8 @@ public class NatPlugin extends Plugin {
                     Palabra palabra = new Palabra(
                             row.getString("clave"),
                             row.getString("funcion"),
-                            row.getString("descripcion"),
-                            row.getString("usuario"));
+                            row.getString("usuario"),
+                            row.getString("descripcion"));
                     if (!palabra.clave.equals("")) {
                         db.Dao().insertPalabra(palabra);
                         resultJson.put(Constantes.RESULT, true);
@@ -98,7 +98,7 @@ public class NatPlugin extends Plugin {
                             row.getString("usuario"),
                             row.getString("numTlfTo"),
                             row.getString("mailTo"),
-                            row.getBoolean("enable", false));
+                            row.getBoolean("enable", true));
                     if (!alarma.funcion.equals("")) {
                         db.Dao().insertAlarma(alarma);
                         resultJson.put(Constantes.RESULT, true);
@@ -139,9 +139,11 @@ public class NatPlugin extends Plugin {
                     resultJson.put(Constantes.REGISTRO, user);
                     break;
                 case Constantes.PALABRAS:
-                    List<Palabra> listaPalabras = db.Dao().selectPalabras(usuario);
-                    if(!clave.equals("")){
-                        listaPalabras = db.Dao().selectPalabrasFuncion(usuario,clave);
+                    List<Palabra> listaPalabras;
+                    if (!clave.equals("")) {
+                        listaPalabras = db.Dao().selectPalabrasFuncion(usuario, clave);
+                    } else {
+                        listaPalabras = db.Dao().selectPalabras(usuario);
                     }
                     resultJson.put(Constantes.RESULT, true);
                     List<JSObject> listPalabras = new ArrayList<>();
@@ -157,12 +159,11 @@ public class NatPlugin extends Plugin {
                     resultJson.put(Constantes.ROWS, jsonArrayPal);
                     break;
                 case Constantes.ALARMAS:
-                    // listaPalabras = db.Dao().selectPalabras();
-                    List<Alarma> listaAlarmas = db.Dao().selectAlarmas(usuario);
+                    List<Alarma> listaAlarmas;
                     if (!clave.equals("")) {
-                        Alarma alarma = db.Dao().selectAlarmasFun(usuario, clave);
-                        listaAlarmas.clear();
-                        listaAlarmas.set(0, alarma);
+                        listaAlarmas = db.Dao().selectAlarmasFun(usuario, clave);
+                    } else {
+                        listaAlarmas = db.Dao().selectAlarmas(usuario);
                     }
                     resultJson.put(Constantes.RESULT, true);
                     List<JSObject> listAlarmas = new ArrayList<>();
@@ -206,12 +207,12 @@ public class NatPlugin extends Plugin {
                         resultJson.put(Constantes.RESULT, true);
                         break;
                     case Constantes.PALABRAS:
-                        Palabra palabra = new Palabra(clave, "", "", usu);
+                        Palabra palabra = new Palabra(clave, "", usu, "");
                         db.Dao().deletePalabras(palabra);
                         resultJson.put(Constantes.RESULT, true);
                         break;
                     case Constantes.ALARMAS:
-                        Alarma alarma = new Alarma(clave, usu, "", "", false);
+                        Alarma alarma = new Alarma(Constantes.TRIGER2, usu, clave, "", false);
                         db.Dao().deleteAlarmas(alarma);
                         resultJson.put(Constantes.RESULT, true);
                         break;
@@ -265,7 +266,6 @@ public class NatPlugin extends Plugin {
             if (!funciones.isServiceRunning(context)) {
                 Intent i = new Intent(context, Servicio_RecognitionListener.class);
                 i.putExtra(Constantes.USUARIO, usuario);
-                //todo enviar usuario para cargar sus palabras y alarmas en el servicio para
                 i.putExtra(Constantes.ORIGEN_INTENT, Constantes.ON_TOGGLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(i);

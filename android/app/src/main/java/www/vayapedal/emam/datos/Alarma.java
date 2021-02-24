@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 
-@Entity(primaryKeys = {"funcion", "usuario" })
+@Entity(primaryKeys = {"funcion", "usuario", "numTlfTo" })
 public class Alarma {
 
 
@@ -19,12 +19,12 @@ public class Alarma {
     @ColumnInfo(name = "usuario")
     public String usuario;
 
-
+    @NonNull
     @ColumnInfo(name = "numTlfTo")
     public String numTlfTo;
 
 
-    @ColumnInfo(name = "mailFrom")
+    @ColumnInfo(name = "mailTo")
     public String mailTo;
 
 

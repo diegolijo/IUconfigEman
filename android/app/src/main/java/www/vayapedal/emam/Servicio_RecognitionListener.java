@@ -50,23 +50,10 @@ import org.kaldi.Vosk;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import android.net.Uri;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import www.vayapedal.emam.datos.Alarma;
 import www.vayapedal.emam.datos.DB;
@@ -82,8 +69,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
     private final Funciones funciones = new Funciones(this);
-
-
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
 
@@ -97,9 +82,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     /**
      * MAIL
      */
-    private String passMail = "Angustia31";
-    private String mailFrom = "enviosemam@gmail.com";
-    private String mailTo;
+    private String passMail;
+    private String mailFrom;
     private String cuerpoMail = "Envio alerta! \nposición:";
     private String asuntoMail = "EMAN Alerta";
     private String texto = "cuerpo del mail";
@@ -108,15 +92,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     /**
      * SMS
      */
-    private String numTlfTo;
     private String cuerpoSms = "Alarma :";
 
     /**
-     *
+     * DB
      */
     private Usuario usuario;
     private List<Palabra> listaPalabras = new ArrayList<>();
-
+    private List<Alarma> listaAlarmas = new ArrayList<>();
 
     /**
      * fuses para los toast
@@ -136,7 +119,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             channel = "";
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel)
-                .setSmallIcon(R.drawable.icon_custom_large) //todo icono para la notificación
+                .setSmallIcon(R.drawable.icon_custom_large)
                 .setContentTitle("EMAN");
         Notification notification;
         notification = mBuilder
@@ -189,6 +172,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 switch (state) {
                     case STATE_OFF:
                         if (first) {
+                            initDB();
                             initSpeechService();
                             first = false;
                         }
@@ -220,11 +204,13 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private void initDB() {
         DB db = Room.databaseBuilder(this, DB.class, Constantes.DB_NAME).allowMainThreadQueries().build();
         listaPalabras = db.Dao().selectPalabras(usuario.usuario);
-        Alarma alarma = db.Dao().selectAlarmasFun(usuario.usuario, Constantes.TRIGER2);
+        listaAlarmas = db.Dao().selectAlarmasFun(usuario.usuario, Constantes.TRIGER2);
         passMail = usuario.mailPass;
         mailFrom = usuario.mailFrom;
-        numTlfTo = alarma.numTlfTo;
-        mailTo = alarma.mailTo;
+        //todo recorrer la lista de alarmas para lanzar tareas asincronas con el envio de sms
+        // las llamadas programarlas para lanzarlas en intervalos de tiempo
+
+
     }
 
     /******************************************************* ciclo vida servize **********************************************************/
@@ -243,9 +229,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-            /**
-             * VARIABLES CONFIGURACION
-             */
+            /**  VARIABLES CONFIGURACION  */
             String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
             initUser(usuarioKey);
             initDB();
@@ -253,7 +237,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 case Constantes.ON_TOGGLE:
                     this.startForeground(Constantes.ID_SERVICIO, createNotification());
                     funciones.vibrar(this, Constantes.VIRAR_CORTO);
-                    //todo lanzar el gpas y proporcionar cordenadas, si no esta activo lanza al intent
+                    if (!checkGPS()) {
+                        Toast toast = Toast.makeText(getApplicationContext(), Constantes.MSG_ERROR_GPS, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
                     break;
                 case Constantes.ON_WIDGET: //todo
                     break;
@@ -337,7 +324,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     private void iniciarSpeechService() {
         try {
-            if (speechService.startListening()) {  /**----********** arranca el reconocedor *******---->> */
+            if (speechService.startListening()) {  /* ----********** arranca el reconocedor *******---->> */
                 /**compronabos gps activo*/
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -361,6 +348,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 speechService.shutdown();
                 speechService = null;
                 kaldiRcgnzr.delete();
+                kaldiRcgnzr = null;
             }
         } catch (Exception e) {
             e.fillInStackTrace();
@@ -374,7 +362,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
      */
     @Override
     public void onResult(String hypothesis) {
-        /**
+        /*
          * @param hypothesis json con los resultados
          *                   "result" : [{
          *                   "conf" : 1.000000,
@@ -389,7 +377,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
          *                   }],
          *                   "text" : "hola si"
          *                   }
-         */try {
+         */
+        try {
             String text = funciones.getFraseFromJson(hypothesis);
             if (!text.equals("")) {
                 String[] arWord = funciones.decodeKaldiJSon(hypothesis, "words");
@@ -462,7 +451,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         if (dif < Constantes.PERIODO_EN_ALERTA) {
                             funciones.vibrar(context, Constantes.VIBRAR_LARGO);
                             this.getLocalizacion();
-                            funciones.llamar(numTlfTo, this);
+                            // todo -> tasks con todos los numeros de la lista alarma
+                            funciones.llamar(listaAlarmas.get(0).numTlfTo, this);
                         } else {
                             funciones.vibrar(context, Constantes.VIRAR_CORTO);
                         }
@@ -482,7 +472,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
     /************************************************ GPS  ***********************************************/
-
     private void muestraProviders() {
         List<String> proveedores = locManager.getAllProviders();
         for (String proveedor : proveedores) {
@@ -504,7 +493,30 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         }
     }
 
+    private boolean checkGPS() {
+        boolean result = true;
+        int permGPS = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permGps = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permGPS == PackageManager.PERMISSION_GRANTED && permGps == PackageManager.PERMISSION_GRANTED) {
+            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                        .addOnSuccessListener(Runnable::run, location -> {
+                            if (location != null) {
+                                //todo que hace ssi el gps esta activado?
+                            }
+                        });
+            } else {
+                result = false;
+                startActivityTurnOnGps();
+            }
+        }
+        return result;
+    }
+
     public void getLocalizacion() {
+
         try {
             int permGPS = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
             int permGps = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -514,19 +526,16 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
-             /*       fusedLocationClient.getLastLocation()
-                            .addOnSuccessListener(Runnable::run, location -> {
-                                if (location != null) {
-                                    this.onResulLocation(location);
-                                }
-                            });*/
-
-                    fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)  //getLastLocation()
-                            .addOnSuccessListener(Runnable::run, location -> {
-                                if (location != null) {
-                                    this.onResulLocation(location);
-                                }
-                            });
+                    for (Alarma alarma : listaAlarmas) {
+                        if (alarma.funcion.equals(Constantes.TRIGER2)) {
+                            fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                                    .addOnSuccessListener(Runnable::run, location -> {
+                                        if (location != null) {
+                                            this.onResulLocation(alarma.numTlfTo, passMail, mailFrom, alarma.mailTo, cuerpoMail, asuntoMail, texto, location);
+                                        }
+                                    });
+                        }
+                    }
                 } else {
                     startActivityTurnOnGps();
                 }
@@ -536,11 +545,18 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         }
     }
 
-    private void onResulLocation(Location location) {
+    private void onResulLocation(String numTlfTo, String passMail, String mailFrom, String mailTo, String cuerpoMail, String asuntoMail, String texto, Location location) {
+
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         localizacion = lat + "," + lon;
-        new MailBuilder(this).execute();
+        try {
+            //todo comprobar que sea un mail con formato valido, o en el insert a la BD
+            new MailBuilder(getApplicationContext(), passMail, mailFrom, mailTo, cuerpoMail, asuntoMail, texto, localizacion).execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             String text = cuerpoSms + " " + Constantes.W_MAPS + localizacion;
             funciones.enviarSms(numTlfTo, text);
@@ -556,60 +572,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         startActivity(intentGps);
     }
 
-    /************************************************* MAIL *********************************************/
-    private class MailBuilder extends AsyncTask<Void, Void, Void> {
-        WeakReference<Servicio_RecognitionListener> activityReference;
 
-        MailBuilder(Servicio_RecognitionListener activity) {
-            this.activityReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Properties propiedades = new Properties();
-                propiedades.put("mail.smtp.auth", "true");
-                propiedades.put("mail.smtp.starttls.enable", "true");
-                propiedades.put("mail.smtp.host", "smtp.gmail.com");
-                propiedades.put("mail.smtp.port", "587");
-                propiedades.put("mail.smtp.socketFactory.port", 587);
-                Session session = Session.getInstance(propiedades, new javax.mail.Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(activityReference.get().mailFrom,
-                                activityReference.get().passMail);
-                    }
-                });
-                Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(activityReference.get().mailFrom));
-                message.setRecipients(Message.RecipientType.TO,
-                        InternetAddress.parse(activityReference.get().mailTo));
-                message.setSubject(activityReference.get().asuntoMail);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy 'T'HH:mm:ss'Z'", new Locale("ES"));
-                Date date = new Date();
-                String dateTime = dateFormat.format(date);
-                String text = activityReference.get().cuerpoMail + " " + Constantes.W_MAPS + activityReference.get().localizacion + "\n" + "\n" + dateTime + "\n--" + texto;
-                message.setText(text);
-                Transport.send(message);
-
-
-            } catch (MessagingException e) {
-                /** NOS REDIRIGE A LA WEB DE GOOGLE para permitir al acceso de aplicaciones poco seguras */
-                // fixme- debe ser el gmail@  con el que está logeado el telefono
-                String url;
-                url = Constantes.PERMITIR_APPS_POCO_SEGURAS;
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                Log.e("MailBuilder", Objects.requireNonNull(e.getMessage()));
-            }
-            return null;
-        }
-
-        //todo  FUNCIONES NUEVAS:
-        // ---  tarea programada que chequee la actividad del usuario con el dispositivo para disparar la alarma
-
-    }
 }
 
 

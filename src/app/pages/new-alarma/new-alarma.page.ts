@@ -208,7 +208,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   }
 
   public async deleteAlarma(alarma: IAlarma) {
-    const result = await this.nativePlugin.deleteDB(Constants.ALARMAS, alarma.funcion, this.appUser.usuario);
+    const result = await this.nativePlugin.deleteDB(Constants.ALARMAS, alarma.numTlfTo, this.appUser.usuario);
     return result;
   }
 

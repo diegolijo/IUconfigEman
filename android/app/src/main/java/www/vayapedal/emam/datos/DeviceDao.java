@@ -63,8 +63,8 @@ public interface DeviceDao {
     List<Alarma> selectAlarmas(String usuario);
 
 
-    @Query("SELECT * FROM alarma WHERE usuario LIKE :usuario AND funcion LIKE :funcion LIMIT 1")
-    Alarma selectAlarmasFun(String usuario, String funcion);
+    @Query("SELECT * FROM alarma WHERE usuario LIKE :usuario AND funcion LIKE :funcion")
+    List<Alarma> selectAlarmasFun(String usuario, String funcion);
 
 
     @Delete

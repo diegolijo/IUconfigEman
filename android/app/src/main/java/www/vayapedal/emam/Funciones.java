@@ -49,7 +49,9 @@ public class Funciones {
     }
 
     /** long[] pattern = {1500, 800, 800, 800};*/
-    /** v.vibrate(VibrationEffect.createWaveform(pattern, 0));*/
+    /**
+     * v.vibrate(VibrationEffect.createWaveform(pattern, 0));
+     */
     public void vibrarEffect(Context context, long ms) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -71,7 +73,8 @@ public class Funciones {
 
     public void enviarSms(String numTlf, String texto) {
         SmsManager sms = SmsManager.getDefault();
-        try { //fixme funciona, pero vale pasta ->    sms.sendTextMessage(numTlf, null, texto, null, null);
+        try { //fixme funciona, pero vale pasta ->          sms.sendTextMessage(numTlf, null, texto, null, null);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

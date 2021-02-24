@@ -99,6 +99,8 @@ public class Constantes {
      * mensajes de error
      */
 
+    public static final String MSG_ERROR_GPS = "Debes activar el GPS para poder enviar mensajes de alerta";
+
 
     /**
      * ********************************   SERVIZE *********************************
@@ -109,8 +111,6 @@ public class Constantes {
     public static final String OFF = "OFF";
     public static final String BIND = "BIND";
     public static final String UNBIND = "UNBIND";
-
-
     public static final String IS_RUNNING = "IS_RUNNING";
 
 }
