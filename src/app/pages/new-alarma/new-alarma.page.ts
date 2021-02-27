@@ -25,6 +25,10 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   public newAlarma: IAlarma;
 
 
+  public funciones = [
+    { id: Constants.TRIGER2 },
+    { id: Constants.TRIGER3 }
+  ];
 
   public isBindService = false;
 

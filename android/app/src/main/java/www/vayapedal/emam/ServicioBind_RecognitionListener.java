@@ -32,19 +32,18 @@ import java.util.Set;
 public class ServicioBind_RecognitionListener extends Service implements RecognitionListener {
 
 
-    private static final String TAG = "TTS";
     private final Funciones funciones = new Funciones(this);
 
     /******** Vosk-Kaldi **********/
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
-    /*************** tts ************/
-    private TextToSpeech ttsEngine;
-    private boolean ttsReady;
+
     /**** comunicacion SERVICIO ****/
     private final IBinder binder = new LocalBinder();
     private ResultReceiver resultReceiver;
 
+    /******* TTS *******/
+    private TTSpeech tts;
 
     @Override
     public void onCreate() {
@@ -52,6 +51,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
             super.onCreate();
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
             configurarSpeechService();
+            tts = new TTSpeech(getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +60,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
 
     @Override
     public IBinder onBind(Intent intent) {
-        String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
+       // String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
         resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
         return binder;
     }
@@ -143,30 +143,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
         }
     }
 
-    /**
-     * ********** arranca el reconocedor **********>>
-     */
-    private void iniciarSpeechService() {
-        try {
-            speechService.startListening();
-        } catch (Exception e) {
-            e.fillInStackTrace();
-        }
-    }
 
-    /**
-     * ********** para el reconocedor **********>>
-     */
-    public void pararSpeechService() {
-        try {
-            if (speechService != null) {
-                speechService.cancel();
-                speechService = null;
-            }
-        } catch (Exception e) {
-            e.fillInStackTrace();
-        }
-    }
 
 
     @Override
@@ -266,34 +243,38 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
      */
     private void procesarTextTextToSpech(String frase) {
         toReceiver(frase, Constantes.NOTIFICACION_FRASE);
-        if (frase.equals("ok google")) {
+        if (frase.equals(Constantes.FRASE_ALERTA)) {
             Toast toast = new Toast(getApplicationContext());
             toast.setText("PArdillo xDD");
             toast.show();
         }
     }
 
-    /********************************************   TTS   *********************************************/
-    private void initTTS() {
-        ttsEngine = new TextToSpeech(this, initStatus -> {
-            if (initStatus == TextToSpeech.SUCCESS) {
-                final Locale spanish = new Locale("es", "ES");
-                final Locale france = Locale.FRANCE;
-                ttsEngine.setLanguage(spanish);
-                ttsReady = true;
-            } else {
-                Log.d(TAG, "Can't initialize TextToSpeech");
+
+    /**
+     * ********** arranca el reconocedor **********>>
+     */
+    private void iniciarSpeechService() {
+        try {
+            speechService.startListening();
+        } catch (Exception e) {
+            e.fillInStackTrace();
+        }
+    }
+
+    /**
+     * ********** para el reconocedor **********>>
+     */
+    public void pararSpeechService() {
+        try {
+            if (speechService != null) {
+                speechService.cancel();
+                speechService = null;
             }
-        });
+        } catch (Exception e) {
+            e.fillInStackTrace();
+        }
     }
-
-    public void speak(String text, boolean remplaza, float vol) {
-        // todo
-        Bundle bundle = new Bundle();
-        bundle.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, vol);
-        ttsEngine.speak(text, (remplaza) ? TextToSpeech.QUEUE_FLUSH : TextToSpeech.QUEUE_ADD, bundle, "capacitoraccessibility" + System.currentTimeMillis());
-    }
-
 
 }
 

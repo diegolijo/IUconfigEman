@@ -53,7 +53,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import www.vayapedal.emam.datos.Alarma;
 import www.vayapedal.emam.datos.DB;
@@ -69,8 +68,17 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
     private final Funciones funciones = new Funciones(this);
+
+    /**
+     * KALDY
+     */
     private SpeechService speechService;
     private KaldiRecognizer kaldiRcgnzr;
+
+    /**
+     * TTS
+     */
+    private TTSpeech tts;
 
     /**
      * GPS
@@ -87,7 +95,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private String cuerpoMail = "Envio alerta! \nposición:";
     private String asuntoMail = "EMAN Alerta";
     private String texto = "cuerpo del mail";
-
 
     /**
      * SMS
@@ -171,15 +178,13 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                        if (first) {
-                            initDB();
-                            initSpeechService();
-                            first = false;
-                        }
+                        initDB();
+                        initTTS();
+                        initSpeechService();
                         break;
                     case STATE_ON:
-                        pararSpeechService();
-                        first = true;
+                        stopSpeechService();
+                        stopTTS();
                         break;
                     default:
                         break;
@@ -286,6 +291,14 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
+    /*********************************************** TTS ************************************************************/
+
+    private void initTTS() {
+    }
+
+    private void stopTTS() {
+    }
+
     /*********************************************** KALDI ************************************************************/
 
     private static class SetupSpeechTask extends AsyncTask<Void, Void, Exception> {
@@ -330,17 +343,17 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     muestraProviders();
                 } else {
-                    pararSpeechService();
+                    stopSpeechService();
                 }
             } else {
-                pararSpeechService();
+                stopSpeechService();
             }
         } catch (Exception e) {
-            pararSpeechService();
+            stopSpeechService();
         }
     }
 
-    public void pararSpeechService() {
+    public void stopSpeechService() {
         try {
             if (speechService != null) {
                 speechService.stop();
@@ -357,9 +370,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    /**
-     * ------- eventos kaldi ----------------
-     */
+    /************************************************** eventos kaldi  *************************************************************/
     @Override
     public void onResult(String hypothesis) {
         /*
@@ -413,7 +424,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     @Override
     public void onError(Exception e) {
-        this.pararSpeechService();
+        this.stopSpeechService();
     }
 
     @Override
@@ -421,7 +432,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
 
-    /**
+    /*************************************************************************************************************************************
      * INVOCADO CADA VEZ QUE TENEMOS UN RESULTADO DEL SPEECH CON INFORMACION
      */
     private void procesarResultSpechToText(Context context, String s, int confianza) {
@@ -437,7 +448,9 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         }
                         funciones.vibrar(context, Constantes.VIRAR_CORTO);
                         if (mostrarToastUsuario) {
-                            Toast toast = Toast.makeText(context, "Reconocida   \"" + palabra.clave + "\"  . Tienes " + Constantes.PERIODO_EN_ALERTA + " segundos para pronunciar la segunda palabra clave ", Toast.LENGTH_LONG);
+                            Toast toast = Toast.makeText(context, "Reconocida   \"" +
+                                    palabra.clave + "\"  . Tienes " + Constantes.PERIODO_EN_ALERTA +
+                                    " segundos para pronunciar la segunda palabra clave ", Toast.LENGTH_LONG);
                             toast.show();
                         }
                     }
@@ -456,6 +469,11 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         } else {
                             funciones.vibrar(context, Constantes.VIRAR_CORTO);
                         }
+                    }
+                    break;
+                case Constantes.TRIGER3:
+                    if (palabra.clave.equals(s)) {
+
                     }
                     break;
             }

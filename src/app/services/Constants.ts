@@ -25,6 +25,7 @@ export class Constants {
     // palabras[funciones]
     public static TRIGER1 = 'TRIGER1';
     public static TRIGER2 = 'TRIGER2';
+    public static TRIGER3 = 'TRIGER3';
 
     public static USUARIOS = 'USUARIOS';
     public static ALARMAS = 'ALARMAS';

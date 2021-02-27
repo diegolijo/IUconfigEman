@@ -2,6 +2,7 @@ package www.vayapedal.emam;
 
 public class Constantes {
 
+    public static final String PACKAGE_NAME = "com.vayapedal.EMAN";
 
     /**
      * permisos
@@ -21,7 +22,6 @@ public class Constantes {
     public static final long PERIODO_EN_ALERTA = 30;
 
 
-
     public static final String W_MAPS = "https://www.google.es/maps/search/";
     public static final String PERMITIR_APPS_POCO_SEGURAS = "https://myaccount.google.com/lesssecureapps";
     public static final String FRASE_ALERTA = "ok google";
@@ -31,25 +31,21 @@ public class Constantes {
     public static final String NOTIFICACION_PARCIAL = "PARCIAL";
     public static final String NOTIFICACION_PALABRA = "PALABRA";
     public static final String NOTIFICACION_FRASE = "FRASE";
-    public static final String NOTIFICACION_SERVICIO = "NOTIFICACION_GENERAL";
     public static final String NOTIFICACION_GPS_DISABLE = "GPS";
+
     public static final String ON_TOGGLE = "ON_TOGGLE";
     public static final String ON_WIDGET = "ON_WIDGET";
-    public static final String ON_CONFIG = "ON_CONFIG";
-    public static final String OFF_SERVICIO = "SERVICIO_FINALIZADO";
-    public static final String ON_BOTONES = "ON_BOTONES";
     public static final int ID_SERVICIO = 10000;
-    public static final int ID_SERVICIO_BIND = 10001;
-    public static final String PACKAGE_NAME = "com.vayapedal.EMAN";
+
     public static final String ORIGEN_INTENT = "ORIGEN";
     public static final String RECEIVER = "RECEIVER";
+
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
 
     /**
      * ******************************** Native  Plugin ******************************
      **/
-
     public static final String RESULT = "result";
     public static final String ACTION = "action";
     public static final String USUARIO = "usuario";
@@ -72,6 +68,7 @@ public class Constantes {
     public static final String CLAVE = "clave";
     public static final String REGISTRO = "registro";
     public static final String USER = "usuario";
+
     /**
      * tablas
      */
@@ -82,8 +79,9 @@ public class Constantes {
     /**
      * funciones
      */
-    public static final String TRIGER1 = "TRIGER1";
-    public static final String TRIGER2 = "TRIGER2";
+    public static final String TRIGER1 = "TRIGER1";   // app armada
+    public static final String TRIGER2 = "TRIGER2";   // app envio de localizacion
+    public static final String TRIGER3 = "TRIGER3";   // app buscar y lanxar google
 
     /**
      * acciones
@@ -94,19 +92,15 @@ public class Constantes {
     public static final String DELETE = "DELETE";
 
 
-
     /**
      * mensajes de error
      */
-
     public static final String MSG_ERROR_GPS = "Debes activar el GPS para poder enviar mensajes de alerta";
 
 
     /**
      * ********************************   SERVIZE *********************************
      **/
-
-
     public static final String ON = "ON";
     public static final String OFF = "OFF";
     public static final String BIND = "BIND";

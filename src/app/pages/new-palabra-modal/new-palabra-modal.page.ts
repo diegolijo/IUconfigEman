@@ -26,7 +26,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
 
   public funciones = [
     { id: Constants.TRIGER1 },
-    { id: Constants.TRIGER2 }
+    { id: Constants.TRIGER2 },
+    { id: Constants.TRIGER3 }
   ];
 
   public isBindService = false;

@@ -64,8 +64,10 @@
     "NO_INSERT": "No se ha guardado el filtro",
     "TRIGER1": "Aplicación en alerta",
     "TRIGER2": "Aviso de ubicación",
+    "TRIGER3": "Buscar",
     "TRIGER1_DESCRIPCION": "",
-    "TRIGER2_DESCRIPCION": ""
+    "TRIGER2_DESCRIPCION": "",
+    "TRIGER3_DESCRIPCION": ""
   },
   "SIDE_MENU": {
     "LOGOUT": "Cerrar Sesión",
