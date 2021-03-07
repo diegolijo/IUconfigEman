@@ -78,6 +78,7 @@ export class LoginPage {
   /**
    * compueba usuario
    * compara password
+   * TODO sacar esto de aqui, encapsular en un metodo privado en la capa nativa
    */
   public async checkLogin() {
     if (this.platform.is('cordova')) {

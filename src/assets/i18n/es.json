@@ -65,20 +65,22 @@
     "TRIGER1": "Aplicación en alerta",
     "TRIGER2": "Aviso de ubicación",
     "TRIGER3": "Buscar",
-    "TRIGER1_DESCRIPCION": "",
-    "TRIGER2_DESCRIPCION": "",
+    "TRIGER1_DESCRIPCION": "Almacena la palabra o palabras que al  ser pronunciadas ponen a la aplicación  en alerta esperando reconocer una palabra  asignada al filtro de 'Aviso de ubicación'",
+    "TRIGER2_DESCRIPCION": "Almacena la palabra o palabras que al  ser pronunciadas ordenan a la aplicación  que envie a destinatarios guardados en 'Alertas'  un sms con la ubicación del dispositivo",
     "TRIGER3_DESCRIPCION": ""
-  },
-  "SIDE_MENU": {
-    "LOGOUT": "Cerrar Sesión",
-    "CONFIGURACION": "Configuración",
-    "DARK_MODE": "Modo Oscuro"
   },
   "NEW_ALARMA": {
     "TITLE": "Contacto",
     "FUNCTION_TYPE": "funcion",
     "ADD_ALARMA": "guardar",
     "EMAIL_TO": "para",
-    "NUMERO_TELEFONO": "número"
+    "NUMERO_TELEFONO": "número",
+    "TRIGER2": "Aviso de ubicación",
+    "TRIGER3": "Buscar"
+  },
+  "SIDE_MENU": {
+    "LOGOUT": "Cerrar Sesión",
+    "CONFIGURACION": "Configuración",
+    "DARK_MODE": "Modo Oscuro"
   }
 }

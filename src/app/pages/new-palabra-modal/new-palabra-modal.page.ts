@@ -35,7 +35,6 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   constructor(
     private translate: TranslateService,
     private platform: Platform,
-    private modalCtrl: ModalController,
     private nativePlugin: NativePlugin,
     private changeDetectorRef: ChangeDetectorRef,
     public helper: Helper,
@@ -50,11 +49,7 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         this.newPalabra = this.modelCreator.emptyIPalabra();
         this.appUser = this.proAppUser.getAppUser();
         this.startPartialListener();
-        /*   const result = await this.selectPalabras();
-          for (const palabra of result.rows) {
-            this.palabras.push(this.modelCreator.getIPalabra(palabra));
-          } */
-        await this.onClickRefresh();
+        await this.refreshPalabras();
       } else {
         this.appUser = this.proAppUser.getAppUser();
         this.newPalabra = this.modelCreator.emptyIPalabra();
@@ -94,19 +89,10 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
 
 
   public async onClickRefresh() {
-    if (this.platform.is('cordova')) {
-      const result = await this.selectPalabrasFuncion(this.newPalabra.funcion);
-      this.palabras = [];
-      for (const palabra of result.rows) {
-        this.palabras.push(this.modelCreator.getIPalabra(palabra));
-      }
-    } else {
-      const palabra: IPalabra = { clave: 'caca', funcion: Constants.TRIGER1, fecha: '', descripcion: '', usuario: '' };
-      for (let i = 0; i < 7; i++) {
-        this.palabras.push(this.modelCreator.getIPalabra(palabra));
-      }
-    }
+    await this.refreshPalabras();
   }
+
+
 
   public async onClickAddPalabra() {
     if (this.platform.is('cordova')) {
@@ -114,7 +100,7 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         this.newPalabra.usuario = this.appUser.usuario;
         const result = await this.insertPalabra(this.newPalabra);
         if (result.result) {
-          await this.onClickRefresh();
+          await this.refreshPalabras();
         } else {
           this.helper.showMessage(await this.translate.get('NEW_PALABRA_MODAL.NO_INSERT').toPromise());
         }
@@ -128,16 +114,26 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
   public async onClickDeletePalabra(palabra: IPalabra) {
     if (this.platform.is('cordova')) {
       const result = await this.deletePalabra(palabra);
-      await this.onClickRefresh();
+      await this.refreshPalabras();
     } else {
 
     }
   }
 
 
+  private async refreshPalabras() {
+    if (this.platform.is('cordova')) {
+      const result = await this.selectPalabrasFuncion(this.newPalabra.funcion);
+      this.palabras = [];
+      for (const palabra of result.rows) {
+        this.palabras.push(this.modelCreator.getIPalabra(palabra));
+      }
+    } else {
 
-
-
+      this.palabras.push(this.modelCreator.getIPalabra({ clave: 'agua', funcion: Constants.TRIGER1, fecha: '', descripcion: '', usuario: '' }));
+      this.palabras.push(this.modelCreator.getIPalabra({ clave: 'fuego', funcion: Constants.TRIGER2, fecha: '', descripcion: '', usuario: '' }));
+    }
+  }
 
 
   /************************************************ servize ************************************************/
@@ -181,7 +177,6 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
     const result = await this.nativePlugin.deleteDB(Constants.PALABRAS, palabra.clave, this.appUser.usuario);
     return result;
   }
-
 
   public async selectPalabras() {
     const result = await this.nativePlugin.selectDB(Constants.PALABRAS, '', this.appUser.usuario);

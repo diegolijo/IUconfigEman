@@ -16,14 +16,12 @@ public class Palabra {
     public String clave;
 
     @NonNull
-    @ColumnInfo(name = "funcion")
-    public String funcion;
-
-
-    @NonNull
     @ColumnInfo(name = "usuario")
     public String usuario;
 
+    @NonNull
+    @ColumnInfo(name = "funcion")
+    public String funcion;
 
     @ColumnInfo(name = "descripcion")
     public String descripcion;

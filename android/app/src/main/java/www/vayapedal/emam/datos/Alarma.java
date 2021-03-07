@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 
-@Entity(primaryKeys = {"funcion", "usuario", "numTlfTo" })
+@Entity(primaryKeys = {"funcion", "usuario", "numTlfTo"})
 public class Alarma {
 
 
@@ -31,7 +31,7 @@ public class Alarma {
     @ColumnInfo(name = "enable")
     public boolean enable;
 
-    public Alarma(@NonNull String funcion, @NonNull String usuario, String numTlfTo,  String mailTo, boolean enable) {
+    public Alarma(@NonNull String funcion, @NonNull String usuario, @NonNull String numTlfTo, String mailTo, boolean enable) {
         this.usuario = usuario;
         this.funcion = funcion;
         this.numTlfTo = numTlfTo;

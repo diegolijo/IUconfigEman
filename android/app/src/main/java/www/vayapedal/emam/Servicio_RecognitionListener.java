@@ -473,7 +473,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                     break;
                 case Constantes.TRIGER3:
                     if (palabra.clave.equals(s)) {
-
+                    // todo
                     }
                     break;
             }
@@ -539,7 +539,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
             int permGPS = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
             int permGps = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
             if (permGPS == PackageManager.PERMISSION_GRANTED && permGps == PackageManager.PERMISSION_GRANTED) {
-                /*GPS*/
+                /**GPS**/
                 FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {

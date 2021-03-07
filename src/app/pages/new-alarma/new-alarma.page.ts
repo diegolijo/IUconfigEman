@@ -38,7 +38,6 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     private nativePlugin: NativePlugin,
     public helper: Helper,
     public proAppUser: AppUser,
-    private contacts: Contacts,
     public modelCreator: ModelCreator
   ) {
   }
@@ -125,84 +124,19 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   }
 
   public async onClickContactos() {
-    const contacts = await this.getContacts();
-    contacts.forEach(element => {
-      try {
-        console.log(element.displayName + ': ' + element.phoneNumbers[0].value);
-      } catch (err) {
-        try {
-          console.log(element.displayName + ' -');
-        } catch (err) {
-          console.log('*****************************');
-        }
-      }
-      const res = element.displayName;
-    });
-    const resp = contacts[0].phoneNumbers[0].value;
-    console.log(resp);
+
   }
 
-  /*********************************************** contactos ***************************************************/
-
-  /*   Contact object
-  rawId: "712"
-  _objectInstance: Contact
-  addresses: null
-  birthday: null
-  categories: null
-  displayName: "susu"
-  emails: null
-  id: "699"
-  ims: null
-  name:
-  formatted: "susu "
-  givenName: "susu"
-  __proto__: Object
-  nickname: null
-  note: null
-  organizations: null
-  phoneNumbers: Array(1)
-  0: {id: "3615", pref: false, value: "‪+34 662 01 66 60‬", type: "mobile"}
-  length: 1
-  __proto__: Array(0)
-  photos: null
-  rawId: null
-  urls: null */
 
 
   private getContacts() {
-    return new Promise<any>((resolve, reject) => {
-      const cont = this.contacts.find(['phoneNumbers']);
-      resolve(cont);
-    });
+
   }
 
   /************************************************ servize ************************************************/
-  /*   public async bindServize() {
-      this.isBindService = true;
-      const result = await this.nativePlugin.bindService();
-    }
-    public async unBindServize() {
-      this.isBindService = false;
-      const result = await this.nativePlugin.unBindServize();
-    } */
 
   /********************************************** listener ********************************************/
-  /*
-    public startPartialListener() {
-      this.pluginPartialListener = Plugins.NatPlugin.addListener(Constants.PARTIAL_EVENT, (info: any) => {
-        this.resultFromNative(info);
-      });
-    }
-    public removePartialListener() {
-      this.pluginPartialListener.remove();
-    }
-   */
-  // resultados de la capa nativa -> result: "agua"
 
-  /* public resultFromNative(result) {
-    this.newAlarma.clave = result.result;
-  } */
 
   /***********************************************  DB  ****************************************************/
 

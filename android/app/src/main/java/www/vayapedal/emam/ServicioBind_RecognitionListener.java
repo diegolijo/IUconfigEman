@@ -60,7 +60,7 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
 
     @Override
     public IBinder onBind(Intent intent) {
-       // String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
+        // String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
         resultReceiver = intent.getParcelableExtra(Constantes.RECEIVER);
         return binder;
     }
@@ -142,8 +142,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
             activityReference.get().iniciarSpeechService();
         }
     }
-
-
 
 
     @Override
