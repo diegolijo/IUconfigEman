@@ -20,10 +20,22 @@
     </ion-button>
   </div>
 
+    <!-- DESCRIPCION -->
+    <div  class="marginH20 marginV5 noPadding contenedorTertiary">
+      <ion-item lines="none" color="light" class="contenedorLight">
+        <ion-icon name="information-circle-outline" style="position: absolute; right: 0.5em; bottom: 0.5em;"
+          color="tertiary"></ion-icon>
+        <ion-textarea [rows]="this.helper.getLineBreaks"
+          class=" paddingH1" disabled>
+          {{ 'HOME.DESCRIPCION' | translate:{value: null} }}
+        </ion-textarea>     
+      </ion-item>
+    </div>
 
   <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases">
     {{frase}}
   </div>
+
 </ion-content>
 
 <ion-footer class="textCenter">

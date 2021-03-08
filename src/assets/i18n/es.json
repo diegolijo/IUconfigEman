@@ -33,8 +33,7 @@
   },
   "LOGOUT": {
     "TITLE": "¿Cerrar sesión?",
-    "TEXT":""
-
+    "TEXT": ""
   },
   "REGISTER": {
     "TITLE": "Nuevo usuario",
@@ -52,8 +51,9 @@
     "TITLE": "EMAM",
     "ESCUCHAR": "Escuchar",
     "BTN_PALABRAS": "Configurar Filtros",
-    "BTN_ALARMAS": "Datos del Contacto",
-    "ENABLE_SERVIZE": "Habilitar el Servicio"
+    "BTN_ALARMAS": "Configurar Contactos",
+    "ENABLE_SERVIZE": "Habilitar el Servicio",
+    "DESCRIPCION":"EMAM es una aplicación envía mensajes de alarma automáticamente con la ubicación del dispositivo.\n\nHace uso del micrófono reconociendo palabras pronunciadas por el usuario.\n\nCompara el texto que escucha con filtros previamente definidos por el usuario y envía un SMS en el caso de haber una coincidencia.\n\nEl audio NUNCA es grabado y se borra automatíceme después de ser analizado.\n\nNO se necesita conexión a internet para su funcionamiento.\n\nEl servicio solo escucha cuando el dispositivo está bloqueado"
   },
   "NEW_PALABRA_MODAL": {
     "TITLE": "Configurar Filtros",
@@ -61,13 +61,13 @@
     "ADD_PALABRA": "Añadir",
     "FUNCTION_TYPE": "Filtros",
     "PALABRA": "Palabra",
-    "NO_INSERT": "No se ha guardado el filtro",
+    "NO_INSERT": "El filtro ya esta guardado",
     "TRIGER1": "Aplicación en alerta",
     "TRIGER2": "Aviso de ubicación",
     "TRIGER3": "Buscar",
-    "TRIGER1_DESCRIPCION": "Almacena la palabra o palabras que al  ser pronunciadas ponen a la aplicación  en alerta esperando reconocer una palabra  asignada al filtro de 'Aviso de ubicación'",
-    "TRIGER2_DESCRIPCION": "Almacena la palabra o palabras que al  ser pronunciadas ordenan a la aplicación  que envie a destinatarios guardados en 'Alertas'  un sms con la ubicación del dispositivo",
-    "TRIGER3_DESCRIPCION": ""
+    "TRIGER1_DESCRIPCION": "Almacena una o várias palabras que al ser pronunciadas ponen a la aplicación  en 'alerta' esperando reconocer una segunda palabra asignada al filtro 'Aviso de ubicación'.\n\nPulsa el micrófono para activar el reconocedor de voz.\n\nGuarda el resultado con AÑADIR+",
+    "TRIGER2_DESCRIPCION": "Almacena una o várias palabras que al ser pronunciadas ordenan a la aplicación, siempre que esté en estado de 'alerta', realizar el envío de un sms con la ubicación actual del dispositivo a los destinatarios guardados en la sección 'Configurar Contactos'.\n\nPulsa el micrófono para activar el reconocedor de voz\n\nGuarda el resultado con AÑADIR+",
+    "DESCRIPCION": "Pulsa la pestaña filtros y selecciona una categoría para empezar"
   },
   "NEW_ALARMA": {
     "TITLE": "Contacto",
@@ -76,7 +76,9 @@
     "EMAIL_TO": "para",
     "NUMERO_TELEFONO": "número",
     "TRIGER2": "Aviso de ubicación",
-    "TRIGER3": "Buscar"
+    "TRIGER3": "Buscar",
+    "DESCRIPCION": "Guarda el número de teléfono y correo electrónico de los contactos a los que quieres enviar la ubicación cuando la aplicación reconozca los filtros",
+    "NO_INSERT":"El contacto ya está guardado"
   },
   "SIDE_MENU": {
     "LOGOUT": "Cerrar Sesión",

@@ -129,9 +129,10 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         this.palabras.push(this.modelCreator.getIPalabra(palabra));
       }
     } else {
-
-      this.palabras.push(this.modelCreator.getIPalabra({ clave: 'agua', funcion: Constants.TRIGER1, fecha: '', descripcion: '', usuario: '' }));
-      this.palabras.push(this.modelCreator.getIPalabra({ clave: 'fuego', funcion: Constants.TRIGER2, fecha: '', descripcion: '', usuario: '' }));
+/*       this.palabras.push(
+        this.modelCreator.getIPalabra({ clave: 'agua', funcion: Constants.TRIGER1, fecha: '', descripcion: '', usuario: '' }));
+      this.palabras.push(
+        this.modelCreator.getIPalabra({ clave: 'fuego', funcion: Constants.TRIGER2, fecha: '', descripcion: '', usuario: '' })); */
     }
   }
 

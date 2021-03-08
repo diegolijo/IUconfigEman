@@ -5,11 +5,11 @@
     <ion-buttons slot="start">
       <ion-back-button> </ion-back-button>
     </ion-buttons>
-    <div class="textCenter" style="padding-right: 2.8em"> {{ 'NEW_PALABRA_MODAL.TITLE' | translate:{value: null} }}
+    <div class="textCenter" > {{ 'NEW_PALABRA_MODAL.TITLE' | translate:{value: null} }}
     </div>
-    <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRefresh()">
+<!--     <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRefresh()">
       <ion-icon size="large" name="refresh-circle-outline" slot="icon-only"></ion-icon>
-    </ion-button>
+    </ion-button> -->
   </ion-toolbar>
 </ion-header>
 
@@ -34,7 +34,7 @@
 
 
   <div *ngFor="let palabra of palabras;  " class="marginH5 marginV5 noPadding contenedorTertiary">
-    <ion-item-sliding *ngIf="palabra.funcion === this.newPalabra.funcion">
+    <ion-item-sliding >
       <!--Left option-->
       <ion-item-options side="start">
         <ion-item-option expandible color="none">
@@ -53,12 +53,11 @@
     </ion-item-sliding>
   </div>
 
-
-  <div *ngIf="palabras.length === 0 && this.newPalabra.funcion !==''"
-    class="marginH5 marginV5 noPadding contenedorTertiary">
+  <!-- DESCRIPCIONES -->
+  <div *ngIf="palabras.length === 0" class="marginH5 marginV5 noPadding contenedorTertiary">
     <ion-item lines="none" color="light" class="contenedorLight">
-  <ion-icon name="information-circle-outline" style="position: absolute; right: 0.5em; bottom: 0.5em;" color="tertiary"></ion-icon>
-      
+      <ion-icon name="information-circle-outline" style="position: absolute; right: 0.5em; bottom: 0.5em;"
+        color="tertiary"></ion-icon>
       <ion-textarea *ngIf="this.newPalabra.funcion===funciones[0].id" [rows]="this.helper.getLineBreaks"
         class=" paddingH1" disabled>
         {{ 'NEW_PALABRA_MODAL.TRIGER1_DESCRIPCION' | translate:{value: null} }}
@@ -66,6 +65,10 @@
       <ion-textarea *ngIf="this.newPalabra.funcion===funciones[1].id" [rows]="this.helper.getLineBreaks"
         class=" paddingH1" disabled>
         {{ 'NEW_PALABRA_MODAL.TRIGER2_DESCRIPCION' | translate:{value: null} }}
+      </ion-textarea>
+      <ion-textarea *ngIf="this.newPalabra.funcion ===''" [rows]="this.helper.getLineBreaks"
+        class=" paddingH1" disabled>
+        {{ 'NEW_PALABRA_MODAL.DESCRIPCION' | translate:{value: null} }}
       </ion-textarea>
     </ion-item>
   </div>
@@ -79,8 +82,9 @@
     <div style="height: 1em;"></div>
     <div class="textCenter  fontBold" style="padding-top: 0.5;">
       <ion-spinner name="dots" [hidden]="!this.isBindService"></ion-spinner>
-      <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRecButton()">
-        <ion-icon size="large" name="chatbubble-ellipses-outline" slot="icon-only"></ion-icon>
+      <ion-button class="noPadding  itemButtonT" fill="clear" color="danger" (click)="this.onClickRecButton()">       
+        <ion-icon [hidden]="!this.isBindService" size="large" name="mic-off-outline" slot="icon-only"></ion-icon>
+        <ion-icon [hidden]="this.isBindService" size="large" name="mic-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
     <ion-textarea type="text" readonly [rows]="this.helper.getTextLineBreaks(this.newPalabra.clave)"
@@ -89,7 +93,7 @@
     </ion-textarea>
   </ion-card>
   <ion-toolbar>
-    <ion-button slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickAddPalabra()">
+    <ion-button [disabled]="this.newPalabra.clave===''" slot="end" fill="clear" style="padding-right: 2em;" (click)="this.onClickAddPalabra()">
       <ion-label>{{'NEW_PALABRA_MODAL.ADD_PALABRA'| translate:{value: null} }}</ion-label>
       <ion-icon name="add"></ion-icon>
     </ion-button>
