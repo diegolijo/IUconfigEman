@@ -17,7 +17,8 @@ import { Helper } from './services/Helper';
 export class AppComponent implements OnInit {
 
   darkMode = true;
-
+  languages = ['GAL', 'ES'];
+  language = 'GAL';
 
   constructor(
     private translate: TranslateService,
@@ -71,6 +72,21 @@ export class AppComponent implements OnInit {
     this.setAppTheme(this.darkMode);
   }
 
+
+  public selectLanguage(event: any) {
+    const lenguage = event.detail.value;
+    switch (lenguage) {
+      case 'ES':
+        this.translate.use('es');
+        break;
+      case 'GAL':
+        this.translate.use('gal');
+        break;
+      default:
+        break;
+    }
+
+  }
 
 
 

@@ -1,0 +1,93 @@
+{
+    "SI": "SI",
+    "NO": "NON",
+    "CANCEL": "Cancelar",
+    "ACCEPT": "Aceptar",
+    "DONE": "Feicho",
+    "CREAR": "Crear",
+    "DESCARTAR": "Descartar",
+    "CONTINUE": "Continuar",
+    "CLOSE": "Cerrar",
+    "OPEN": "Abrir",
+    "EXIT": "Sair",
+    "FILTER": "Filtrar",
+    "DEVICES": "Dispositivos",
+    "LOADING": "Cargando",
+    "VERSION": "Versión",
+    "LOCATION": "Localización",
+    "DARK_MODE": "Modo oscuro",
+    "CONFIGURACION": "Configuración",
+    "SAMPLE_TEXT": "Texto de proba",
+    "LOGIN": {
+      "TITLE": "Iniciar sesión",
+      "USERNAME": "Usuario",
+      "USERNAME_REQUIRED": "Usuario requerido",
+      "PASSWORD": "Contrasinal",
+      "PASSWORD_REQUIRED": "Contrasinal requirido",
+      "ACCESS": "Acceder",
+      "REGISTER": "Crear Usuario",
+      "INIT": "Comezando...",
+      "MANDATORY": "*",
+      "EMPTY": "Introduce o Usuario e Contrasinal",
+      "FAILURE": "O usuario non existe ou as credenciais son incorrectas."
+    },
+    "LOGOUT": {
+      "TITLE": "¿Pechar sesión?",
+      "TEXT": ""
+    },
+    "REGISTER": {
+      "TITLE": "Novo usuario",
+      "USERNAME": "Usuario",
+      "EMAIL": "e-mail",
+      "PASSWORD": "Contrasinal",
+      "DIFERENT_PASSWORDS": "Os Contrasinais son diferentes",
+      "REPEAT_PASSWORD": "Repite o Contrasinal",
+      "FAILURE": "O usuario xa existe.",
+      "EMAILPASS": "Contasinal do e-mail",
+      "DONE": "Novo Usuario creado",
+      "FAIL": "Error ao crear o usuario"
+    },
+    "HOME": {
+      "TITLE": "EMAM",
+      "ESCUCHAR": "Escoichar",
+      "BTN_PALABRAS": "Configurar Filtros",
+      "BTN_ALARMAS": "Configurar Contactos",
+      "ENABLE_SERVIZE": "Habilitar o Servizo",
+      "DESCRIPCION":"EMAM é unha aplicación que envía mensaxes de alarma automáticamente ca ubicación do dispositivo.\n\nFai uso do micrófono recoñecendo palabras pronunciadas polo usuario.\n\nCompara o texto que escoicha con filtros previamente definidos polo usuario e envía un SMS no caso de haber unha coincidencia.\n\nO audio NUNCA é grabado e borrase automatíceme despois de ser analizado.\n\nNON se precisa conexión a internet para o seu funcionamento.\n\nO servizo só escoita cando o dispositivo está bloqueado"
+    },
+    "NEW_PALABRA_MODAL": {
+      "TITLE": "Configurar Filtros",
+      "ESCUCHAR": "Escoichar",
+      "ADD_PALABRA": "Engadir",
+      "FUNCTION_TYPE": "Filtros",
+      "PALABRA": "Palabra",
+      "NO_INSERT": "O filtro xa está guardado",
+      "TRIGER1": "Aplicación en alerta",
+      "TRIGER2": "Aviso de ubicación",
+      "TRIGER3": "Buscar",
+      "TRIGER1_DESCRIPCION": "Almacena unha ou várias palabras que ao ser pronunciadas poñen á aplicación en 'alerta' esperando recoñecer unha segunda palabra asignada ao filtro 'Aviso de ubicación'.\n\nPulsa o micrófono para activar o reconocedor de voz.\n\nGarda o resultado con ENGADIR+",
+      "TRIGER2_DESCRIPCION": "Almacena unha ou várias palabras que ao ser pronunciadas da a orde á aplicación, sempre que estea en estado de 'alerta', facer o envío dun sms coa localización actual do dispositivo aos destinatarios gardados na sección 'Configurar Contactos'.\n\nPulsa o micrófono para activar o reconocedor de voz\n\nGarda o resultado con ENGADIR+",
+      "DESCRIPCION": "Preme na pestana filtros e selecciona unha categoría para comezar"
+    },
+    "NEW_ALARMA": {
+      "TITLE": "Contacto",
+      "FUNCTION_TYPE": "función",
+      "ADD_ALARMA": "gardar",
+      "EMAIL_TO": "para",
+      "NUMERO_TELEFONO": "número",
+      "TRIGER2": "Aviso de localiozación",
+      "TRIGER3": "Buscar",
+      "DESCRIPCION": "Garda o número de teléfono e correo electrónico dos contactos aos que queiras enviar a localización cando a aplicación recoñezca os filtros",
+      "NO_INSERT":"O contacto xa está gardado"
+    },
+    "SIDE_MENU": {
+      "LOGOUT": "Pechar Sesión",
+      "CONFIGURACION": "Configuración",
+      "DARK_MODE": "Modo Oscuro"
+    },
+    "LANGUAGES": {
+      "LANGUAGE": "Idioma",
+      "ES": "Castelán",
+      "GAL": "Galego"
+    }
+  }
