@@ -18,7 +18,7 @@
           <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
             <ion-label class="mediumFont">{{ 'SIDE_MENU.DARK_MODE' | translate:{value: null} }}
             </ion-label>
-            <ion-toggle slot="end" checked="{{this.darkMode}}" (ionChange)="this.toggleTheme($event)" color="danger">
+            <ion-toggle slot="end" [checked]="this.darkMode" (ionChange)="this.toggleTheme($event)" color="danger">
             </ion-toggle>
           </ion-item>
 

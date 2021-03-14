@@ -109,6 +109,11 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private List<Alarma> listaAlarmas = new ArrayList<>();
 
     /**
+     * busacador
+     */
+    private boolean busquedaActivada = false;
+
+    /**
      * fuses para los toast
      */
     //todo lanzar los toast con una tabla de la BD
@@ -116,6 +121,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private boolean mostrarToastConfig = false;
     private boolean mostrarToastUsuario = true;
 
+
+    private boolean isOn = true;
 
     /******************************************** notificacion para startForeground ******************************************/
     public Notification createNotification() {
@@ -159,7 +166,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         DisplayManager displayManager =
                 (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
         displayManager.registerDisplayListener(new DisplayManager.DisplayListener() {
-            private boolean first = true;
+
 
             @Override
             public void onDisplayAdded(int displayId) {
@@ -178,13 +185,20 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                        initDB();
-                        initTTS();
-                        initSpeechService();
+                        if (isOn) {
+                            initDB();
+                            initTTS();
+                            initSpeechService();
+                            isOn = false;
+                        }
+
                         break;
                     case STATE_ON:
-                        stopSpeechService();
-                        stopTTS();
+                        if (!isOn) {
+                            stopSpeechService();
+                            stopTTS();
+                            isOn = true;
+                        }
                         break;
                     default:
                         break;
@@ -280,9 +294,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     public void initSpeechService() {
         try {
-            speechService = null;
-            new SetupSpeechTask(this).execute();
-            funciones.vibrar(this, Constantes.VIRAR_CORTO);
+            if (speechService == null) {
+                new SetupSpeechTask(this).execute();
+                funciones.vibrar(this, Constantes.VIRAR_CORTO);
+            }
         } catch (Exception ex) {
             Toast toast = Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG);
             toast.show();
@@ -466,14 +481,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                             this.getLocalizacion();
                             // todo -> tasks con todos los numeros de la lista alarma
                             funciones.llamar(listaAlarmas.get(0).numTlfTo, this);
-                        } else {
-                            funciones.vibrar(context, Constantes.VIRAR_CORTO);
                         }
                     }
                     break;
                 case Constantes.TRIGER3:
                     if (palabra.clave.equals(s)) {
-                    // todo
+                        busquedaActivada = true;
                     }
                     break;
             }
@@ -486,7 +499,22 @@ public class Servicio_RecognitionListener extends Service implements Recognition
      * este metodo se llama despues de todas las llamadas a this.procesarResultadoSpechToText()
      */
     private void procesarTextTextToSpech(String frase) {
+        //todo apaño para no buscar la clave utulizada para disparar la busqueda
+        for (Palabra palabra : listaPalabras) {
+            if (palabra.funcion.equals(Constantes.TRIGER3) && palabra.clave.equals(frase)) {
+                return;
+            }
+        }
+        if (busquedaActivada && !frase.equals(Constantes.TRIGER3)) {
+            funciones.findInGoogle(frase);
+            DisplayManager displayManager =
+                    (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
+            Display[] displays = displayManager.getDisplays();
+            for (Display display : displays) {
 
+            }
+            busquedaActivada = false;
+        }
     }
 
     /************************************************ GPS  ***********************************************/

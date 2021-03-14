@@ -9,37 +9,36 @@
 <ion-content>
 
   <div style="display:flex; flex-direction:column; align-items:center; padding-top: 1em">
-    <ion-button class="mediumFont"  style="width: 80%;"   fill="outline" expand="block" size="large" color="primary"
+    <ion-button class="mediumFont" style="width: 80%;" fill="outline" expand="block" size="large" color="primary"
       (click)="this.onClickGoTo('new-alarma')">
       {{ 'HOME.BTN_ALARMAS' | translate:{value: null} }}
     </ion-button>
 
-    <ion-button class="mediumFont" style="width: 80%;"  fill="outline" expand="block" size="large" color="primary"
+    <ion-button class="mediumFont" style="width: 80%;" fill="outline" expand="block" size="large" color="primary"
       (click)="this.onClickGoTo('new-palabra')">
       {{ 'HOME.BTN_PALABRAS' | translate:{value: null} }}
     </ion-button>
-  </div>
+
 
     <!-- DESCRIPCION -->
-    <div  class="marginH20 marginV5 noPadding contenedorTertiary">
+    <div class="marginV5 noPadding contenedorTertiary" style="width: 80%; ">
       <ion-item lines="none" color="light" class="contenedorLight">
         <ion-icon name="information-circle-outline" style="position: absolute; right: 0.5em; bottom: 0.5em;"
           color="tertiary"></ion-icon>
-        <ion-textarea [rows]="this.helper.getLineBreaks"
-          class=" paddingH1" disabled>
+        <ion-textarea [rows]="this.helper.getLineBreaks" class=" paddingH1" disabled>
           {{ 'HOME.DESCRIPCION' | translate:{value: null} }}
-        </ion-textarea>     
+        </ion-textarea>
       </ion-item>
     </div>
 
-  <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases">
-    {{frase}}
+    <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases"  style="width: 80%;">
+      {{frase}}
+    </div>
   </div>
-
 </ion-content>
 
 <ion-footer class="textCenter">
-  <ion-toolbar >
+  <ion-toolbar>
     <ion-item lines="full" class="noPadding noMargin contenedorLight" color="primary">
       <ion-label class="mediumFont" color="secondary">{{ 'HOME.ENABLE_SERVIZE' | translate:{value: null} }}
       </ion-label>
@@ -48,7 +47,7 @@
     </ion-item>
   </ion-toolbar>
 
-<!--   <ion-toolbar>
+  <!--   <ion-toolbar>
     <ion-button [hidden]="!this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger" slot="end"
       (click)="this.onClickBindServize()">
       <ion-spinner name="dots" color="danger"></ion-spinner>

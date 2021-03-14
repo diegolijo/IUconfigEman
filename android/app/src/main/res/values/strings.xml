@@ -5,4 +5,5 @@
     <string name="package_name">www.vayapedal.com</string>
     <string name="custom_url_scheme">www.vayapedal.com</string>
     <string name="cconfigurando">Configurando...</string>
+    <string name="appwidget_text">prueba</string>
 </resources>

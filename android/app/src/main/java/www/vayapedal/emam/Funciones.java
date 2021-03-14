@@ -201,5 +201,14 @@ public class Funciones {
 
     }
 
+    public  void findInGoogle(String busqueda) {
+        String url = Constantes.GOOGLE + busqueda;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(intent.FLAG_RECEIVER_FOREGROUND);
+        context.startActivity(intent);
+
+    }
+
 
 }

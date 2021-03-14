@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   async initializeApp() {
     try {
       const res = await this.platform.ready();
-      const prefersDark = window.matchMedia('(prefers-color-scheme: light)');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
       this.darkMode = prefersDark.matches;
       this.setAppTheme(this.darkMode);
       this.statusBar.styleDefault();
@@ -59,11 +59,10 @@ export class AppComponent implements OnInit {
 
 
   public setAppTheme(dark: boolean) {
+    document.body.setAttribute('color-theme', 'light');
     if (dark) {
       document.body.setAttribute('color-theme', 'dark');
-      return;
     }
-    document.body.setAttribute('color-theme', 'light');
   }
 
 

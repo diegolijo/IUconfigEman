@@ -25,6 +25,7 @@ public class Constantes {
     public static final String W_MAPS = "https://www.google.es/maps/search/";
     public static final String PERMITIR_APPS_POCO_SEGURAS = "https://myaccount.google.com/lesssecureapps";
     public static final String FRASE_ALERTA = "ok google";
+    public static final String GOOGLE = "https://www.google.com/search?q=";
 
     public static final String MSG_GPA_DISABLED = "El GPS esta desactivado, Es necesario para el funcionamiento";
 

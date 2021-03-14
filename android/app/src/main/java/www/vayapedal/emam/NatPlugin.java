@@ -284,6 +284,7 @@ public class NatPlugin extends Plugin {
             if (funciones.isServiceRunning(context)) {
                 getContext().stopService(new Intent(context, Servicio_RecognitionListener.class));
             }
+            boolean x = funciones.isServiceRunning(context);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
