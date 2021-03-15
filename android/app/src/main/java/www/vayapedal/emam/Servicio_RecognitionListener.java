@@ -307,10 +307,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
     /*********************************************** TTS ************************************************************/
-
+    //todo
     private void initTTS() {
     }
-
+    //todo
     private void stopTTS() {
     }
 

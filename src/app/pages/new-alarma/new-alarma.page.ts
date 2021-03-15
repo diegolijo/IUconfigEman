@@ -104,6 +104,8 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
         const result = await this.insertAlarma(this.newAlarma);
         if (result.result) {
           await this.onClickRefresh();
+          this.newAlarma.numTlfTo = '';
+          this.newAlarma.mailTo = '';
         } else {
           this.helper.showMessage(await this.translate.get('NEW_ALARMA.NO_INSERT').toPromise());
         }

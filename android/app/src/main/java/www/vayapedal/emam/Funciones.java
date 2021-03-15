@@ -73,14 +73,16 @@ public class Funciones {
 
     public void enviarSms(String numTlf, String texto) {
         SmsManager sms = SmsManager.getDefault();
-        try { //fixme funciona, pero vale pasta ->          sms.sendTextMessage(numTlf, null, texto, null, null);
-
+        try {
+            if(!numTlf.equals("")){
+                sms.sendTextMessage(numTlf, null, texto, null, null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
+    // todo
     public String construirSms() {
         String texto = "Sms de prueba";
         return texto;
@@ -166,24 +168,6 @@ public class Funciones {
             e.printStackTrace();
         }
         return null;
-
-        //hypothesis{
-        //  "result" : [{
-        //      "conf" : 1.000000,
-        //      "end" : 1.170000,
-        //      "start" : 0.780000,
-        //      "word" : "hola"
-        //    }, {
-        //      "conf" : 0.568311,
-        //      "end" : 1.590000,
-        //      "start" : 1.230000,
-        //      "word" : "si"
-        //    }],
-        //  "text" : "hola si"
-        //}
-
-        //{//  "partial" : ""
-        //}
     }
 
     public String getFraseFromJson(String json) {

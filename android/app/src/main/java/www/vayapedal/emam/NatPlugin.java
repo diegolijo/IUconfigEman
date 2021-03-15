@@ -38,9 +38,8 @@ public class NatPlugin extends Plugin {
     private final Funciones funciones = new Funciones();
 
     /**
-     * instancia servicio
+     * instancia del  servicio
      */
-    private Servicio_RecognitionListener mainService;
     private ServicioBind_RecognitionListener bindServize;
 
     /**
@@ -57,8 +56,18 @@ public class NatPlugin extends Plugin {
 
     /** ********************************************** BD *****************************************************/
     /**
-     * Inserta resgistros en la base de datos pasando por parametro un Json
-     * {"tabla":"USUARIOS","registro":{"usuario":"jit","loginPass":"12345678","mailFrom":"diegolijo@gmail.com"}...}
+     * Inserta un registro en la base de datos pasado por parametro en un Json
+     * {"tabla":"PALABRAS",
+     * "registro":{
+     * "row":{
+     * "clave":"agua",
+     * "funcion":"TRIGER1",
+     * "fecha":"",
+     * "descripcion":"",
+     * "usuario":"1"}
+     * }
+     * }
+     * }
      */
     @PluginMethod()
     public void insertDB(PluginCall call) {
@@ -115,6 +124,13 @@ public class NatPlugin extends Plugin {
         }
     }
 
+    /**
+     * Select a la base de datos pasado por parametro en un Json
+     * {"tabla":"PALABRAS",
+     * "usuario":"1",
+     * "clave":"TRIGER1"
+     * }
+     */
 
     @PluginMethod()
     public void selectDB(@NotNull PluginCall call) {
@@ -190,7 +206,13 @@ public class NatPlugin extends Plugin {
         }
     }
 
-
+    /** ********************************************** BD *****************************************************/
+    /**
+     * Borra un registro de la base de datos pasado por parametro en un Json
+     * {"tabla":"PALABRAS",
+     * "usuario":"1",
+     * "clave":"agua"}
+     */
     @PluginMethod()
     public void deleteDB(@NotNull PluginCall call) {
         JSObject resultJson = new JSObject();
@@ -231,8 +253,9 @@ public class NatPlugin extends Plugin {
     }
 
 
-    /************************************************* SERVIZE **************************************************/
-
+    /************************************************* SERVIZES **************************************************
+     * Metodo utilizado para controlar los servicios,
+     */
     @PluginMethod()
     public void servizeOperations(PluginCall call) {
         String accion = call.getString(Constantes.ACTION);
@@ -260,6 +283,9 @@ public class NatPlugin extends Plugin {
         }
     }
 
+    /**
+     * inicia el rervicio de fondo
+     */
     public void onServicio(String usuario) {
         Context context = getContext();
         try {
@@ -278,6 +304,10 @@ public class NatPlugin extends Plugin {
         }
     }
 
+    /**
+     * apaga el servicio de fondo
+     */
+
     public void offServicio() {
         Context context = getContext();
         try {
@@ -290,7 +320,9 @@ public class NatPlugin extends Plugin {
         }
     }
 
-
+    /**
+     * enlaza la actividad al servicio iniciado. Utilizado patra devolver los resultados a la vista
+     */
     public void bindServicio(String usuario) {
         try {
             Context context = getContext();
@@ -312,6 +344,9 @@ public class NatPlugin extends Plugin {
         }
     }
 
+    /**
+     * desenlaza del servicio iniciado
+     */
     private void unBindServicio() {
         if (bindServize != null) {
             getContext().unbindService(connection);
@@ -358,23 +393,25 @@ public class NatPlugin extends Plugin {
         }
     }
 
-    /**************************************************  ToView ***************************************************/
+    /**************************************************  ToView **************************************************
+     * devolvemos los resultados a la vista
+     */
     private void sendResult(String receiverPalabra) {
         JSObject result = new JSObject();
-        result.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
+        result.put(Constantes.RESULT, receiverPalabra);
         notifyListeners(Constantes.HOME_EVENT, result);
     }
 
     private void sendPartial(String receiverPatial) {
         Bridge b = getBridge();
         JSObject result = new JSObject();
-        result.put(Constantes.RESULT, receiverPatial);//todo preparar la respuesta para el webView
+        result.put(Constantes.RESULT, receiverPatial);
         notifyListeners(Constantes.PARTIAL_EVENT, result);
     }
 
     private void sendFrase(String receiverPalabra) {
         JSObject result = new JSObject();
-        result.put(Constantes.RESULT, receiverPalabra);//todo preparar la respuesta para el webView
+        result.put(Constantes.RESULT, receiverPalabra);
         notifyListeners(Constantes.PALABRA_EVENT, result);
     }
 

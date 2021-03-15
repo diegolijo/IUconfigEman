@@ -74,6 +74,7 @@ export class RegisterPage implements OnInit {
           const result = await this.nativePlugin.insertDB(Constants.USUARIOS, user);
           if (result.result) {
             this.helper.showMessage(await this.translate.get('REGISTER.DONE').toPromise());
+            history.back();
           } else {
             this.helper.showMessage(await this.translate.get('REGISTER.FAIL').toPromise());
           }
