@@ -51,9 +51,10 @@
     "TITLE": "EMAM",
     "ESCUCHAR": "Escuchar",
     "BTN_PALABRAS": "Configurar Filtros",
+    "BTN_MAPS": "Mapas",
     "BTN_ALARMAS": "Configurar Contactos",
     "ENABLE_SERVIZE": "Habilitar el Servicio",
-    "DESCRIPCION": "EMAM es una aplicación envía mensajes de alarma automáticamente con la ubicación del dispositivo.\n\nHace uso del micrófono reconociendo palabras pronunciadas por el usuario.\n\nCompara el texto que escucha con filtros previamente definidos por el usuario y envía un SMS en el caso de haber una coincidencia.\n\nEl audio NUNCA es grabado y se borra automatíceme después de ser analizado.\n\nNO se necesita conexión a internet para su funcionamiento.\n\nEl servicio solo escucha cuando el dispositivo está bloqueado"
+    "DESCRIPCION": "EMAM envía mensajes de alarma automáticamente informando de la ubicación del dispositivo.\n\nHace uso del micrófono reconociendo palabras pronunciadas por el usuario.\n\nCompara el texto que reconoce con filtros previamente definidos por el usuario y envía un SMS en el caso de haber una coincidencia.\n\nEl audio NUNCA es grabado y se borra de forma automática después de ser analizado.\n\nNO se necesita conexión a internet para su funcionamiento.\n\nEl servicio solo 'escucha' cuando el dispositivo está bloqueado"
   },
   "NEW_PALABRA_MODAL": {
     "TITLE": "Configurar Filtros",
@@ -79,6 +80,10 @@
     "TRIGER3": "Buscar",
     "DESCRIPCION": "Guarda el número de teléfono y correo electrónico de los contactos a los que quieres enviar la ubicación cuando la aplicación reconozca los filtros",
     "NO_INSERT": "El contacto ya está guardado"
+  },
+  "MAPS": {
+    "TITLE": "Mapas",
+    "ADD_ALARMA": "guardar"
   },
   "SIDE_MENU": {
     "LOGOUT": "Cerrar Sesión",

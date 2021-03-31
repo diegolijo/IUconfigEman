@@ -42,8 +42,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
     private final IBinder binder = new LocalBinder();
     private ResultReceiver resultReceiver;
 
-    /******* TTS *******/
-    private TTSpeech tts;
 
     @Override
     public void onCreate() {
@@ -51,7 +49,6 @@ public class ServicioBind_RecognitionListener extends Service implements Recogni
             super.onCreate();
             funciones.vibrar(this, Constantes.VIRAR_CORTO);
             configurarSpeechService();
-            tts = new TTSpeech(getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
         }

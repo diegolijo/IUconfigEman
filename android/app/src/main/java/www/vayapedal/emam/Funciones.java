@@ -1,26 +1,31 @@
 package www.vayapedal.emam;
 
-import android.Manifest;
+import android.annotation.TargetApi;
+
+import androidx.annotation.NonNull;
+
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import static android.telephony.AvailableNetworkInfo.PRIORITY_LOW;
 
 
 public class Funciones {
@@ -34,7 +39,6 @@ public class Funciones {
     }
 
     public Funciones() {
-
     }
 
 
@@ -74,8 +78,9 @@ public class Funciones {
     public void enviarSms(String numTlf, String texto) {
         SmsManager sms = SmsManager.getDefault();
         try {
-            if(!numTlf.equals("")){
+            if (!numTlf.equals("")) {
                 sms.sendTextMessage(numTlf, null, texto, null, null);
+               // vibrar(context, 1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,13 +190,56 @@ public class Funciones {
 
     }
 
-    public  void findInGoogle(String busqueda) {
+    public void findInGoogle(String busqueda) {
         String url = Constantes.GOOGLE + busqueda;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(intent.FLAG_RECEIVER_FOREGROUND);
         context.startActivity(intent);
+    }
 
+    /******************************************** notificacion para startForeground ******************************************/
+    public Notification createNotification() {
+
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+
+        String channel;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            channel = createChannel();
+        else {
+            channel = "";
+        }
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channel)
+                .setSmallIcon(R.drawable.icon_custom_large)
+                .setContentIntent(pendingIntent)
+                .setContentTitle(Constantes.NOTIFICATION_TITLE)
+                .setContentText(Constantes.NOTIFICATION_BODY);
+
+        Notification notification;
+        notification = mBuilder
+                .setPriority(PRIORITY_LOW)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+        return notification;
+    }
+
+    @NonNull
+    @TargetApi(26)
+    private synchronized String createChannel() {
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        String name = "Ao coidado de EMAN";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel mChannel = new NotificationChannel("EMAN channel", name, importance);
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.BLUE);
+        if (mNotificationManager != null) {
+            mNotificationManager.createNotificationChannel(mChannel);
+        } else {
+            // context.stopSelf();
+        }
+        return "EMAN channel";
     }
 
 

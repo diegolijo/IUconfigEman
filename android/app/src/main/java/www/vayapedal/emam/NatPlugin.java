@@ -4,11 +4,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
+import android.provider.ContactsContract;
+import android.widget.Toast;
 
 import androidx.room.Room;
 
@@ -31,10 +35,13 @@ import www.vayapedal.emam.datos.Usuario;
 import www.vayapedal.emam.datos.Palabra;
 
 /*************************************** CAPACITOR ******************************************/
-@NativePlugin()
+@NativePlugin(
+        requestCodes = {NatPlugin.REQUEST_CONTACT_PICK}
+)
 public class NatPlugin extends Plugin {
 
 
+    public static final int REQUEST_CONTACT_PICK = 12345;
     private final Funciones funciones = new Funciones();
 
     /**
@@ -42,17 +49,6 @@ public class NatPlugin extends Plugin {
      */
     private ServicioBind_RecognitionListener bindServize;
 
-    /**
-     * @PluginMethod() public void customMetod(PluginCall call) {
-     * bridge = getBridge();
-     * String message = call.getString("message");
-     * this.toggleServicio();
-     * JSObject ret = new JSObject();
-     * ret.put("conectado...", message);
-     * //    call.resolve(ret);
-     * notifyListeners("myPluginEvent", ret);
-     * }
-     */
 
     /** ********************************************** BD *****************************************************/
     /**
@@ -312,9 +308,13 @@ public class NatPlugin extends Plugin {
         Context context = getContext();
         try {
             if (funciones.isServiceRunning(context)) {
-                getContext().stopService(new Intent(context, Servicio_RecognitionListener.class));
+                context.stopService(new Intent(context, Servicio_RecognitionListener.class));
             }
             boolean x = funciones.isServiceRunning(context);
+            if (x) {
+                Toast toast = Toast.makeText(context, Constantes.MSG_ERROR_SERVIZE, Toast.LENGTH_LONG);
+                toast.show();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -327,7 +327,7 @@ public class NatPlugin extends Plugin {
         try {
             Context context = getContext();
             if (!funciones.isServiceBindRunning(context)) {
-                /************************************    receiver   SERVICIO   ************************************/
+                /****************  receiver   SERVICIO  ****************/
                 Receiver resultReceiver = new Receiver(new Handler());
                 Intent i = new Intent(getContext(), ServicioBind_RecognitionListener.class);
                 i.putExtra(Constantes.RECEIVER, resultReceiver);
@@ -372,7 +372,7 @@ public class NatPlugin extends Plugin {
 
 
     /**
-     * Receiver de los datos enviados por el servicio.
+     * Receiver de los datos enviados por el  servicio enlazado.
      */
     private class Receiver extends ResultReceiver {
         Receiver(Handler handler) {
@@ -390,28 +390,85 @@ public class NatPlugin extends Plugin {
             if (receiverPalabra != null && !receiverPalabra.equals("")) {
                 sendResult(receiverPalabra);
             }
+            if (receiverTexto != null && !receiverTexto.equals("")) {
+                sendFrase(receiverTexto);
+            }
         }
     }
 
-    /**************************************************  ToView **************************************************
+    /**************************************************  Contacts **************************************************/
+    @PluginMethod()
+    public void getContacts(PluginCall call) {
+        saveCall(call);
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(call, intent, REQUEST_CONTACT_PICK);
+    }
+
+
+    @Override
+    protected void handleOnActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.handleOnActivityResult(requestCode, resultCode, data);
+            PluginCall savedCall = getSavedCall();
+            if (savedCall == null) {
+                return;
+            }
+            if (requestCode == REQUEST_CONTACT_PICK) {
+                Uri contactData = data.getData();
+                Cursor cursor = getContext().getContentResolver().query(contactData, null, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        String nombre = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        String numero = "";
+                        String hasNumber = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                        String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                        if (Integer.parseInt(hasNumber) == 1) {
+                            Cursor numbers = getContext().getContentResolver().query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                            while (numbers.moveToNext()) {
+                                numero = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            }
+                            numbers.close();
+                        }
+                        JSObject jSContacto = new JSObject();
+                        jSContacto.put("nombre", nombre);
+                        jSContacto.put("numero", numero);
+                        JSObject resultJson = new JSObject();
+                        resultJson.put(Constantes.CONTACTO, jSContacto);
+                        savedCall.resolve(resultJson);
+                    }
+                }
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+
+    /**************************************************  To View **************************************************
      * devolvemos los resultados a la vista
      */
-    private void sendResult(String receiverPalabra) {
+    private void sendResult(String resultReceiver) {
         JSObject result = new JSObject();
-        result.put(Constantes.RESULT, receiverPalabra);
+        result.put(Constantes.RESULT, resultReceiver);
         notifyListeners(Constantes.HOME_EVENT, result);
     }
 
-    private void sendPartial(String receiverPatial) {
+    private void sendPartial(String resultReceiver) {
         Bridge b = getBridge();
         JSObject result = new JSObject();
-        result.put(Constantes.RESULT, receiverPatial);
+        result.put(Constantes.RESULT, resultReceiver);
         notifyListeners(Constantes.PARTIAL_EVENT, result);
     }
 
-    private void sendFrase(String receiverPalabra) {
+    private void sendFrase(String resultReceiver) {
         JSObject result = new JSObject();
-        result.put(Constantes.RESULT, receiverPalabra);
+        result.put(Constantes.RESULT, resultReceiver);
         notifyListeners(Constantes.PALABRA_EVENT, result);
     }
 

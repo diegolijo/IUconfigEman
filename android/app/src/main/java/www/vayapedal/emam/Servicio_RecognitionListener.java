@@ -1,30 +1,25 @@
 package www.vayapedal.emam;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.KeyguardManager;
 import android.hardware.display.DisplayManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
-import android.annotation.TargetApi;
-import android.graphics.Color;
 import android.os.AsyncTask;
 
 
 import android.app.Service;
-import android.os.Build;
 import android.os.IBinder;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.room.Room;
 
@@ -59,7 +54,6 @@ import www.vayapedal.emam.datos.DB;
 import www.vayapedal.emam.datos.Palabra;
 import www.vayapedal.emam.datos.Usuario;
 
-import static android.telephony.AvailableNetworkInfo.PRIORITY_LOW;
 import static android.view.Display.STATE_OFF;
 import static android.view.Display.STATE_ON;
 
@@ -68,6 +62,8 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
 
     private final Funciones funciones = new Funciones(this);
+
+    private boolean preparedForSend = false;
 
     /**
      * KALDY
@@ -111,7 +107,12 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     /**
      * busacador
      */
-    private boolean busquedaActivada = false;
+    public boolean busquedaActivada = false;
+
+    /**
+     * widget
+     */
+    private int widgetClicks = Constantes.WIDGET_CLICKS;
 
     /**
      * fuses para los toast
@@ -121,53 +122,24 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     private boolean mostrarToastConfig = false;
     private boolean mostrarToastUsuario = true;
 
-
-    private boolean isOn = true;
-
-    /******************************************** notificacion para startForeground ******************************************/
-    public Notification createNotification() {
-        String channel;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            channel = createChannel();
-        else {
-            channel = "";
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel)
-                .setSmallIcon(R.drawable.icon_custom_large)
-                .setContentTitle("EMAN");
-        Notification notification;
-        notification = mBuilder
-                .setPriority(PRIORITY_LOW)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .build();
-        return notification;
-    }
-
-    @NonNull
-    @TargetApi(26)
-    private synchronized String createChannel() {
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        String name = "Ao coidado de EMAN";
-        int importance = NotificationManager.IMPORTANCE_LOW;
-        NotificationChannel mChannel = new NotificationChannel("EMAN channel", name, importance);
-        mChannel.enableLights(true);
-        mChannel.setLightColor(Color.BLUE);
-        if (mNotificationManager != null) {
-            mNotificationManager.createNotificationChannel(mChannel);
-        } else {
-            stopSelf();
-        }
-        return "EMAN channel";
-    }
+    /**
+     * DisplayManager
+     */
+    private boolean isDisplayOn = true;
+    private DisplayManager displayManager;
+    private DisplayManager.DisplayListener displayListener;
 
 
     /*****************************listener para el estado de la pantalla (dispositivo: bloqueado / desbloqueado)***********************/
     private void displayListener() {
-        DisplayManager displayManager =
-                (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
-        displayManager.registerDisplayListener(new DisplayManager.DisplayListener() {
+        displayManager = (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
+        displayManager.registerDisplayListener(declareDisplayListener(), new Handler(Looper.myLooper()));
 
 
+    }
+
+    private DisplayManager.DisplayListener declareDisplayListener() {
+        displayListener = new DisplayManager.DisplayListener() {
             @Override
             public void onDisplayAdded(int displayId) {
                 Log.i("onDisplayAdded", "displayId: " + displayId);
@@ -185,26 +157,27 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 int state = display.getState();
                 switch (state) {
                     case STATE_OFF:
-                        if (isOn) {
+                        if (isDisplayOn) {
                             initDB();
                             initTTS();
                             initSpeechService();
-                            isOn = false;
+                            isDisplayOn = false;
                         }
 
                         break;
                     case STATE_ON:
-                        if (!isOn) {
+                        if (!isDisplayOn) {
                             stopSpeechService();
                             stopTTS();
-                            isOn = true;
+                            isDisplayOn = true;
                         }
                         break;
                     default:
                         break;
                 }
             }
-        }, new Handler(Looper.myLooper()));
+        };
+        return displayListener;
     }
 
 
@@ -247,24 +220,40 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
-            String s = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
-            /**  VARIABLES CONFIGURACION  */
-            String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
-            initUser(usuarioKey);
-            initDB();
-            switch (s) {
+            String origenIntent = intent.getExtras().getString(Constantes.ORIGEN_INTENT);
+            switch (origenIntent) {
                 case Constantes.ON_TOGGLE:
-                    this.startForeground(Constantes.ID_SERVICIO, createNotification());
+                    String usuarioKey = intent.getExtras().getString(Constantes.USUARIO);
+                    initUser(usuarioKey);
+                    initDB();
+                    this.startForeground(Constantes.ID_SERVICIO, funciones.createNotification());
                     funciones.vibrar(this, Constantes.VIRAR_CORTO);
                     if (!checkGPS()) {
                         Toast toast = Toast.makeText(getApplicationContext(), Constantes.MSG_ERROR_GPS, Toast.LENGTH_LONG);
                         toast.show();
                     }
                     break;
-                case Constantes.ON_WIDGET: //todo
+                case Constantes.ON_WIDGET:
+                    funciones.vibrar(getApplicationContext(), 100);
+                    if (widgetClicks == Constantes.WIDGET_CLICKS) {
+                        widgetClicks -= 1;
+                        new android.os.Handler(Looper.getMainLooper()).postDelayed(
+                                () -> widgetClicks = Constantes.WIDGET_CLICKS,
+                                10 * 1000);
+                    } else {
+                        widgetClicks -= 1;
+                        if (widgetClicks == 1) {
+                            Toast toast = Toast.makeText(getApplicationContext(), Constantes.ONE_CLICK_TO_SEND, Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    }
+                    if (widgetClicks == 0) {
+                        lanzarAlarmas(getApplicationContext());
+                        widgetClicks = 0;
+                    }
                     break;
                 default:
-                    throw new IllegalStateException("onStartCommand - Valor inesperado: " + s);
+                    throw new IllegalStateException("onStartCommand - Valor inesperado: " + origenIntent);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -283,6 +272,10 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     @Override
     public void onDestroy() {
         //fixme borrar todos los recursos del servicio
+        if (displayListener != null) {
+            displayManager.unregisterDisplayListener(displayListener);
+        }
+
         if (speechService != null) {
             this.speechService.cancel();
             this.speechService = null;
@@ -309,46 +302,18 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     /*********************************************** TTS ************************************************************/
     //todo
     private void initTTS() {
+        tts = new TTSpeech(this);
     }
+
     //todo
     private void stopTTS() {
+        if (tts != null) {
+            tts.shutdown();
+            tts = null;
+        }
     }
 
     /*********************************************** KALDI ************************************************************/
-
-    private static class SetupSpeechTask extends AsyncTask<Void, Void, Exception> {
-        WeakReference<Servicio_RecognitionListener> activityReference;
-
-        SetupSpeechTask(Servicio_RecognitionListener activity) {
-            this.activityReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        protected Exception doInBackground(Void... params) {
-            try {
-                Assets assets = new Assets(activityReference.get());
-                File assetDir = assets.syncAssets();
-                Vosk.SetLogLevel(0);
-                /**
-                 * Vosk-Kaldi
-                 */
-                Model model = new Model(assetDir.toString() + "/model-android");
-                activityReference.get().kaldiRcgnzr = new KaldiRecognizer(model, 16000.0f); // rec = new KaldiRecognizer(model, 16000.0f, grammar);
-                activityReference.get().speechService = new SpeechService(activityReference.get().kaldiRcgnzr, 16000.0f);
-                activityReference.get().speechService.addListener(activityReference.get());
-                Log.d("Vosk", "Sync files in the folder " + assetDir.toString());
-
-            } catch (IOException e) {
-                return e;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Exception result) {
-            activityReference.get().iniciarSpeechService();
-        }
-    }
 
     private void iniciarSpeechService() {
         try {
@@ -384,56 +349,95 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         }
     }
 
+    private static class SetupSpeechTask extends AsyncTask<Void, Void, Exception> {
+        WeakReference<Servicio_RecognitionListener> activityReference;
 
-    /************************************************** eventos kaldi  *************************************************************/
-    @Override
-    public void onResult(String hypothesis) {
-        /*
-         * @param hypothesis json con los resultados
-         *                   "result" : [{
-         *                   "conf" : 1.000000,
-         *                   "end" : 1.170000,
-         *                   "start" : 0.780000,
-         *                   "word" : "hola"
-         *                   }, {
-         *                   "conf" : 0.568311,
-         *                   "end" : 1.590000,
-         *                   "start" : 1.230000,
-         *                   "word" : "si"
-         *                   }],
-         *                   "text" : "hola si"
-         *                   }
-         */
-        try {
-            String text = funciones.getFraseFromJson(hypothesis);
-            if (!text.equals("")) {
-                String[] arWord = funciones.decodeKaldiJSon(hypothesis, "words");
-                String[] arConf = funciones.decodeKaldiJSon(hypothesis, "conf");
-                String[] arText = funciones.decodeKaldiJSon(hypothesis, "text");
-                for (int i = 0; i < arWord.length; i++) {
-                    float confianza = Float.parseFloat(arConf[i]) * 100;
-                    procesarResultSpechToText(getApplicationContext(), arWord[i], (int) confianza);//-----> procesar palabra
-                    Log.i("Vosk", "palabra oida -> " + arWord[i]);
-                }
-                procesarTextTextToSpech(arText[0]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        SetupSpeechTask(Servicio_RecognitionListener activity) {
+            this.activityReference = new WeakReference<>(activity);
         }
 
+        @Override
+        protected Exception doInBackground(Void... params) {
+            try {
+                Assets assets = new Assets(activityReference.get());
+                File assetDir = assets.syncAssets();
+                Vosk.SetLogLevel(0);
+                /**
+                 * Vosk-Kaldi
+                 */
+                Model model = new Model(assetDir.toString() + "/model-android");
+                activityReference.get().kaldiRcgnzr = new KaldiRecognizer(model, 16000.0f); // rec = new KaldiRecognizer(model, 16000.0f, grammar);
+                activityReference.get().speechService = new SpeechService(activityReference.get().kaldiRcgnzr, 16000.0f);
+                activityReference.get().speechService.addListener(activityReference.get());
+                Log.d("Kaldi", "Sync files in the folder " + assetDir.toString());
+
+            } catch (IOException e) {
+                return e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Exception result) {
+            activityReference.get().iniciarSpeechService();
+        }
+    }
+
+
+    /************************************************** eventos kaldi  *************************************************************
+     * @param hypothesis json con los resultados
+     *                   "result" : [{
+     *                   "conf" : 1.000000,
+     *                   "end" : 1.170000,
+     *                   "start" : 0.780000,
+     *                   "word" : "hola"
+     *                   }, {
+     *                   "conf" : 0.568311,
+     *                   "end" : 1.590000,
+     *                   "start" : 1.230000,
+     *                   "word" : "si"
+     *                   }],
+     *                   "text" : "hola si"
+     *                   }
+     */
+    @Override
+    public void onResult(String hypothesis) {
+        Log.d("*hypothesis result*->", hypothesis);
+        if (tts != null && !tts.isSpeaking) {
+            try {
+                String text = funciones.getFraseFromJson(hypothesis);
+                if (!text.equals("")) {
+                    String[] arWord = funciones.decodeKaldiJSon(hypothesis, "words");
+                    String[] arConf = funciones.decodeKaldiJSon(hypothesis, "conf");
+                    String[] arText = funciones.decodeKaldiJSon(hypothesis, "text");
+                    for (int i = 0; i < arWord.length; i++) {
+                        float confianza = Float.parseFloat(arConf[i]) * 100;
+                        procesarResultSpechToText(getApplicationContext(), arWord[i], (int) confianza);//-----> procesar palabra
+                        Log.i("Vosk", "palabra oida -> " + arWord[i]);
+                    }
+                    procesarTextTextToSpech(arText[0]);
+                    Log.i("Vosk", "frase oida -> " + arText[0]);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void onPartialResult(String hypothesis) {
-        try {
-            String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
-            for (String s : arPartial) {
-                if (!s.equals("")) {
+        Log.d("*hypothesis partial*->", hypothesis);
+        if (tts != null && !tts.isSpeaking) {
+            try {
+                String[] arPartial = funciones.decodeKaldiJSon(hypothesis, "partial");
+                for (String s : arPartial) {
+                    if (!s.equals("")) {
 
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -458,10 +462,17 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 case Constantes.TRIGER1:
                     if (palabra.clave.equals(s)) {
                         /**si hay una coincidencia actulaizamos la fecha a todas las palabras*/
-                        for (Palabra p : listaPalabras) {
+                /*        for (Palabra p : listaPalabras) {
                             p.fecha = new Date();
                         }
+                        */
+                        preparedForSend = true;
+                        new android.os.Handler(Looper.getMainLooper()).postDelayed(
+                                () -> preparedForSend = false,
+                                Constantes.PERIODO_EN_ALERTA);
+
                         funciones.vibrar(context, Constantes.VIRAR_CORTO);
+                        tts.speak(palabra.descripcion, true, 0.5f);
                         if (mostrarToastUsuario) {
                             Toast toast = Toast.makeText(context, "Reconocida   \"" +
                                     palabra.clave + "\"  . Tienes " + Constantes.PERIODO_EN_ALERTA +
@@ -472,21 +483,33 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                     break;
                 case Constantes.TRIGER2:
                     if (palabra.clave.equals(s)) {
-                        Date d = new Date();
+                     /*   Date d = new Date();
                         long thisTime = d.getTime();
                         long save = palabra.fecha.getTime();
                         long dif = Math.abs(thisTime - save) / 1000;
                         if (dif < Constantes.PERIODO_EN_ALERTA) {
-                            funciones.vibrar(context, Constantes.VIBRAR_LARGO);
-                            this.getLocalizacion();
-                            // todo -> tasks con todos los numeros de la lista alarma
-                            funciones.llamar(listaAlarmas.get(0).numTlfTo, this);
+                            lanzarAlarmas(context);
+                        }*/
+                        if (preparedForSend) {
+                            assert tts != null;
+                            tts.speak(palabra.descripcion, true, 0.5f);
+                            lanzarAlarmas(context);
                         }
                     }
                     break;
                 case Constantes.TRIGER3:
                     if (palabra.clave.equals(s)) {
-                        busquedaActivada = true;
+                        if (tts != null) {
+                            String toSpeak;
+                            if (!busquedaActivada) {
+                                toSpeak = (palabra.descripcion.equals("")) ? Constantes.DIME : palabra.descripcion;
+                            } else {
+                                toSpeak = (palabra.descripcion.equals("")) ? Constantes.ESTOY_ESPERANDO : palabra.descripcion;
+                            }
+                            tts.speak(toSpeak, true, 0.5f);
+                            busquedaActivada = true;
+                        }
+
                     }
                     break;
             }
@@ -499,23 +522,43 @@ public class Servicio_RecognitionListener extends Service implements Recognition
      * este metodo se llama despues de todas las llamadas a this.procesarResultadoSpechToText()
      */
     private void procesarTextTextToSpech(String frase) {
-        //todo apaño para no buscar la clave utulizada para disparar la busqueda
-        for (Palabra palabra : listaPalabras) {
-            if (palabra.funcion.equals(Constantes.TRIGER3) && palabra.clave.equals(frase)) {
-                return;
+        try {
+            //todo apaño para no buscar la clave utulizada para disparar la busqueda
+            for (Palabra palabra : listaPalabras) {
+                if (palabra.funcion.equals(Constantes.TRIGER3) && palabra.clave.equals(frase)) {
+                    return;
+                }
             }
-        }
-        if (busquedaActivada && !frase.equals(Constantes.TRIGER3)) {
-            funciones.findInGoogle(frase);
-            DisplayManager displayManager =
-                    (DisplayManager) this.getSystemService(Context.DISPLAY_SERVICE);
-            Display[] displays = displayManager.getDisplays();
-            for (Display display : displays) {
+            if (busquedaActivada && !frase.equals(Constantes.TRIGER3)) {
 
+                //todo buscar una metodo no obsoleto o liberar recurso despues de desbloquear
+                PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock(
+                        (PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                                PowerManager.FULL_WAKE_LOCK |
+                                PowerManager.ACQUIRE_CAUSES_WAKEUP), "desbloqueo");
+                fullWakeLock.acquire(60 * 1000);
+                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+                KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("TAG");
+                keyguardLock.disableKeyguard();
+
+                funciones.findInGoogle(frase);
+                busquedaActivada = false;
             }
-            busquedaActivada = false;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
     }
+
+
+    private void lanzarAlarmas(Context context) {
+        funciones.vibrar(context, Constantes.VIBRAR_LARGO);
+        this.getLocalizacion();
+        // todo -> tasks con todos los numeros de la lista alarma
+        funciones.llamar(listaAlarmas.get(0).numTlfTo, this);
+    }
+
 
     /************************************************ GPS  ***********************************************/
     private void muestraProviders() {
@@ -571,17 +614,16 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                 FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
                 locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                 if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-                    for (Alarma alarma : listaAlarmas) {
-                        if (alarma.funcion.equals(Constantes.TRIGER2)) {
-                            fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
-                                    .addOnSuccessListener(Runnable::run, location -> {
-                                        if (location != null) {
+                    fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                            .addOnSuccessListener(Runnable::run, location -> {
+                                if (location != null) {
+                                    for (Alarma alarma : listaAlarmas) {
+                                        if (alarma.funcion.equals(Constantes.TRIGER2)) {
                                             this.onResulLocation(alarma.numTlfTo, passMail, mailFrom, alarma.mailTo, cuerpoMail, asuntoMail, texto, location);
                                         }
-                                    });
-                        }
-                    }
+                                    }
+                                }
+                            });
                 } else {
                     startActivityTurnOnGps();
                 }
@@ -592,7 +634,6 @@ public class Servicio_RecognitionListener extends Service implements Recognition
     }
 
     private void onResulLocation(String numTlfTo, String passMail, String mailFrom, String mailTo, String cuerpoMail, String asuntoMail, String texto, Location location) {
-
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         localizacion = lat + "," + lon;
@@ -602,10 +643,9 @@ public class Servicio_RecognitionListener extends Service implements Recognition
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         try {
             String text = cuerpoSms + " " + Constantes.W_MAPS + localizacion;
-            funciones.enviarSms(numTlfTo, text);
+        funciones.enviarSms(numTlfTo, text);
         } catch (Exception e) {
             e.printStackTrace();
         }

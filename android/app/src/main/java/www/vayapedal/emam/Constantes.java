@@ -1,5 +1,7 @@
 package www.vayapedal.emam;
 
+import android.content.Intent;
+
 public class Constantes {
 
     public static final String PACKAGE_NAME = "com.vayapedal.EMAN";
@@ -12,6 +14,7 @@ public class Constantes {
     public static final int PERMISSIONS_REQUEST_GPS = 3;
     public static final int PERMISSIONS_REQUEST_LOCATION = 4;
     public static final int PERMISSIONS_REQUEST_SMS = 5;
+    public static final int PERMISSIONS_REQUEST_CONTACTS = 6;
 
     public static final int VIRAR_CORTO = 100;
     public static final int VIBRAR_LARGO = 1000;
@@ -19,7 +22,7 @@ public class Constantes {
     /**
      * periodo en segundos que triger2 esta escuchando
      */
-    public static final long PERIODO_EN_ALERTA = 30;
+    public static final long PERIODO_EN_ALERTA = 30 * 1000;
 
 
     public static final String W_MAPS = "https://www.google.es/maps/search/";
@@ -43,6 +46,13 @@ public class Constantes {
 
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
+
+    /**
+     * ******************************** Notificación ******************************
+     **/
+    public static final CharSequence NOTIFICATION_TITLE = "EMAM";
+    public static final CharSequence NOTIFICATION_BODY = "Activo";
+
 
     /**
      * ******************************** Native  Plugin ******************************
@@ -107,5 +117,28 @@ public class Constantes {
     public static final String BIND = "BIND";
     public static final String UNBIND = "UNBIND";
     public static final String IS_RUNNING = "IS_RUNNING";
+    public static final String MSG_ERROR_SERVIZE = "No se ha detenido correctamente el servicio";
+
+    /**
+     * ********************************   TTS  *********************************
+     **/
+
+    public static final String ESTOY_ESPERANDO = "Estoy esperando";
+    public static final String DIME = "¿dime maestro? ";
+
+    /**
+     * ********************************   WIDGET  *********************************
+     **/
+    public static final int WIDGET_CLICKS = 5;
+    public static final String ONE_CLICK_TO_SEND = "Estas a un toque de enviar la ubicación";
+
+    /**
+     * ********************************   CONTACTS  *********************************
+     **/
+    public static final int PICK_CONTACT = 10;
+    public static final String NUMERO = "numero";
+    public static final String MAIL = "email";
+    public static final String CONTACTO = "contacto";
+
 
 }

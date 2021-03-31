@@ -24,24 +24,32 @@ export class NativePlugin {
             const user = this.appUser.getAppUser();
             const result = await NatPlugin.servizeOperations({ action: Constants.ON, usuario: user.usuario });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
 
+        }
     }
 
     public async stopService() {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.servizeOperations({ action: Constants.OFF });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
     public async bindService() {
         if (this.platform.is('cordova')) {
             const user = this.appUser.getAppUser();
-            const result = await NatPlugin.servizeOperations({ action: Constants.BIND, usuario: user.usuario  });
+            const result = await NatPlugin.servizeOperations({ action: Constants.BIND, usuario: user.usuario });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
@@ -49,14 +57,20 @@ export class NativePlugin {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.servizeOperations({ action: Constants.UNBIND });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
     }
 
     public async isServizeRunning() {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.servizeOperations({ action: Constants.IS_RUNNING });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
     }
     /********************************************** listener ********************************************/
 
@@ -65,12 +79,20 @@ export class NativePlugin {
             this.pluginListener = Plugins.NatPlugin.addListener(Constants.PLUGIN_EVENT, (info: any) => {
                 this.resultFromNative(info);
             });
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
     public async removeListener() {
-        if (this.platform.is('cordova')) { this.pluginListener.remove(); } else { }
+        if (this.platform.is('cordova')) {
+            this.pluginListener.remove();
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
@@ -78,7 +100,10 @@ export class NativePlugin {
     public resultFromNative(result) {
         if (this.platform.is('cordova')) {
             result = result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
@@ -88,7 +113,10 @@ export class NativePlugin {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.insertDB({ tabla: table, registro: { row } });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
@@ -97,15 +125,19 @@ export class NativePlugin {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.selectDB({ tabla: table, usuario: user, clave: key });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
 
+        }
     }
 
     public async deleteDB(table: string, key: string, user: string) {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.deleteDB({ tabla: table, usuario: user, clave: key });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+        }
 
     }
 
@@ -114,11 +146,23 @@ export class NativePlugin {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.selectFuncion({ funcion: func });
             return result;
-        } else { }
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
 
     }
 
+    // ******************************************** contactos *********************************************/
+    public async getContacts() {
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.getContacts();
+            return result;
+        }
+        if (!this.platform.is('cordova')) {
 
+        }
+    }
 
 
 

@@ -1,3 +1,4 @@
+import { DirectivesModule } from './../../directives/directives-module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +16,7 @@ import { NewPalabraModalPage } from './new-palabra-modal.page';
     FormsModule,
     IonicModule,
     TranslateModule.forChild(),
+    DirectivesModule,
     NewPalabraModalPageRoutingModule
   ],
   declarations: [NewPalabraModalPage]

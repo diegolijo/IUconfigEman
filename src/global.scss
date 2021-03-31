@@ -56,9 +56,9 @@
 
 
 .itemButtonB {
-    position: absolute !important;
-    right: 0em !important;
-    bottom: 0em !important;
+    width: 3.5em;
+    height: 3.5em;
+  
 }
 
 .itemButtonT {
@@ -301,6 +301,6 @@ ion-item {
     float: left !important;
 }
 
-.cssDirective{
+.cssDirective {
     font-size: xx-large;
 }

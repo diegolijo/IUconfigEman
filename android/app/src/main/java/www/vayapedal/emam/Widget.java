@@ -7,19 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-/**
- * Implementation of App Widget functionality.
- * App Widget Configuration implemented in {@link WidgetConfigureActivity Widget2ConfigureActivity}
- */
+
 public class Widget extends AppWidgetProvider {
 
-
-    int toques = 0;
     private Funciones funciones = new Funciones();
 
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
         CharSequence widgetText = WidgetConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object

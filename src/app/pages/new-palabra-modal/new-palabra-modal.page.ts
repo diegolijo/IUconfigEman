@@ -50,7 +50,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         this.appUser = this.proAppUser.getAppUser();
         this.startPartialListener();
         await this.refreshPalabras();
-      } else {
+      }
+      if (!this.platform.is('cordova')) {
         this.appUser = this.proAppUser.getAppUser();
         this.newPalabra = this.modelCreator.emptyIPalabra();
       }
@@ -64,7 +65,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
     if (this.platform.is('cordova')) {
       this.removePartialListener();
       this.unBindServize();
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -77,7 +79,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
       } else {
         this.unBindServize();
       }
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
       if (!this.isBindService) {
         this.isBindService = true;
       } else {
@@ -106,7 +109,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
         }
 
       }
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -115,7 +119,8 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
     if (this.platform.is('cordova')) {
       const result = await this.deletePalabra(palabra);
       await this.refreshPalabras();
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -128,11 +133,9 @@ export class NewPalabraModalPage implements OnInit, OnDestroy {
       for (const palabra of result.rows) {
         this.palabras.push(this.modelCreator.getIPalabra(palabra));
       }
-    } else {
-/*       this.palabras.push(
-        this.modelCreator.getIPalabra({ clave: 'agua', funcion: Constants.TRIGER1, fecha: '', descripcion: '', usuario: '' }));
-      this.palabras.push(
-        this.modelCreator.getIPalabra({ clave: 'fuego', funcion: Constants.TRIGER2, fecha: '', descripcion: '', usuario: '' })); */
+    }
+    if (!this.platform.is('cordova')) {
+
     }
   }
 

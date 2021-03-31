@@ -1,0 +1,46 @@
+<ion-header appHideOnKeyboardShow>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <div> {{ 'MAPS.TITLE' | translate:{value: null} }}
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content> 
+  <div id="mapId" style="position: absolute;  top: 0em; height: 104%; width: 100%;"></div>
+</ion-content>
+
+
+<ion-footer appHideOnKeyboardShow>
+  <ion-toolbar>
+    <ion-button [disabled]="false" slot="end" fill="clear" style="padding-right: 2em;" (click)="false">
+      <ion-label>{{'MAPS.ADD_ALARMA'| translate:{value: null} }}</ion-label>
+      <ion-icon name="add"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
+
+
+
+
+
+
+<!--   <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+
+<ion-content>
+    <ion-item style="cursor: pointer" (click)="locatePosition()">
+        <ion-button fill="clear">
+            <ion-icon slot="start" name="map"></ion-icon>
+            Locate Position
+        </ion-button>
+    </ion-item>
+<ion-item>
+    <ion-icon slot="start" name="locate"></ion-icon>
+    <ion-label position="stacked">Address</ion-label>
+<ion-textarea [(ngModel)]="address" type="text" style="margin-top:20px;"></ion-textarea>
+  </ion-item>
+<ion-button shape="round" expand="block" (click)="confirmPickupLocation()">Confirm Pickup Location</ion-button>
+</ion-content> -->

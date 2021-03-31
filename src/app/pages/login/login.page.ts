@@ -97,10 +97,12 @@ export class LoginPage {
         const message = await this.translate.get('LOGIN.FAILURE').toPromise();
         this.helper.showMessage(message);
       }
-    } else {
-      // codigo plataforma pc
+    }
+
+    if (!this.platform.is('cordova')) {
       this.goTo('home');
     }
+
   }
 
 

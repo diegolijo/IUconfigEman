@@ -1,6 +1,11 @@
-<ion-header>
+<ion-header> 
   <ion-toolbar color="primary">
-    <div style="color: var(--ion-color-secondary)" class="textCenter fontBold">
+     <ion-buttons slot="start">
+    <ion-menu-button>
+      <ion-icon name="menu" ></ion-icon>      
+    </ion-menu-button>
+  </ion-buttons>
+    <div style="color: var(--ion-color-secondary); " class="fontBold">
       {{ 'HOME.TITLE' | translate:{value: null} }}
     </div>
   </ion-toolbar>
@@ -19,9 +24,13 @@
       {{ 'HOME.BTN_PALABRAS' | translate:{value: null} }}
     </ion-button>
 
+    <ion-button class="mediumFont" style="width: 80%;" fill="outline" expand="block" size="large" color="primary"
+    (click)="this.onClickGoTo('maps')">
+    {{ 'HOME.BTN_MAPS' | translate:{value: null} }}
+  </ion-button>
 
     <!-- DESCRIPCION -->
-    <div class="marginV5 noPadding contenedorTertiary" style="width: 80%; ">
+<!--     <div class="marginV5 noPadding contenedorTertiary" style="width: 80%; ">
       <ion-item lines="none" color="light" class="contenedorLight">
         <ion-icon name="information-circle-outline" style="position: absolute; right: 0.5em; bottom: 0.5em;"
           color="tertiary"></ion-icon>
@@ -29,7 +38,7 @@
           {{ 'HOME.DESCRIPCION' | translate:{value: null} }}
         </ion-textarea>
       </ion-item>
-    </div>
+    </div> -->
 
     <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases"  style="width: 80%;">
       {{frase}}

@@ -43,9 +43,8 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.platform.is('cordova')) {
 
-
-
-    } else {  // PC
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -58,7 +57,9 @@ export class HomePage implements OnInit, OnDestroy {
       }
       this.guardianServize = await this.isServiceRuning();
 
-    } else {  // PC
+    }
+
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -85,10 +86,17 @@ export class HomePage implements OnInit, OnDestroy {
         case 'new-alarma':
           if (this.isBindService) {
             this.unBindServize();
-            this.removeListener();          }
+            this.removeListener();
+          }
           this.router.navigateByUrl(page);
           break;
-
+        case 'maps':
+          if (this.isBindService) {
+            this.unBindServize();
+            this.removeListener();
+          }
+          this.router.navigateByUrl(page);
+          break;
         default:
           break;
       }
@@ -110,10 +118,11 @@ export class HomePage implements OnInit, OnDestroy {
           await this.stopServize();
         }
       }
-    } else {
-      if (event.detail.checked) { }
-
     }
+    if (!this.platform.is('cordova')) {
+      if (event.detail.checked) { }
+    }
+
   }
 
   public async onClickBindServize() {

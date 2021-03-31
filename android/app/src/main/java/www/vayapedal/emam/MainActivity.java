@@ -2,6 +2,7 @@ package www.vayapedal.emam;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,23 +16,17 @@ import com.getcapacitor.PluginHandle;
 import java.util.ArrayList;
 
 
-
-
-
 public class MainActivity extends BridgeActivity {
 
 
-    private static final String TAG = "iniciar servcio";
     // Requesting permission
     private final String[] audioPermissions = {Manifest.permission.RECORD_AUDIO};
     private final String[] callPermissions = {Manifest.permission.CALL_PHONE};
     private final String[] gpsPermissions = {Manifest.permission.ACCESS_COARSE_LOCATION};
     private final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION};
     private final String[] smsPermissions = {Manifest.permission.SEND_SMS};
+    private final String[] contactsPermissions = {Manifest.permission.READ_CONTACTS};
 
-
-
-    Funciones funciones = new Funciones();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +56,7 @@ public class MainActivity extends BridgeActivity {
         int permMic = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
         int permSms = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
         int permLlamada = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE);
+        int permContacts = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
         if (permGPS != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, gpsPermissions, Constantes.PERMISSIONS_REQUEST_GPS);
         } else if (permGps != PackageManager.PERMISSION_GRANTED) {
@@ -71,6 +67,8 @@ public class MainActivity extends BridgeActivity {
             ActivityCompat.requestPermissions(this, smsPermissions, Constantes.PERMISSIONS_REQUEST_SMS);
         } else if (permMic != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, audioPermissions, Constantes.PERMISSIONS_REQUEST_RECORD_AUDIO);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permContacts != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, contactsPermissions, Constantes.PERMISSIONS_REQUEST_CONTACTS);
         }
     }
 
@@ -94,9 +92,11 @@ public class MainActivity extends BridgeActivity {
             if (requestCode == Constantes.PERMISSIONS_REQUEST_SMS) {
                 checkPermisos();
             }
+            if (requestCode == Constantes.PERMISSIONS_REQUEST_CONTACTS) {
+                checkPermisos();
+            }
         }
     }
-
 
 
 }

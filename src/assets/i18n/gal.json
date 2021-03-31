@@ -53,7 +53,7 @@
       "BTN_PALABRAS": "Configurar Filtros",
       "BTN_ALARMAS": "Configurar Contactos",
       "ENABLE_SERVIZE": "Habilitar o Servizo",
-      "DESCRIPCION":"EMAM é unha aplicación que envía mensaxes de alarma automáticamente ca ubicación do dispositivo.\n\nFai uso do micrófono recoñecendo palabras pronunciadas polo usuario.\n\nCompara o texto que escoicha con filtros previamente definidos polo usuario e envía un SMS no caso de haber unha coincidencia.\n\nO audio NUNCA é grabado e borrase automatíceme despois de ser analizado.\n\nNON se precisa conexión a internet para o seu funcionamento.\n\nO servizo só escoita cando o dispositivo está bloqueado"
+      "DESCRIPCION":"EMAM envía mensaxes de alarma automáticamente informando da ubicación do dispositivo.\n\nFai uso do micrófono recoñecendo palabras pronunciadas polo usuario.\n\nCompara o texto que recoñece con filtros previamente definidos polo usuario e envía un SMS no caso de haber unha coincidencia.\n\nO audio NUNCA é grabado e borrase de forma automática despois de ser analizado.\n\nNON se precisa conexión a internet para o seu funcionamento.\n\nO servizo só 'escoita' cando o teléfono está bloqueado"
     },
     "NEW_PALABRA_MODAL": {
       "TITLE": "Configurar Filtros",
@@ -77,7 +77,7 @@
       "NUMERO_TELEFONO": "número",
       "TRIGER2": "Aviso de localiozación",
       "TRIGER3": "Buscar",
-      "DESCRIPCION": "Garda o número de teléfono e correo electrónico dos contactos aos que queiras enviar a localización cando a aplicación recoñezca os filtros",
+      "DESCRIPCION": "Garda o número de teléfono e correo electrónico dos contactos aos que queiras enviar o SMS cando a aplicación recoñezca os filtros",
       "NO_INSERT":"O contacto xa está gardado"
     },
     "SIDE_MENU": {

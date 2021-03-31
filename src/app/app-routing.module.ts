@@ -28,6 +28,10 @@ const routes: Routes = [
     path: 'new-alarma',
     loadChildren: () => import('./pages/new-alarma/new-alarma.module').then(m => m.NewAlarmaPageModule)
   },
+  {
+    path: 'maps',
+    loadChildren: () => import('./maps/maps.module').then( m => m.MapsPageModule)
+  },
 
 
 

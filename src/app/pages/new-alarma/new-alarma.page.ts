@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Contacts, Contact, ContactField, ContactName } from '@ionic-native/contacts/ngx';
 import { Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -36,6 +36,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
     private translate: TranslateService,
     private platform: Platform,
     private nativePlugin: NativePlugin,
+    private changeDetectorRef: ChangeDetectorRef,
     public helper: Helper,
     public proAppUser: AppUser,
     public modelCreator: ModelCreator
@@ -54,11 +55,11 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
           this.alarmas.push(this.modelCreator.getIAlarma(alarma));
         }
         await this.refreshViewFromDb();
-      } else {
+      }
+      if (!this.platform.is('cordova')) {
         this.appUser = this.proAppUser.getAppUser();
         this.newAlarma = this.modelCreator.emptyIAlarma();
       }
-
     } catch (err) {
       this.helper.showException('ngOnInit :' + err);
     }
@@ -67,7 +68,8 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   async ngOnDestroy() {
     if (this.platform.is('cordova')) {
 
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -83,7 +85,8 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
       for (const alarma of result.rows) {
         this.alarmas.push(this.modelCreator.getIAlarma(alarma));
       }
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
       const alarma: IAlarma = {
         usuario: 'user',
         funcion: 'clave',
@@ -103,7 +106,7 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
         this.newAlarma.usuario = this.appUser.usuario;
         const result = await this.insertAlarma(this.newAlarma);
         if (result.result) {
-          await this.onClickRefresh();
+          await this.refreshViewFromDb();
           this.newAlarma.numTlfTo = '';
           this.newAlarma.mailTo = '';
         } else {
@@ -111,7 +114,8 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
         }
 
       }
-    } else {
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
@@ -119,14 +123,22 @@ export class NewAlarmaPage implements OnInit, OnDestroy {
   public async onClickDeleteAlarma(alarma: IAlarma) {
     if (this.platform.is('cordova')) {
       const result = await this.deleteAlarma(alarma);
-      await this.onClickRefresh();
-    } else {
+      await this.refreshViewFromDb();
+    }
+    if (!this.platform.is('cordova')) {
 
     }
   }
 
   public async onClickContactos() {
-
+    try {
+      const result = await this.nativePlugin.getContacts();
+      this.newAlarma.numTlfTo = result.contacto.numero;
+      this.newAlarma.mailTo = result.contacto.nombre;
+      this.changeDetectorRef.detectChanges();
+    } catch (err) {
+      this.helper.showException(err);
+    }
   }
 
 

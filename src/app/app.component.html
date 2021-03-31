@@ -18,7 +18,7 @@
           <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
             <ion-label class="mediumFont">{{ 'SIDE_MENU.DARK_MODE' | translate:{value: null} }}
             </ion-label>
-            <ion-toggle slot="end" [checked]="this.darkMode" (ionChange)="this.toggleTheme($event)" color="danger">
+            <ion-toggle slot="end" [checked]="this.darkMode" (ionChange)="this.toggleTheme($event.detail.checked)" color="danger">
             </ion-toggle>
           </ion-item>
 
@@ -26,8 +26,8 @@
           <ion-item lines="full" class="noPadding noMargin contenedorLight" color="light">
             <ion-label text-wrap>
               {{'LANGUAGES.LANGUAGE'| translate:{value: null} }}</ion-label>
-            <ion-select text-wrap class="selectFull" interface="popover" value='ES'
-              interface="action-sheet" (ionChange)="selectLanguage($event)">
+            <ion-select text-wrap class="selectFull" interface="popover" [value]="language"
+              interface="action-sheet" (ionChange)="onSelectLanguage($event.detail.value)">
               <ion-select-option text-wrap class="selectFull" *ngFor="let language of this.languages;" value={{language}}>
                 {{ 'LANGUAGES.' + language | translate:{value: null} }}
               </ion-select-option>
@@ -41,7 +41,7 @@
       <ion-footer>
         <ion-toolbar class="textCenter">
           <ion-button class="mediumFont" style=" width: 80%;" fill="outline" size="large" color="primary"
-            (click)="logout()">
+            (click)="onClickLogout()">
             <ion-icon color="primary" name="log-out"></ion-icon>
             <div style="color: var(--ion-color-primary)">
               {{ 'SIDE_MENU.LOGOUT' | translate:{value: null} }}</div>

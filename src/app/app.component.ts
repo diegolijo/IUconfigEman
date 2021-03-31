@@ -18,7 +18,8 @@ export class AppComponent implements OnInit {
 
   darkMode = true;
   languages = ['GAL', 'ES'];
-  language = 'GAL';
+  language: string;
+
 
   constructor(
     private translate: TranslateService,
@@ -39,9 +40,30 @@ export class AppComponent implements OnInit {
 
   }
 
+  /************************** events *************************/
+
+
   ngOnInit() {
     this.appUser.emptyAppUser();
+    this.setLanguage('GAL');
   }
+
+  public toggleTheme(value: boolean) {
+    this.darkMode = value;
+    this.setAppTheme(this.darkMode);
+  }
+
+  public onSelectLanguage(value: string) {
+    const lenguage = value;
+    this.setLanguage(lenguage);
+  }
+
+
+  public onClickLogout() {
+    this.logout();
+  }
+
+  /*************************************************************/
 
   async initializeApp() {
     try {
@@ -57,7 +79,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
   public setAppTheme(dark: boolean) {
     document.body.setAttribute('color-theme', 'light');
     if (dark) {
@@ -65,15 +86,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-
-  public toggleTheme(event: any) {
-    this.darkMode = event.detail.checked;
-    this.setAppTheme(this.darkMode);
-  }
-
-
-  public selectLanguage(event: any) {
-    const lenguage = event.detail.value;
+  private setLanguage(lenguage: string) {
     switch (lenguage) {
       case 'ES':
         this.translate.use('es');
@@ -82,13 +95,10 @@ export class AppComponent implements OnInit {
         this.translate.use('gal');
         break;
       default:
+        this.translate.use('gal');
         break;
     }
-
   }
-
-
-
 
   async logout() {
     try {
