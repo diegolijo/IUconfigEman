@@ -1,10 +1,13 @@
 package www.vayapedal.emam;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +17,8 @@ import android.os.ResultReceiver;
 import android.provider.ContactsContract;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.room.Room;
 
 import com.getcapacitor.Bridge;
@@ -22,12 +27,16 @@ import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import www.vayapedal.emam.datos.Alarma;
 import www.vayapedal.emam.datos.DB;
@@ -396,6 +405,29 @@ public class NatPlugin extends Plugin {
         }
     }
 
+    /************************************************** Speech To View **************************************************
+     * devolvemos los resultados a la vista
+     */
+    private void sendResult(String resultReceiver) {
+        JSObject result = new JSObject();
+        result.put(Constantes.RESULT, resultReceiver);
+        notifyListeners(Constantes.HOME_EVENT, result);
+    }
+
+    private void sendPartial(String resultReceiver) {
+        Bridge b = getBridge();
+        JSObject result = new JSObject();
+        result.put(Constantes.RESULT, resultReceiver);
+        notifyListeners(Constantes.PARTIAL_EVENT, result);
+    }
+
+    private void sendFrase(String resultReceiver) {
+        JSObject result = new JSObject();
+        result.put(Constantes.RESULT, resultReceiver);
+        notifyListeners(Constantes.PALABRA_EVENT, result);
+    }
+
+
     /**************************************************  Contacts **************************************************/
     @PluginMethod()
     public void getContacts(PluginCall call) {
@@ -450,26 +482,64 @@ public class NatPlugin extends Plugin {
     }
 
 
-    /**************************************************  To View **************************************************
-     * devolvemos los resultados a la vista
-     */
-    private void sendResult(String resultReceiver) {
-        JSObject result = new JSObject();
-        result.put(Constantes.RESULT, resultReceiver);
-        notifyListeners(Constantes.HOME_EVENT, result);
+    /**************************************************  Location **************************************************/
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @PluginMethod()
+    public void getLocation(PluginCall call) {
+        try {
+            saveCall(call);
+            getContext();
+            PluginCall savedCall = getSavedCall();
+            if (savedCall == null) {
+                return;
+            }
+            int permGPS = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
+            int permGps = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permGPS == PackageManager.PERMISSION_GRANTED && permGps == PackageManager.PERMISSION_GRANTED) {
+                FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
+                LocationManager locManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, null)
+                            .addOnSuccessListener(Runnable::run, location -> {
+                                if (location != null) {
+                                    JSObject jSLocation = new JSObject();
+                                    jSLocation.put("lat", location.getLatitude());
+                                    jSLocation.put("lon", location.getLongitude());
+                                    JSObject resultJson = new JSObject();
+                                    resultJson.put(Constantes.LOCATION, jSLocation);
+                                    savedCall.resolve(resultJson);
+
+                                }
+                            });
+                } else {
+                    funciones.startActivityTurnOnGps();
+                }
+            }
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    private void sendPartial(String resultReceiver) {
-        Bridge b = getBridge();
-        JSObject result = new JSObject();
-        result.put(Constantes.RESULT, resultReceiver);
-        notifyListeners(Constantes.PARTIAL_EVENT, result);
+
+    @PluginMethod()
+    public void setNavigator(PluginCall call) {
+        String y = call.getString(Constantes.LATITUD);
+        String x = call.getString(Constantes.LONGITUD);
+        double lat  = Double.parseDouble(y);
+        double lon = Double.parseDouble(x);
+        lanzaNavigator(lat,lon);
     }
 
-    private void sendFrase(String resultReceiver) {
-        JSObject result = new JSObject();
-        result.put(Constantes.RESULT, resultReceiver);
-        notifyListeners(Constantes.PALABRA_EVENT, result);
+
+    /**lanzar navigator de ggogle*/
+    public void lanzaNavigator(double lat, double lon) {
+        String uri = String.format(Locale.ENGLISH, "google.navigation:q=%1$f,%2$f", lat, lon);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+        getContext().startActivity(intent);
     }
+
 
 }

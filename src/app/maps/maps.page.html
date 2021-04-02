@@ -8,8 +8,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content> 
-  <div id="mapId" style="position: absolute;  top: 0em; height: 104%; width: 100%;"></div>
+<ion-content>
+  <div id="mapId" style="position: absolute;  top: 0em; height: 104%; width: 100%; z-index:1; "></div>
+  <ion-button fill="clear"   style="position: absolute; right: 0.5em; top: 1em; z-index:2"
+    (click)="onClickLocation() ">
+    <ion-icon name="locate" size="large"></ion-icon>
+  </ion-button>
 </ion-content>
 
 

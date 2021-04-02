@@ -60,12 +60,14 @@ public class Constantes {
     public static final String RESULT = "result";
     public static final String ACTION = "action";
     public static final String USUARIO = "usuario";
+   
 
     public static final String HOME_EVENT = "HOME_EVENT";
     public static final String PALABRA_EVENT = "PALABRA_EVENT";
     public static final String FRASE_EVENT = "FRASE_EVENT";
     public static final String PARTIAL_EVENT = "PARTIAL_EVENT";
 
+    public static final String LOCATION = "location";
 
     /**
      * *********************************** DB *********************************
@@ -141,4 +143,6 @@ public class Constantes {
     public static final String CONTACTO = "contacto";
 
 
+    public static final String LATITUD = "latitud";
+    public static final String LONGITUD = "longitud";
 }

@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -80,7 +81,7 @@ public class Funciones {
         try {
             if (!numTlf.equals("")) {
                 sms.sendTextMessage(numTlf, null, texto, null, null);
-               // vibrar(context, 1000);
+                // vibrar(context, 1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -227,7 +228,7 @@ public class Funciones {
 
     @NonNull
     @TargetApi(26)
-    private synchronized String createChannel() {
+    public synchronized String createChannel() {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         String name = "Ao coidado de EMAN";
         int importance = NotificationManager.IMPORTANCE_LOW;
@@ -242,5 +243,10 @@ public class Funciones {
         return "EMAN channel";
     }
 
+    public void startActivityTurnOnGps() {
+        Intent intentGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        intentGps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intentGps);
+    }
 
 }

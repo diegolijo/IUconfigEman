@@ -165,6 +165,17 @@ export class NativePlugin {
     }
 
 
+    // ******************************************** contactos *********************************************/
+    public async getLocation() {
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.getLocation();
+            return result;
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
+    }
+
 
 }
 

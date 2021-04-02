@@ -32,6 +32,7 @@
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "leaflet": "^1.7.1",
+    "leaflet-routing-machine": "^3.2.12",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

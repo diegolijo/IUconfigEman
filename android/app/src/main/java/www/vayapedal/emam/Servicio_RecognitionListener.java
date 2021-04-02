@@ -598,7 +598,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                         });
             } else {
                 result = false;
-                startActivityTurnOnGps();
+                funciones.startActivityTurnOnGps();
             }
         }
         return result;
@@ -625,7 +625,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
                                 }
                             });
                 } else {
-                    startActivityTurnOnGps();
+                    funciones.startActivityTurnOnGps();
                 }
             }
         } catch (Exception e) {
@@ -652,11 +652,7 @@ public class Servicio_RecognitionListener extends Service implements Recognition
 
     }
 
-    private void startActivityTurnOnGps() {
-        Intent intentGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        intentGps.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intentGps);
-    }
+
 
 
 }
