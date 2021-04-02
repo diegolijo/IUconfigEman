@@ -1,10 +1,10 @@
-<ion-header> 
+<ion-header>
   <ion-toolbar color="primary">
-     <ion-buttons slot="start">
-    <ion-menu-button>
-      <ion-icon name="menu" ></ion-icon>      
-    </ion-menu-button>
-  </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <ion-icon name="menu"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
     <div style="color: var(--ion-color-secondary); " class="fontBold">
       {{ 'HOME.TITLE' | translate:{value: null} }}
     </div>
@@ -25,12 +25,12 @@
     </ion-button>
 
     <ion-button class="mediumFont" style="width: 80%;" fill="outline" expand="block" size="large" color="primary"
-    (click)="this.onClickGoTo('maps')">
-    {{ 'HOME.BTN_MAPS' | translate:{value: null} }}
-  </ion-button>
+      (click)="this.onClickGoTo('maps')">
+      {{ 'HOME.BTN_MAPS' | translate:{value: null} }}
+    </ion-button>
 
     <!-- DESCRIPCION -->
-<!--     <div class="marginV5 noPadding contenedorTertiary" style="width: 80%; ">
+    <!--     <div class="marginV5 noPadding contenedorTertiary" style="width: 80%; ">
       <ion-item lines="none" color="light" class="contenedorLight">
         <ion-icon name="information-circle-outline" style="position: absolute; right: 0.5em; bottom: 0.5em;"
           color="tertiary"></ion-icon>
@@ -40,10 +40,20 @@
       </ion-item>
     </div> -->
 
-    <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases"  style="width: 80%;">
+    <div *ngFor="let frase of this.resultText" class="contenedorTertiary frases" style="width: 80%;">
       {{frase}}
     </div>
+
+    <ion-button class="mediumFont" style="width: 80%;" fill="outline" expand="block" size="large" color="primary"
+      (click)="this.onClickSocial()">
+   share
+    </ion-button>
+
   </div>
+
+
+
+
 </ion-content>
 
 <ion-footer class="textCenter">
@@ -57,10 +67,11 @@
   </ion-toolbar>
 
   <!--   <ion-toolbar>
-    <ion-button [hidden]="!this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger" slot="end"
-      (click)="this.onClickBindServize()">
-      <ion-spinner name="dots" color="danger"></ion-spinner>
-    </ion-button>
+
+  <ion-button [hidden]="!this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger" slot="end"
+    (click)="this.onClickBindServize()">
+    <ion-spinner name="dots" color="danger"></ion-spinner>
+  </ion-button>
 
     <ion-button [hidden]="this.isBindService" class="noPadding  itemButtonT" fill="clear" color="danger" slot="end"
       (click)="this.onClickBindServize()">

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Plugins } from '@capacitor/core';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Platform } from '@ionic/angular';
 import { AppComponent } from './../../app.component';
 import { AppUser } from './../../services/AppUser';
@@ -29,6 +30,7 @@ export class HomePage implements OnInit, OnDestroy {
   public pluginListener: any;
 
   constructor(
+    private socialSharing: SocialSharing,
     private platform: Platform,
     private nativePlugin: NativePlugin,
     public helper: Helper,
@@ -196,5 +198,26 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
+
+  /********************************************** Social ********************************************/
+  public onClickSocial() {
+    // Check if sharing via email is supported
+   /*  this.socialSharing.canShareViaEmail().then(() => {
+      // Sharing via email is possible
+      // Share via email
+      this.socialSharing.shareViaEmail('Body', 'Subject', ['recipient@example.org']).then(() => {
+        // Success!
+      }).catch(() => {
+        // Error!
+      });
+    }).catch(() => {
+      // Sharing via email is not possible
+    }); */
+
+    this.socialSharing.shareViaWhatsApp('Body').then(() => {
+    });
+
+
+  }
 
 }

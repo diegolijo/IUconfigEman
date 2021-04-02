@@ -102,35 +102,35 @@ export class MapsPage implements OnInit {
         Configure su propio servidor OSRM o utilice un proveedor de servicios de pago para la producción. */
 
 
-        const routingControl = L.Routing.control({
-          waypoints: [
-            L.latLng(41, -8.1),
-            L.latLng(42.8831365, -8.5348888),
-            L.latLng(41, -8.53)
-          ],
-          routeWhileDragging: true,
-          show: false
-        }).addTo(this.map);
+        /*         const routingControl = L.Routing.control({
+                  waypoints: [
+                    L.latLng(41, -8.1),
+                    L.latLng(42.8831365, -8.5348888),
+                    L.latLng(41, -8.53)
+                  ],
+                  routeWhileDragging: true,
+                  show: false
+                }).addTo(this.map);*/
+
+
+
+        // router: new L.Routing.OSRMv1({
+        //   serviceUrl: ROUTER_SERVICE_URL
+        // }),
+        /*    plan: new L.Routing.plan([], {
+             addWaypoints: false,
+             draggableWaypoints: false,
+             createMarker: () => undefined
+           }),
+             lineOptions: {
+             addWaypoints: false
+           },
+           collapsible: true,
+             show: false
+         });
+       } */
+
       }
-
-
-      // router: new L.Routing.OSRMv1({
-      //   serviceUrl: ROUTER_SERVICE_URL
-      // }),
-      /*    plan: new L.Routing.plan([], {
-           addWaypoints: false,
-           draggableWaypoints: false,
-           createMarker: () => undefined
-         }),
-           lineOptions: {
-           addWaypoints: false
-         },
-         collapsible: true,
-           show: false
-       });
-     } */
-
-
 
     } catch (err) {
       this.helper.showException(err);

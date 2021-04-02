@@ -522,7 +522,7 @@ public class NatPlugin extends Plugin {
         }
     }
 
-
+    /**************************************************  Navigator **************************************************/
     @PluginMethod()
     public void setNavigator(PluginCall call) {
         String y = call.getString(Constantes.LATITUD);
