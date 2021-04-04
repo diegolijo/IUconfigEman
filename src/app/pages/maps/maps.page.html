@@ -1,0 +1,81 @@
+<ion-header appHideOnKeyboardShow>
+  <ion-toolbar color="primary">
+
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+
+    <div> {{ 'MAPS.TITLE' | translate:{value: null} }}
+    </div>
+
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="onClickDeleteMarkers() ">
+        <ion-icon name="close" size="large"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" (click)="onClickGenetareRoute()">
+        <ion-icon name="trail-sign-outline" size="large"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" (click)="onClickLocation() ">
+        <ion-icon name="locate" size="large"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" (click)="onClickNavigator() ">
+        <ion-icon name="navigate-circle-outline" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div (click)="onClickMap()" id="mapId" style="position: absolute;  top: 0em; height: 104%; width: 100%; z-index:1;">
+  </div>
+
+</ion-content>
+<ion-item>
+  <ion-input appClassKey="cssDirective" appSelectOnClick [(ngModel)]="lat" class="textRightAlign" type="number"
+    autocapitalize="off">
+  </ion-input>
+</ion-item>
+<ion-item>
+  <ion-input appClassKey="cssDirective" appSelectOnClick [(ngModel)]="lng" class="textRightAlign" type="number"
+    autocapitalize="off">
+  </ion-input>
+</ion-item>
+
+<ion-footer appHideOnKeyboardShow>
+  <ion-toolbar>
+    <ion-select text-wrap class="selectFull" interface="popover" [(ngModel)]="transportMode" interface="action-sheet">
+      <ion-select-option text-wrap class="selectFull" *ngFor="let mode of this.transportModes;">{{mode}}
+      </ion-select-option>
+
+    </ion-select>
+    <ion-toggle slot="end" [(ngModel)]="this.navToggle" color="danger"></ion-toggle>
+    <!-- (ionChange)="this.onToggleServize($event)" -->
+  </ion-toolbar>
+</ion-footer>
+
+
+
+
+
+
+<!--   <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
+
+<ion-content>
+    <ion-item style="cursor: pointer" (click)="locatePosition()">
+        <ion-button fill="clear">
+            <ion-icon slot="start" name="map"></ion-icon>
+            Locate Position
+        </ion-button>
+    </ion-item>
+<ion-item>
+    <ion-icon slot="start" name="locate"></ion-icon>
+    <ion-label position="stacked">Address</ion-label>
+<ion-textarea [(ngModel)]="address" type="text" style="margin-top:20px;"></ion-textarea>
+  </ion-item>
+<ion-button shape="round" expand="block" (click)="confirmPickupLocation()">Confirm Pickup Location</ion-button>
+</ion-content> -->

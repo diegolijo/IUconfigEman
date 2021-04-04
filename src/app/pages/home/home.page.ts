@@ -202,21 +202,34 @@ export class HomePage implements OnInit, OnDestroy {
   /********************************************** Social ********************************************/
   public onClickSocial() {
     // Check if sharing via email is supported
-   /*  this.socialSharing.canShareViaEmail().then(() => {
-      // Sharing via email is possible
-      // Share via email
-      this.socialSharing.shareViaEmail('Body', 'Subject', ['recipient@example.org']).then(() => {
-        // Success!
-      }).catch(() => {
-        // Error!
-      });
-    }).catch(() => {
-      // Sharing via email is not possible
-    }); */
+    /*  this.socialSharing.canShareViaEmail().then(() => {
+       // Sharing via email is possible
+       // Share via email
+       this.socialSharing.shareViaEmail('Body', 'Subject', ['recipient@example.org']).then(() => {
+         // Success!
+       }).catch(() => {
+         // Error!
+       });
+     }).catch(() => {
+       // Sharing via email is not possible
+     }); */
 
-    this.socialSharing.shareViaWhatsApp('Body').then(() => {
+
+
+    /**
+     * Shares directly to a WhatsApp Contact
+     *  receiver {string} Pass phone number on Android, and Addressbook ID (abid) on iOS
+     *  message {string} Message to send
+     *  image {string} Image to send (does not work on iOS
+     *  url {string} Link to send
+     * shareViaWhatsAppToReceiver(receiver: string, message: string, image?: string, url?: string): Promise<any>;
+     */
+
+    /* this.socialSharing.shareViaWhatsApp('Mensaje de prueba').then(() => {
+     }); */
+
+    this.socialSharing.shareViaWhatsAppToReceiver('34635572950', 'Mensaje de prueba').then(() => {
     });
-
 
   }
 

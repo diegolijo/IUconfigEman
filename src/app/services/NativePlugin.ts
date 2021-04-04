@@ -165,7 +165,7 @@ export class NativePlugin {
     }
 
 
-    // ******************************************** contactos *********************************************/
+    // ******************************************** Location *********************************************/
     public async getLocation() {
         if (this.platform.is('cordova')) {
             const result = await NatPlugin.getLocation();
@@ -176,6 +176,17 @@ export class NativePlugin {
         }
     }
 
+
+    // ******************************************** Navigator *********************************************/
+    public async setNavigator(lat: number, lon: number, mode: string) {
+        if (this.platform.is('cordova')) {
+            const result = await NatPlugin.setNavigator({ latitud: lat, longitud: lon, transportMode: mode });
+            return result;
+        }
+        if (!this.platform.is('cordova')) {
+
+        }
+    }
 
 }
 

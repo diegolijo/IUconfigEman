@@ -508,7 +508,6 @@ public class NatPlugin extends Plugin {
                                     JSObject resultJson = new JSObject();
                                     resultJson.put(Constantes.LOCATION, jSLocation);
                                     savedCall.resolve(resultJson);
-
                                 }
                             });
                 } else {
@@ -525,17 +524,18 @@ public class NatPlugin extends Plugin {
     /**************************************************  Navigator **************************************************/
     @PluginMethod()
     public void setNavigator(PluginCall call) {
-        String y = call.getString(Constantes.LATITUD);
-        String x = call.getString(Constantes.LONGITUD);
-        double lat  = Double.parseDouble(y);
-        double lon = Double.parseDouble(x);
-        lanzaNavigator(lat,lon);
+        Double y = call.getDouble(Constantes.LATITUD);
+        Double x = call.getDouble(Constantes.LONGITUD);
+        String m = call.getString(Constantes.TRANSPORT_MODE);
+        lanzaNavigator(y, x, m);
     }
 
-
-    /**lanzar navigator de ggogle*/
-    public void lanzaNavigator(double lat, double lon) {
+    /**
+     * lanzar navigator de google
+     */
+    public void lanzaNavigator(double lat, double lon, String transportMode) {
         String uri = String.format(Locale.ENGLISH, "google.navigation:q=%1$f,%2$f", lat, lon);
+        uri += (!transportMode.equals("")) ? "&mode=" + transportMode : "";
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         intent.setPackage("com.google.android.apps.maps");
         getContext().startActivity(intent);

@@ -145,4 +145,5 @@ public class Constantes {
 
     public static final String LATITUD = "latitud";
     public static final String LONGITUD = "longitud";
+    public static final String TRANSPORT_MODE = "transportMode";
 }
