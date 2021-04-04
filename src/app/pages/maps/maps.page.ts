@@ -20,13 +20,12 @@ export class MapsPage implements OnInit {
   L: any;
   routingControl: any;
   map: Map;
-  newMarker: any;
+
   address: string[];
   location: [number, number];
+
   markers: L.Marker<any>[] = [];
-
-  mapMarkers: any[] = null;
-
+  indexMarker = 0;
 
   navToggle = true;
   lat: number;
@@ -86,13 +85,12 @@ export class MapsPage implements OnInit {
       const se = this.map.getBounds().getSouthEast();
       this.lng = center.lng;
       this.lat = center.lat;
-
       const marker = this.L.marker(center).addTo(this.map)
-        .bindPopup('latitud:    ' + center.lat + '<br>longitud: ' + center.lng + '', { closeButton: true })
+        .bindPopup('latitud:    ' + this.lat + '<br>longitud: ' + this.lng + '', { closeButton: true })
         .openPopup();
 
       this.markers.push(marker);
-
+      this.indexMarker = this.markers.length - 1;
     } catch (err) {
       this.helper.showException(err);
     }
@@ -100,7 +98,27 @@ export class MapsPage implements OnInit {
 
 
 
+  public async onClickBack() {
+    try {
+      this.indexMarker = (this.indexMarker === 0) ? this.markers.length - 1 : this.indexMarker - 1;
+      this.lng = this.markers[this.indexMarker].getLatLng().lng;
+      this.lat = this.markers[this.indexMarker].getLatLng().lat;
+      this.map.flyTo(this.markers[this.indexMarker].getLatLng());
+    } catch (err) {
+      this.helper.showException(err);
+    }
+  }
 
+  public async onClickNext() {
+    try {
+      this.indexMarker = (this.indexMarker === this.markers.length - 1) ? 0 : this.indexMarker + 1;
+      this.lat = this.markers[this.indexMarker].getLatLng().lat;
+      this.lng = this.markers[this.indexMarker].getLatLng().lng;
+      this.map.flyTo(this.markers[this.indexMarker].getLatLng());
+    } catch (err) {
+      this.helper.showException(err);
+    }
+  }
 
   public async onClickDeleteMarkers() {
     try {
@@ -179,9 +197,7 @@ export class MapsPage implements OnInit {
 
   public async onClickNavigator() {
     try {
-      const dir: L.Marker<any> = this.markers[(this.markers.length > 0) ? this.markers.length - 1 : 0];
-      this.lat = dir.getLatLng().lat;
-      this.lng = dir.getLatLng().lng;
+
       // Movil
       if (this.platform.is('cordova')) {
         // llamada con capacitor launchNavigator
@@ -203,10 +219,6 @@ export class MapsPage implements OnInit {
         } else {
           const result = await this.nativePlugin.setNavigator(this.lat, this.lng, this.transportMode);
         }
-      }
-      // PC
-      if (!this.platform.is('cordova')) {
-
       }
 
     } catch (err) {

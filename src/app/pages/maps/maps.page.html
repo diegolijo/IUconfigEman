@@ -3,27 +3,35 @@
 
     <ion-buttons slot="start">
       <ion-back-button> </ion-back-button>
-    </ion-buttons>
 
-    <div> {{ 'MAPS.TITLE' | translate:{value: null} }}
-    </div>
-
-    <ion-buttons slot="end">
       <ion-button fill="clear" (click)="onClickDeleteMarkers() ">
         <ion-icon name="close" size="large"></ion-icon>
       </ion-button>
 
-      <ion-button fill="clear" (click)="onClickGenetareRoute()">
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+
+      <ion-button fill="clear" [disabled]="(this.markers.length<2)? true : false" (click)="onClickBack() ">
+        <ion-icon name="play-skip-back-outline" size="large"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" [disabled]="(this.markers.length<2)? true : false" (click)="onClickNext() ">
+        <ion-icon name="play-skip-forward-outline" size="large"></ion-icon>
+      </ion-button>
+
+      <ion-button [disabled]="(this.markers.length<2)? true : false" fill="clear" (click)="onClickGenetareRoute()">
         <ion-icon name="trail-sign-outline" size="large"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" [disabled]="(this.markers.length<1)? true : false" (click)="onClickNavigator() ">
+        <ion-icon name="navigate-circle-outline" size="large"></ion-icon>
       </ion-button>
 
       <ion-button fill="clear" (click)="onClickLocation() ">
         <ion-icon name="locate" size="large"></ion-icon>
       </ion-button>
 
-      <ion-button fill="clear" (click)="onClickNavigator() ">
-        <ion-icon name="navigate-circle-outline" size="large"></ion-icon>
-      </ion-button>
     </ion-buttons>
 
   </ion-toolbar>
@@ -32,9 +40,8 @@
 <ion-content>
   <div (click)="onClickMap()" id="mapId" style="position: absolute;  top: 0em; height: 104%; width: 100%; z-index:1;">
   </div>
-
 </ion-content>
-<ion-item>
+<!-- <ion-item>
   <ion-input appClassKey="cssDirective" appSelectOnClick [(ngModel)]="lat" class="textRightAlign" type="number"
     autocapitalize="off">
   </ion-input>
@@ -43,7 +50,7 @@
   <ion-input appClassKey="cssDirective" appSelectOnClick [(ngModel)]="lng" class="textRightAlign" type="number"
     autocapitalize="off">
   </ion-input>
-</ion-item>
+</ion-item> -->
 
 <ion-footer appHideOnKeyboardShow>
   <ion-toolbar>
